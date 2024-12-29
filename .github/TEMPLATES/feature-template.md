@@ -1,5 +1,5 @@
 ---
-name: ⌨️ 새로운 기능 추가
+name: 새로운 기능 추가
 about: ✨ 새 기능 추가
 title: "[Feature] "
 labels: feature
