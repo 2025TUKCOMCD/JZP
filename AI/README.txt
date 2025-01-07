@@ -11,3 +11,8 @@ Haar 방식에서 모자 등, 얼굴에 음영을 해칠 만한 요소가 발생
 
 https://velog.io/@huttzza/%EC%8B%A4%EC%8B%9C%EA%B0%84-%EC%96%BC%EA%B5%B4-%EC%9D%B8%EC%8B%9D-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8-1%EC%B0%A8-%EA%B5%AC%ED%98%84
 > haar 소스코드 및 학습 모델 설계 관련
+
+https://m.blog.naver.com/samsjang/220699662173
+>눈 추적 (Haar)
+https://prlabhotelshoe.tistory.com/43
+>눈 추적(Haar+dlib)
