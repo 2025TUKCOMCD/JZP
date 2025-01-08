@@ -1,7 +1,6 @@
 #
-#   Haar Cascade test, camera
-#   2025-01-07, chlgideh
-#
+#  Haar Cascade test, camera
+#  2025-01-07, chlgideh
 #
 
 import cv2
@@ -37,25 +36,30 @@ def Haar_cam():
         # 기존 프레임에 탐지된 retangle 표시시
         if frame_counter/detection == frame_counter/2:  # division by zero error 회피. 이전 프레임과의 카운터를 비교하여 불연속적(최초) 캡쳐 성공에 대한 무조건적인 캡쳐 분기
             for (x,y,w,h) in faces:
+                now = datetime.now()
+                current_time_str=now.strftime("%Y-%m-%d_(%H-%M-%S)")
+                cv2.imwrite("capture_data/"+current_time_str+'_'+str(count/60+1)+".jpg",frame[y-50:y+h+50, x-25:x+w+25])
                 cv2.rectangle(frame,(x,y),(x+w,y+h),(255,0,0),2)
                 # rectangle(image, start_point, end_point, color, thickness)
                 count += 1
-                now = datetime.now()
-                current_time_str=now.strftime("%Y-%m-%d_(%H-%M-%S)")
-                cv2.imwrite("capture_data/"+current_time_str+'_'+str(count/60+1)+".jpg",frame_origin[y-50:y+h+50, x-25:x+w+25])
                 detection=1
         for (x,y,w,h) in faces: # 연속적인 detection일 경우, 15 프레임(탐지 성공) 에 대해서만 캡쳐하여 자원 소모 최소화화
-            cv2.rectangle(frame,(x,y),(x+w,y+h),(255,0,0),2)
+            
             #inputOutputArray, point1 , 2, colorBGR, thickness)
             count += 1
             if count%15==0:
                 now = datetime.now()
                 current_time_str=now.strftime("%Y-%m-%d_(%H-%M-%S)")
-                cv2.imwrite("capture_data/"+current_time_str+'_'+str(count/60+1)+".jpg",frame_origin[y-50:y+h+50, x-25:x+w+25])
+                cv2.imwrite("capture_data/"+current_time_str+'_'+str(count/60+1)+".jpg",frame[y-50:y+h+50, x-25:x+w+25])
+            cv2.rectangle(frame,(x,y),(x+w,y+h),(255,0,0),2)
         cv2.imshow('image',frame)
-
+        
         #종료 조건
         if cv2.waitKey(1) > 0 : break #키 입력이 있을 때 반복문 종료
+
+    #
+    # 로직 문제로 사진 자체에 rectangle이 200장 중 하나 꼴로 포함된다.
+    #
 
     print("\n [INFO] Exiting Program and cleanup stuff\n")
 
