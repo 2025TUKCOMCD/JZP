@@ -38,7 +38,7 @@ def Haar_cam():
             for (x,y,w,h) in faces:
                 now = datetime.now()
                 current_time_str=now.strftime("%Y-%m-%d_(%H-%M-%S)")
-                cv2.imwrite("capture_data/"+current_time_str+'_'+str(count/60+1)+".jpg",frame[y-50:y+h+50, x-25:x+w+25])
+                cv2.imwrite("capture_data/"+current_time_str+'_'+str(count/60+1)+".jpg",frame_origin[y-50:y+h+50, x-25:x+w+25])
                 cv2.rectangle(frame,(x,y),(x+w,y+h),(255,0,0),2)
                 # rectangle(image, start_point, end_point, color, thickness)
                 count += 1
@@ -50,7 +50,7 @@ def Haar_cam():
             if count%15==0:
                 now = datetime.now()
                 current_time_str=now.strftime("%Y-%m-%d_(%H-%M-%S)")
-                cv2.imwrite("capture_data/"+current_time_str+'_'+str(count/60+1)+".jpg",frame[y-50:y+h+50, x-25:x+w+25])
+                cv2.imwrite("capture_data/"+current_time_str+'_'+str(count/60+1)+".jpg",frame_origin[y-50:y+h+50, x-25:x+w+25])
             cv2.rectangle(frame,(x,y),(x+w,y+h),(255,0,0),2)
         cv2.imshow('image',frame)
         
