@@ -1,17 +1,22 @@
 #
-# 11-5 reference
+# 
 # filter 2 testing for age classification
 # 
 #
 
 from transformers import CLIPProcessor, CLIPModel
 from PIL import Image
+import os
 
-img=Image.open('capture_data/2025-01-07_(16-54-34)_1.05.jpg')
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+
+img=Image.open('capture_data/2025-01-07 15-29-30_1.3.jpg')
+#img=Image.open('All-Age-Faces Dataset/aglined faces/00000A02.jpg')
+
 processor=CLIPProcessor.from_pretrained('openai/clip-vit-base-patch32')
 model=CLIPModel.from_pretrained('openai/clip-vit-base-patch32')
 
-captions=['teen','adult','old man','man','woman']
+captions=['baby','teenager','adult','old']
 inputs=processor(text=captions,images=img,return_tensors='pt',padding=True)
 res=model(**inputs)
 
