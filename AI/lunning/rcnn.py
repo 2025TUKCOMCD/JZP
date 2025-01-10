@@ -1,0 +1,101 @@
+import os
+import json
+import numpy as np
+import cv2
+import tensorflow as tf
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Reshape, Dense, Bidirectional, LSTM, Input
+from tensorflow.keras.models import Model
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.backend import ctc_batch_cost
+
+# 데이터셋 경로
+image_dir = "C:\\Users\\rladb\\open_cv\\source_4548_1\\source\\han\\machine\\img"
+label_dir = "C:\\Users\\rladb\\open_cv\\source_4548_1\\source\\han\\machine\\json"
+
+# 문자 집합 정의 (한글, 숫자 등)
+char_set = ''.join([chr(i) for i in range(0xAC00, 0xD7A4)])  # 완성형 한글
+char_set += "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+char_to_index = {char: idx + 1 for idx, char in enumerate(char_set)}  # 문자 -> 인덱스
+index_to_char = {idx: char for char, idx in char_to_index.items()}  # 인덱스 -> 문자
+num_classes = len(char_to_index) + 1  # CTC에서 blank index 고려
+
+# 이미지 전처리 함수
+def load_image(image_path, img_height=32, img_width=128):
+    image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    image = cv2.resize(image, (img_width, img_height))
+    image = image / 255.0
+    image = np.expand_dims(image, axis=-1)
+    return image
+
+# 데이터 로드 함수
+def load_data(image_dir, label_dir):
+    images = []
+    labels = []
+
+    # 모든 JSON 파일 읽기
+    for json_file in os.listdir(label_dir):
+        if not json_file.endswith(".json"):
+            continue
+
+        with open(os.path.join(label_dir, json_file), 'r', encoding='utf-8') as f:
+            data = json.load(f)
+
+        # JSON의 이미지 정보와 라벨 추출
+        for annotation in data["annotations"]:
+            image_name = next(
+                (img["file_name"] for img in data["images"] if img["id"] == annotation["image_id"]), None
+            )
+
+            if image_name:
+                image_path = os.path.join(image_dir, image_name)
+                if os.path.exists(image_path):
+                    # 이미지 로드 및 전처리
+                    images.append(load_image(image_path))
+
+                    # 텍스트 라벨
+                    text = annotation["text"]
+                    label = [char_to_index[char] for char in text if char in char_to_index]
+                    labels.append(label)
+
+    # 데이터 정리
+    images = np.array(images)
+    labels = tf.keras.preprocessing.sequence.pad_sequences(labels, padding="post")
+
+    return images, labels
+
+# 데이터 로드
+images, labels = load_data(image_dir, label_dir)
+
+# 입력 및 출력 정의
+input_length = np.ones(len(images)) * (images.shape[2] // 4)  # CNN 후 시간축 길이
+label_length = np.array([len(label) for label in labels])
+
+# CRNN 모델 정의
+def build_crnn(input_shape, num_classes):
+    inputs = Input(shape=input_shape)
+    x = Conv2D(64, (3, 3), activation='relu', padding='same')(inputs)
+    x = MaxPooling2D(pool_size=(2, 2))(x)
+    x = Conv2D(128, (3, 3), activation='relu', padding='same')(x)
+    x = MaxPooling2D(pool_size=(2, 2))(x)
+    x = Conv2D(256, (3, 3), activation='relu', padding='same')(x)
+    x = MaxPooling2D(pool_size=(2, 2))(x)
+    x = Reshape((-1, 256))(x)
+    x = Bidirectional(LSTM(128, return_sequences=True))(x)
+    x = Dense(num_classes, activation='softmax')(x)
+    return Model(inputs, x)
+
+input_shape = (32, 128, 1)
+model = build_crnn(input_shape, num_classes)
+model.compile(optimizer=Adam(learning_rate=0.001), loss=ctc_batch_cost)
+
+# 데이터셋으로 모델 학습
+model.fit(
+    x=[images, input_length, labels, label_length],
+    y=np.zeros(len(images)),
+    epochs=20,
+    batch_size=16
+)
+
+# 모델 저장
+model.save("C:\\Users\\rladb\\open_cv\\source_4548_1\\source\\han\\machine\\model")
+print("모델 학습 완료 및 저장됨.")
