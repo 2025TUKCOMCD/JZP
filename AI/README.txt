@@ -1,4 +1,5 @@
-
+https://git-lfs.com/
+대용량 파일이 있으므로 lfs 필요. (age-model-final.pkl)
 
 ## references
 https://www.delftstack.com/ko/howto/python/opencv-haar-cascade/
