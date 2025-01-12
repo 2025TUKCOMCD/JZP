@@ -10,6 +10,90 @@
 
 </p>
 
+# 📌 프로젝트 환경 구성
+
+### 1. 개발환경
+<details>
+<summary>개발환경 상세 보기</summary>
+
+### 프레임워크 및 라이브러리
+- **프론트엔드**: React (Vite 기반 프로젝트 생성)
+- **백엔드**: Spring Boot (Java 11 이상)
+- **AI 서버**: Flask (Python 3.9 이상), TensorFlow, OpenCV
+- **데이터베이스**: MySQL 8.0
+
+### 개발 도구
+- **IDE**: IntelliJ IDEA (Spring Boot), Visual Studio Code (React, Flask)
+- **패키지 매니저**: npm (프론트엔드), pip (AI 서버)
+- **버전 관리**: Git + GitHub/GitLab
+
+### 필요 도구
+- **Postman**: API 테스트
+- **Docker**: Flask/TensorFlow 컨테이너화
+
+### 가상 환경 관리
+- **Python**: `venv` 또는 `conda`로 Flask와 AI 모델 의존성 관리
+
+</details>
+
+### 2. 운용환경
+<details>
+<summary>📌 운용환경 상세 보기</summary>
+
+### 운영체제
+- **AWS EC2** (Ubuntu 20.04 LTS)
+
+### 프레임워크 및 라이브러리
+- **프론트엔드**: React 배포 (Nginx/Apache 서버)
+- **백엔드**: Spring Boot 실행 (Java 11+)
+- **AI 서버**: Flask 서버 실행 (Python + TensorFlow)
+
+### 데이터베이스
+- **Amazon RDS** (MySQL 8.0)
+
+### 네트워크 설정
+- **EC2 보안 그룹**:
+  - Flask (5000번 포트)
+  - Spring Boot (8080번 포트)
+  - React (80번 포트)
+- **DNS**:
+  - Route53로 도메인 설정
+
+### 외부 API
+- **Kakao Pay API**:
+  - 결제 데이터 처리
+- **Naver Cloud SMS API**:
+  - 사용자 메시지 전송
+
+</details>
+
+### 3. 데모환경
+<details>
+<summary>📌 데모환경 상세 보기</summary>
+
+### 하드웨어
+- **Lenovo Yoga 6 노트북**
+  - 사양: AMD Ryzen 5/7, 16GB RAM, SSD
+
+### 운영체제
+- **Windows 10/11**
+
+### 네트워크 환경
+- 로컬 네트워크 또는 AWS EC2 서버 접근
+
+### 소프트웨어 구성
+- **프론트엔드**:
+  - 로컬 React 서버 실행 (`npm run dev`)
+- **백엔드**:
+  - Spring Boot 실행 (`java -jar app.jar`)
+- **AI 서버**:
+  - Flask 실행 (`python app.py`)
+- **데이터베이스**:
+  - 로컬 MySQL 서버 또는 AWS RDS 연결
+
+</details>
+
+
 # 🛠️ Tech Stack
 <p align="center">
 <strong> Frontend <br></strong>
