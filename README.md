@@ -25,20 +25,16 @@
 <br>
   <img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white"> <img src="https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white"> <img src="https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=Swagger&logoColor=black" alt="icon" />
 </p>
-
 <p align="center">
 <strong> DB <br></strong>
 <br>
 <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"> <img src="https://img.shields.io/badge/Amazon S3-DD344C?style=for-the-badge&logo=Amazon S3&logoColor=white"> <img 
 </p>
-
-
 <p align="center">
 <strong> DevOps <br></strong>
 <br>
 <img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"> <img src="https://img.shields.io/badge/Amazon AWS-FF9900?style=for-the-badge&logo=Amazon AWS&logoColor=white"> <img src="https://img.shields.io/badge/githubactions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white">  <img src="https://img.shields.io/badge/Amazon EC2-FF9900?style=for-the-badge&logo=Amazon EC2&logoColor=white">
 </p>
-
 <p align="center">
 <strong> Tool <br></strong>
 <br>
@@ -56,6 +52,27 @@
 <img width="761" alt="스크린샷 2025-01-12 오후 9 13 14" src="https://github.com/user-attachments/assets/329442a5-4229-4670-8bef-d439180f2687" />
 </p>
 
+# ‼️ Commit Convention
+<p align="center">
+<img width="818" alt="스크린샷 2025-01-12 오후 9 28 36" src="https://github.com/user-attachments/assets/a91a87ba-430a-41a4-9299-6518eabaf808" />
+
+```
+[ Commit convention ]
+
+feat : 새로운 기능을 추가할 경우
+fix : 버그를 고친 경우
+!HOTFIX : 급하게 치명적인 버그를 고쳐야할 경우
+design : CSS등 사용자 UI 디자인 변경
+style : 코드 포맷변경, 세미콜론 누락 -> 코드 수정이 없는 경우
+refactor : 코드 리팩토링
+comment : 필요한 주석 추가 및 변경
+docs : Readme.md와 같은 문서 수정의 경우
+test : 테스트 추가, 테스트 리팩토링 (프로덕션코드 수정x)
+rename : 파일, 폴더명 변경
+Remove : 파일, 폴더 삭제
+Chore : 기타
+```
+</p>
 
 # 🙋🏻 Team .JZP 
   
