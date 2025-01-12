@@ -5,12 +5,9 @@
 
 # 📐 System Architecture
 <p align="center">
-<img width="680" alt="스크린샷 2024-12-01 오후 9 58 21" src="https://github.com/user-attachments/assets/fafb90d3-e325-4003-b521-10f00a947d3e">
-</p>
 
-# 🎬 System Scenario
-<p align="center">
-<img width="680" alt="스크린샷 2024-12-01 오후 10 00 28" src="https://github.com/user-attachments/assets/922f2236-ca37-46ba-ab39-3fa816facd89">
+![Group 9](https://github.com/user-attachments/assets/f33bafc1-531c-44f9-83e2-db1228609025)
+
 </p>
 
 # 🛠️ Tech Stack
