@@ -50,6 +50,13 @@
 <img width="680" alt="수행일정" src="https://github.com/user-attachments/assets/9fa4a073-a58e-48fa-8456-a5e789184fe2">
 </p>
 
+# 📄 Daily Scrum
+<p align="center">
+  https://overthehump.notion.site/Daily-Scrum-13404a82c20c81299405e3a8f57fa8f2
+<img width="761" alt="스크린샷 2025-01-12 오후 9 13 14" src="https://github.com/user-attachments/assets/329442a5-4229-4670-8bef-d439180f2687" />
+</p>
+
+
 # 🙋🏻 Team .JZP 
   
 [최향도](https://github.com/chlgideh)|[김윤승](https://github.com/FluffBeanTofu)|[석민정](https://github.com/minjaon)|[조승연](https://github.com/moanuna)|
