@@ -38,7 +38,7 @@
 
 ### 2. 운용환경
 <details>
-<summary>📌 운용환경 상세 보기</summary>
+<summary> 운용환경 상세 보기</summary>
 
 ### 운영체제
 - **AWS EC2** (Ubuntu 20.04 LTS)
@@ -69,7 +69,7 @@
 
 ### 3. 데모환경
 <details>
-<summary>📌 데모환경 상세 보기</summary>
+<summary> 데모환경 상세 보기</summary>
 
 ### 하드웨어
 - **Lenovo Yoga 6 노트북**
