@@ -32,7 +32,7 @@
 - **Docker**: Flask/TensorFlow 컨테이너화
 
 ### 가상 환경 관리
-- **Python**: `venv` 또는 `conda`로 Flask와 AI 모델 의존성 관리
+- **Python**: `conda`로 Flask와 AI 모델 의존성 관리
 
 </details>
 
@@ -44,7 +44,7 @@
 - **AWS EC2** (Ubuntu 20.04 LTS)
 
 ### 프레임워크 및 라이브러리
-- **프론트엔드**: React 배포 (Nginx/Apache 서버)
+- **프론트엔드**: React 배포 (Nginx 서버)
 - **백엔드**: Spring Boot 실행 (Java 11+)
 - **AI 서버**: Flask 서버 실행 (Python + TensorFlow)
 
