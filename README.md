@@ -5,8 +5,7 @@
 
 # 📐 System Architecture
 <p align="center">
-
-![Group 9-2](https://github.com/user-attachments/assets/5c1635b6-931f-4630-bb04-c7a583cfc527)
+![Group 10](https://github.com/user-attachments/assets/188c1973-e630-4e54-92de-d458cfb47512)
 
 </p>
 
