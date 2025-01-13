@@ -19,7 +19,7 @@ function HomePage() {
         <img src={HomeAdd} alt="광고 이미지" className="w-full max-w-[589px]" />
       </div>
 
-      <div className="flex flex-col items-center justify-center mt-20 text-center">
+      <div className="flex flex-col items-center justify-center mt-16 text-center">
         <p className="text-2xl font-bold text-white">
           시작을 원하시면
           <br />
