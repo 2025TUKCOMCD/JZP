@@ -1,4 +1,5 @@
-
+https://git-lfs.com/
+대용량 파일이 있으므로 lfs 필요. (age-model-final.pkl)
 
 ## references
 https://www.delftstack.com/ko/howto/python/opencv-haar-cascade/
@@ -16,3 +17,15 @@ https://m.blog.naver.com/samsjang/220699662173
 >눈 추적 (Haar)
 https://prlabhotelshoe.tistory.com/43
 >눈 추적(Haar+dlib)
+
+https://velog.io/@logger_j_k/PyTorch-Transformer-%EA%B5%AC%ED%98%84
+> pytorch 기반 transformer 구현 (transformer 개념에 대한 이해에 도움됨)
+
+https://ysg2997.tistory.com/11
+https://diane-space.tistory.com/333
+https://deep-eye.tistory.com/46
+https://velog.io/@dntjr1234/%EC%96%BC%EA%B5%B4%EB%82%98%EC%9D%B4%EC%98%88%EC%B8%A1age-estimation
+https://heeya-stupidbutstudying.tistory.com/entry/DL-Swin-Transformer-%EB%85%BC%EB%AC%B8-%EB%A6%AC%EB%B7%B0-Hierarchical-Vision-Transformer-using-Shifted-Windows
+
+https://puleugo.tistory.com/5
+> 모바일에서도 연동 가능한 그물망 인식
