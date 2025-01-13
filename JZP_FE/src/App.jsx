@@ -7,7 +7,7 @@ import SeniorMainPage from "./pages/SeniorMainPage.jsx";
 function App() {
   return (
     <BrowserRouter>
-      <div className="w-full h-screen grid grid-cols-[1fr_450px_1fr]">
+      <div className="w-full h-screen grid grid-cols-[1fr_450px_1fr] m-0 p-0">
         <div className="h-full"></div>
         <div className="shadow-xl h-full">
           <Routes>
