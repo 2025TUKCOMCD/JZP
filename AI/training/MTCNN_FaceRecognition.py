@@ -1,5 +1,6 @@
 #
 #   source : https://github.com/ianforme/face-prediction
+#           https://diane-space.tistory.com/333
 #   face recognition & age/sex/emotion classification model
 #   2025-01-09, Revised by chlgideh
 #
@@ -9,13 +10,28 @@ from PIL import Image
 import numpy as np
 from mtcnn import MTCNN
 import pickle
-import keras._tf_keras
+import tensorflow.python.keras as keras
+import keras.src.models as model
+import sys
+import types
+
+sys.modules['keras.engine'] = keras.engine
+sys.modules['keras.model'] = model
 
 # load face detector
 detector = MTCNN()
 
 # load the model
-age_model = pickle.load(open('models/age-model-final.pkl', 'rb'))
+age_model = pickle.load(open('training/models/age-model-final.pkl', 'rb'))
+age_model._distribution_strategy = 0
+age_model._cluster_coordinator = 0
+
+age_model._steps_per_execution = 0
+age_model._is_distributed_dataset = 0
+age_model.DistributedDatasetInterface = 0
+
+
+
 # emotion_model = pickle.load(open('./model/emotion-model-final.pkl', 'rb'))
 # sex_model = pickle.load(open('./model/sex-model-final.pkl', 'rb'))
 
@@ -50,7 +66,7 @@ def detect_face(img):
         # create predictions
         # sex_preds = sex_model.predict(center_img.reshape(1,224,224,3))[0][0]
         age_preds = age_model.predict(center_img.reshape(1,224,224,3))[0][0]
-        
+
         # convert to grey scale then predict using the emotion model
         grey_img = np.array(Image.fromarray(center_img_k).resize([48, 48]))
         # emotion_preds = emotion_model.predict(rgb2gray(grey_img).reshape(1, 48, 48, 1))

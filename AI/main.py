@@ -8,7 +8,6 @@ import cv2
 
 from datetime import datetime
 
-
 import sys
 import os
 import modulepkg
