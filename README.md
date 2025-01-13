@@ -19,7 +19,7 @@
 ### 프레임워크 및 라이브러리
 - **프론트엔드**: React (Vite 기반 프로젝트 생성)
 - **백엔드**: Spring Boot (Java 11 이상)
-- **AI 서버**: Flask (Python 3.9 이상), TensorFlow, OpenCV
+- **AI 서버**: TensorFlow, OpenCV
 - **데이터베이스**: MySQL 8.0
 
 ### 개발 도구
@@ -29,7 +29,7 @@
 
 ### 필요 도구
 - **Postman**: API 테스트
-- **Docker**: Flask/TensorFlow 컨테이너화
+- **Docker**: TensorFlow 컨테이너화
 
 ### 가상 환경 관리
 - **Python**: `conda`로 Flask와 AI 모델 의존성 관리
