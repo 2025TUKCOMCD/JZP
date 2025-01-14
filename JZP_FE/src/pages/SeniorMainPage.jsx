@@ -25,9 +25,9 @@ function SeniorMainPage() {
       </div>
 
       {/* 버튼 섹션 */}
-      <div className="flex justify-center mt-8 gap-5">
+      <div className="flex justify-center mt-12 gap-5">
         {/* 예매 내역 출력 버튼 */}
-        <button className="bg-gray-700 hover:bg-gray-600 text-white font-bold w-[200px] h-[250px] rounded-lg flex flex-col items-center justify-between py-4">
+        <button className="bg-gray-700 hover:bg-gray-600 text-white font-bold w-[200px] h-[250px] rounded-[30px] flex flex-col items-center justify-between py-4">
           <img
             src={ticketPrintIcon}
             alt="예매 내역 출력"
@@ -38,7 +38,7 @@ function SeniorMainPage() {
 
         {/* 티켓 예매 버튼 */}
         <button
-          className="bg-red-600 hover:bg-red-500 text-white font-bold w-[200px] h-[250px] rounded-lg flex flex-col items-center justify-between py-4"
+          className="bg-red-700 hover:bg-red-600 text-white font-bold w-[200px] h-[250px] rounded-[30px] flex flex-col items-center justify-between py-4"
           onClick={handleSeniorMovieSelect}
         >
           <img
@@ -50,7 +50,7 @@ function SeniorMainPage() {
         </button>
       </div>
 
-      <div className="flex justify-center mt-8">
+      <div className="flex justify-center mt-10">
         <img src={HomeAdd} alt="광고 이미지" className="w-full max-w-[589px]" />
       </div>
 

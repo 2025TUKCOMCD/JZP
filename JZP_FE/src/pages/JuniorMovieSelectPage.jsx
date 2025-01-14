@@ -1,7 +1,9 @@
+import Header from "../components/header.jsx";
+
 function JuniorMovieSelectPage() {
   return (
-    <div>
-      <div>청년층 영화 선택 화면</div>
+    <div className="bg-customBg h-screen text-white flex flex-col">
+      <Header />
     </div>
   );
 }

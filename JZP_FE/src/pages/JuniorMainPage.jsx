@@ -21,7 +21,7 @@ function JuniorMainPage() {
       </div>
 
       <div className="flex flex-col items-center justify-center mt-16 text-center">
-        <p className="text-2xl font-bold text-white">
+        <p className="text-3xl font-sbAggro font-bold text-white">
           원하시는 서비스를
           <br />
           선택해주세요.
@@ -29,9 +29,11 @@ function JuniorMainPage() {
       </div>
 
       {/* 버튼 섹션 */}
-      <div className="flex justify-center mt-12 gap-10">
+      <div className="flex justify-center mt-20 gap-10">
+        {" "}
+        {/* margin-top 조정 */}
         {/* 예매 내역 출력 버튼 */}
-        <button className="bg-gray-700 hover:bg-gray-600 text-white font-bold w-[150px] h-[200px] rounded-lg flex flex-col items-center justify-center">
+        <button className="bg-gray-700 hover:bg-gray-600 text-white font-bold w-[150px] h-[200px] rounded-[30px] flex flex-col items-center justify-center">
           <img
             src={ticketPrintIcon}
             alt="예매 내역 출력"
@@ -39,10 +41,9 @@ function JuniorMainPage() {
           />
           <span className="text-center text-lg">예매 내역 출력</span>
         </button>
-
         {/* 티켓 예매 버튼 */}
         <button
-          className="bg-red-600 hover:bg-red-500 text-white font-bold w-[150px] h-[200px] rounded-lg flex flex-col items-center justify-center"
+          className="bg-red-700 hover:bg-red-600 text-white font-bold w-[150px] h-[200px] rounded-[30px] flex flex-col items-center justify-center"
           onClick={handleJuniorMovieSelect}
         >
           <img src={ticketIcon} alt="티켓 예매" className="w-20 h-20 mb-4" />
