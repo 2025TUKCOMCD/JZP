@@ -92,6 +92,7 @@ hist=model.fit(x_train,y_train,batch_size=128,epochs=100,validation_data=(x_test
 
 res=model.evaluate(x_test,y_test,verbose=0)
 print('정확률=',res[1]*100)
+model.save("tf_model.keras")
 
 import matplotlib.pyplot as plt
 
