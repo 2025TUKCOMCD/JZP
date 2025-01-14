@@ -18,12 +18,7 @@ export default {
         customBlack: "#1A1A1A",
       },
       fontFamily: {
-        sbAggro: ["SBAggroB", "sans-serif"], // SBAggroB 폰트 추가
-      },
-      fontWeight: {
-        light: 300,
-        normal: 500,
-        bold: 800,
+        sbAggro: ["SBAggroB", "sans-serif"], // 기본 폰트로 설정
       },
     },
   },

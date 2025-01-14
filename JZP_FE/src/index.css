@@ -4,25 +4,22 @@
 
 @font-face {
   font-family: "SBAggroB";
-  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroB-Light.woff")
-    format("woff");
-  font-weight: 300; /* Light */
+  src: url("/fonts/SBAggroB-Regular.woff") format("opentype");
+  font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: "SBAggroB";
-  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroB-Regular.woff")
-    format("woff");
-  font-weight: 500; /* Regular */
+  src: url("/fonts/SBAggroB-Bold.woff") format("opentype");
+  font-weight: bold;
   font-style: normal;
 }
 
 @font-face {
   font-family: "SBAggroB";
-  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroB-Bold.woff")
-    format("woff");
-  font-weight: 800; /* Bold */
+  src: url("/fonts/SBAggroB-light.woff") format("opentype");
+  font-weight: light;
   font-style: normal;
 }
 
