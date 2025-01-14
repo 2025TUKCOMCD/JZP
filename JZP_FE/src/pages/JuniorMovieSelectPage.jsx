@@ -91,7 +91,7 @@ function JuniorMovieSelectPage() {
                       : "border-gray-500 text-white"
                   }`}
                 >
-                  <div className="text-xs font-bold leading-tight">
+                  <div className="text-xs font-bold leading-tight mt-1">
                     {time.time}
                   </div>
                   <div className="flex justify-between w-full text-[10px] mt-1 px-2">
