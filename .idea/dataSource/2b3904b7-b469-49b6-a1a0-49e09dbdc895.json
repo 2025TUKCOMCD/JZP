@@ -1,0 +1,397 @@
+{
+  "name" : null,
+  "CHARSETS" : [ {
+    "CHARSET_NAME" : "armscii8",
+    "DISPLAY_NAME" : "armscii8",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 1
+  }, {
+    "CHARSET_NAME" : "ascii",
+    "DISPLAY_NAME" : "ascii",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 1
+  }, {
+    "CHARSET_NAME" : "big5",
+    "DISPLAY_NAME" : "big5",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 2
+  }, {
+    "CHARSET_NAME" : "binary",
+    "DISPLAY_NAME" : "binary",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 1
+  }, {
+    "CHARSET_NAME" : "cp1250",
+    "DISPLAY_NAME" : "cp1250",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 1
+  }, {
+    "CHARSET_NAME" : "cp1251",
+    "DISPLAY_NAME" : "cp1251",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 1
+  }, {
+    "CHARSET_NAME" : "cp1256",
+    "DISPLAY_NAME" : "cp1256",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 1
+  }, {
+    "CHARSET_NAME" : "cp1257",
+    "DISPLAY_NAME" : "cp1257",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 1
+  }, {
+    "CHARSET_NAME" : "cp850",
+    "DISPLAY_NAME" : "cp850",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 1
+  }, {
+    "CHARSET_NAME" : "cp852",
+    "DISPLAY_NAME" : "cp852",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 1
+  }, {
+    "CHARSET_NAME" : "cp866",
+    "DISPLAY_NAME" : "cp866",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 1
+  }, {
+    "CHARSET_NAME" : "cp932",
+    "DISPLAY_NAME" : "cp932",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 2
+  }, {
+    "CHARSET_NAME" : "dec8",
+    "DISPLAY_NAME" : "dec8",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 1
+  }, {
+    "CHARSET_NAME" : "eucjpms",
+    "DISPLAY_NAME" : "eucjpms",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 3
+  }, {
+    "CHARSET_NAME" : "euckr",
+    "DISPLAY_NAME" : "euckr",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 2
+  }, {
+    "CHARSET_NAME" : "gb18030",
+    "DISPLAY_NAME" : "gb18030",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 4
+  }, {
+    "CHARSET_NAME" : "gb2312",
+    "DISPLAY_NAME" : "gb2312",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 2
+  }, {
+    "CHARSET_NAME" : "gbk",
+    "DISPLAY_NAME" : "gbk",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 2
+  }, {
+    "CHARSET_NAME" : "geostd8",
+    "DISPLAY_NAME" : "geostd8",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 1
+  }, {
+    "CHARSET_NAME" : "greek",
+    "DISPLAY_NAME" : "greek",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 1
+  }, {
+    "CHARSET_NAME" : "hebrew",
+    "DISPLAY_NAME" : "hebrew",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 1
+  }, {
+    "CHARSET_NAME" : "hp8",
+    "DISPLAY_NAME" : "hp8",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 1
+  }, {
+    "CHARSET_NAME" : "keybcs2",
+    "DISPLAY_NAME" : "keybcs2",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 1
+  }, {
+    "CHARSET_NAME" : "koi8r",
+    "DISPLAY_NAME" : "koi8r",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 1
+  }, {
+    "CHARSET_NAME" : "koi8u",
+    "DISPLAY_NAME" : "koi8u",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 1
+  }, {
+    "CHARSET_NAME" : "latin1",
+    "DISPLAY_NAME" : "latin1",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 1
+  }, {
+    "CHARSET_NAME" : "latin2",
+    "DISPLAY_NAME" : "latin2",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 1
+  }, {
+    "CHARSET_NAME" : "latin5",
+    "DISPLAY_NAME" : "latin5",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 1
+  }, {
+    "CHARSET_NAME" : "latin7",
+    "DISPLAY_NAME" : "latin7",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 1
+  }, {
+    "CHARSET_NAME" : "macce",
+    "DISPLAY_NAME" : "macce",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 1
+  }, {
+    "CHARSET_NAME" : "macroman",
+    "DISPLAY_NAME" : "macroman",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 1
+  }, {
+    "CHARSET_NAME" : "sjis",
+    "DISPLAY_NAME" : "sjis",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 2
+  }, {
+    "CHARSET_NAME" : "swe7",
+    "DISPLAY_NAME" : "swe7",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 1
+  }, {
+    "CHARSET_NAME" : "tis620",
+    "DISPLAY_NAME" : "tis620",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 1
+  }, {
+    "CHARSET_NAME" : "ucs2",
+    "DISPLAY_NAME" : "ucs2",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 2
+  }, {
+    "CHARSET_NAME" : "ujis",
+    "DISPLAY_NAME" : "ujis",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 3
+  }, {
+    "CHARSET_NAME" : "utf16",
+    "DISPLAY_NAME" : "utf16",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 4
+  }, {
+    "CHARSET_NAME" : "utf16le",
+    "DISPLAY_NAME" : "utf16le",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 4
+  }, {
+    "CHARSET_NAME" : "utf32",
+    "DISPLAY_NAME" : "utf32",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 4
+  }, {
+    "CHARSET_NAME" : "utf8mb3",
+    "DISPLAY_NAME" : "utf8mb3",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 3
+  }, {
+    "CHARSET_NAME" : "utf8mb4",
+    "DISPLAY_NAME" : "utf8mb4",
+    "IS_DEPRECATED" : "N",
+    "MAX_LENGTH" : 4
+  } ],
+  "SYSTEM_PRIVILEGES" : [ {
+    "PRIVILEGE_NAME" : "ALTER"
+  }, {
+    "PRIVILEGE_NAME" : "ALTER ROUTINE"
+  }, {
+    "PRIVILEGE_NAME" : "APPLICATION_PASSWORD_ADMIN"
+  }, {
+    "PRIVILEGE_NAME" : "AUDIT_ABORT_EXEMPT"
+  }, {
+    "PRIVILEGE_NAME" : "AUDIT_ADMIN"
+  }, {
+    "PRIVILEGE_NAME" : "AUTHENTICATION_POLICY_ADMIN"
+  }, {
+    "PRIVILEGE_NAME" : "BACKUP_ADMIN"
+  }, {
+    "PRIVILEGE_NAME" : "BINLOG_ADMIN"
+  }, {
+    "PRIVILEGE_NAME" : "BINLOG_ENCRYPTION_ADMIN"
+  }, {
+    "PRIVILEGE_NAME" : "CLONE_ADMIN"
+  }, {
+    "PRIVILEGE_NAME" : "CONNECTION_ADMIN"
+  }, {
+    "PRIVILEGE_NAME" : "CREATE"
+  }, {
+    "PRIVILEGE_NAME" : "CREATE ROLE"
+  }, {
+    "PRIVILEGE_NAME" : "CREATE ROUTINE"
+  }, {
+    "PRIVILEGE_NAME" : "CREATE TABLESPACE"
+  }, {
+    "PRIVILEGE_NAME" : "CREATE TEMPORARY TABLES"
+  }, {
+    "PRIVILEGE_NAME" : "CREATE USER"
+  }, {
+    "PRIVILEGE_NAME" : "CREATE VIEW"
+  }, {
+    "PRIVILEGE_NAME" : "DELETE"
+  }, {
+    "PRIVILEGE_NAME" : "DROP"
+  }, {
+    "PRIVILEGE_NAME" : "DROP ROLE"
+  }, {
+    "PRIVILEGE_NAME" : "ENCRYPTION_KEY_ADMIN"
+  }, {
+    "PRIVILEGE_NAME" : "EVENT"
+  }, {
+    "PRIVILEGE_NAME" : "EXECUTE"
+  }, {
+    "PRIVILEGE_NAME" : "FILE"
+  }, {
+    "PRIVILEGE_NAME" : "FIREWALL_EXEMPT"
+  }, {
+    "PRIVILEGE_NAME" : "FLUSH_OPTIMIZER_COSTS"
+  }, {
+    "PRIVILEGE_NAME" : "FLUSH_STATUS"
+  }, {
+    "PRIVILEGE_NAME" : "FLUSH_TABLES"
+  }, {
+    "PRIVILEGE_NAME" : "FLUSH_USER_RESOURCES"
+  }, {
+    "PRIVILEGE_NAME" : "GROUP_REPLICATION_ADMIN"
+  }, {
+    "PRIVILEGE_NAME" : "GROUP_REPLICATION_STREAM"
+  }, {
+    "PRIVILEGE_NAME" : "INDEX"
+  }, {
+    "PRIVILEGE_NAME" : "INNODB_REDO_LOG_ARCHIVE"
+  }, {
+    "PRIVILEGE_NAME" : "INNODB_REDO_LOG_ENABLE"
+  }, {
+    "PRIVILEGE_NAME" : "INSERT"
+  }, {
+    "PRIVILEGE_NAME" : "LOCK TABLES"
+  }, {
+    "PRIVILEGE_NAME" : "PASSWORDLESS_USER_ADMIN"
+  }, {
+    "PRIVILEGE_NAME" : "PERSIST_RO_VARIABLES_ADMIN"
+  }, {
+    "PRIVILEGE_NAME" : "PROCESS"
+  }, {
+    "PRIVILEGE_NAME" : "REFERENCES"
+  }, {
+    "PRIVILEGE_NAME" : "RELOAD"
+  }, {
+    "PRIVILEGE_NAME" : "REPLICATION CLIENT"
+  }, {
+    "PRIVILEGE_NAME" : "REPLICATION SLAVE"
+  }, {
+    "PRIVILEGE_NAME" : "REPLICATION_APPLIER"
+  }, {
+    "PRIVILEGE_NAME" : "REPLICATION_SLAVE_ADMIN"
+  }, {
+    "PRIVILEGE_NAME" : "RESOURCE_GROUP_ADMIN"
+  }, {
+    "PRIVILEGE_NAME" : "RESOURCE_GROUP_USER"
+  }, {
+    "PRIVILEGE_NAME" : "ROLE_ADMIN"
+  }, {
+    "PRIVILEGE_NAME" : "SELECT"
+  }, {
+    "PRIVILEGE_NAME" : "SENSITIVE_VARIABLES_OBSERVER"
+  }, {
+    "PRIVILEGE_NAME" : "SERVICE_CONNECTION_ADMIN"
+  }, {
+    "PRIVILEGE_NAME" : "SESSION_VARIABLES_ADMIN"
+  }, {
+    "PRIVILEGE_NAME" : "SET_USER_ID"
+  }, {
+    "PRIVILEGE_NAME" : "SHOW DATABASES"
+  }, {
+    "PRIVILEGE_NAME" : "SHOW VIEW"
+  }, {
+    "PRIVILEGE_NAME" : "SHOW_ROUTINE"
+  }, {
+    "PRIVILEGE_NAME" : "SHUTDOWN"
+  }, {
+    "PRIVILEGE_NAME" : "SUPER"
+  }, {
+    "PRIVILEGE_NAME" : "SYSTEM_USER"
+  }, {
+    "PRIVILEGE_NAME" : "SYSTEM_VARIABLES_ADMIN"
+  }, {
+    "PRIVILEGE_NAME" : "TABLE_ENCRYPTION_ADMIN"
+  }, {
+    "PRIVILEGE_NAME" : "TELEMETRY_LOG_ADMIN"
+  }, {
+    "PRIVILEGE_NAME" : "TRIGGER"
+  }, {
+    "PRIVILEGE_NAME" : "UPDATE"
+  }, {
+    "PRIVILEGE_NAME" : "USAGE"
+  }, {
+    "PRIVILEGE_NAME" : "XA_RECOVER_ADMIN"
+  } ],
+  "SCHEMAS" : [ {
+    "SCHEMA_NAME" : "information_schema",
+    "IS_PUBLIC" : "N",
+    "IS_SYSTEM" : "Y",
+    "IS_EMPTY" : "N"
+  }, {
+    "SCHEMA_NAME" : "jzp",
+    "IS_PUBLIC" : "N",
+    "IS_SYSTEM" : "N",
+    "IS_EMPTY" : "N"
+  }, {
+    "SCHEMA_NAME" : "mysql",
+    "IS_PUBLIC" : "N",
+    "IS_SYSTEM" : "N",
+    "IS_EMPTY" : "N"
+  }, {
+    "SCHEMA_NAME" : "performance_schema",
+    "IS_PUBLIC" : "N",
+    "IS_SYSTEM" : "N",
+    "IS_EMPTY" : "N"
+  }, {
+    "SCHEMA_NAME" : "sakila",
+    "IS_PUBLIC" : "N",
+    "IS_SYSTEM" : "N",
+    "IS_EMPTY" : "N"
+  }, {
+    "SCHEMA_NAME" : "sys",
+    "IS_PUBLIC" : "N",
+    "IS_SYSTEM" : "N",
+    "IS_EMPTY" : "N"
+  }, {
+    "SCHEMA_NAME" : "world",
+    "IS_PUBLIC" : "N",
+    "IS_SYSTEM" : "N",
+    "IS_EMPTY" : "N"
+  } ],
+  "USERS" : [ {
+    "USER_NAME" : "'mysql.infoschema'@'localhost'",
+    "IS_EXPIRED" : "N",
+    "IS_LOCKED" : "N"
+  }, {
+    "USER_NAME" : "'mysql.session'@'localhost'",
+    "IS_EXPIRED" : "N",
+    "IS_LOCKED" : "N"
+  }, {
+    "USER_NAME" : "'mysql.sys'@'localhost'",
+    "IS_EXPIRED" : "N",
+    "IS_LOCKED" : "N"
+  }, {
+    "USER_NAME" : "'root'@'localhost'",
+    "IS_EXPIRED" : "N",
+    "IS_LOCKED" : "N"
+  } ]
+}
