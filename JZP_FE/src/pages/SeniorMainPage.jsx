@@ -27,24 +27,24 @@ function SeniorMainPage() {
       {/* 버튼 섹션 */}
       <div className="flex justify-center mt-8 gap-5">
         {/* 예매 내역 출력 버튼 */}
-        <button className="bg-gray-700 hover:bg-gray-600 text-white font-bold w-[200px] h-[250px] rounded-lg flex flex-col items-center justify-center">
+        <button className="bg-gray-700 hover:bg-gray-600 text-white font-bold w-[200px] h-[250px] rounded-lg flex flex-col items-center justify-between py-4">
           <img
             src={ticketPrintIcon}
             alt="예매 내역 출력"
-            className="w-32 h-32 mb-10" // 아이콘 크기 증가
+            className="w-32 h-32 mt-6"
           />
           <span className="text-center text-3xl">예매 내역 출력</span>
         </button>
 
         {/* 티켓 예매 버튼 */}
         <button
-          className="bg-red-600 hover:bg-red-500 text-white font-bold w-[200px] h-[250px] rounded-lg flex flex-col items-center justify-center"
+          className="bg-red-600 hover:bg-red-500 text-white font-bold w-[200px] h-[250px] rounded-lg flex flex-col items-center justify-between py-4"
           onClick={handleSeniorMovieSelect}
         >
           <img
             src={ticketIcon}
             alt="티켓 예매"
-            className="w-24 h-24 mb-10" // 아이콘 크기 유지
+            className="w-28 h-28 mt-8" // 아이콘 아래로 내림
           />
           <span className="text-center text-3xl">티켓 예매</span>
         </button>
