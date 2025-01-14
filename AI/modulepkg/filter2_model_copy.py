@@ -78,7 +78,7 @@ train_size = int(0.8 * dataset_size)
 train_dataset = dataset.take(train_size)
 validation_dataset = dataset.skip(train_size)
 
-batch_size = 16  # 배치 크기 조정
+batch_size = 32  # 배치 크기 조정
 train_dataset = prepare_for_training(train_dataset, batch_size)
 validation_dataset = prepare_for_training(validation_dataset, batch_size)
 
