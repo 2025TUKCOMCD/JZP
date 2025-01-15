@@ -18,11 +18,7 @@ export default {
         customBlack: "#1A1A1A",
       },
       fontFamily: {
-        maru: ["MaruBuri", "sans-serif"],
-        maruSemiBold: ["MaruBuriSemiBold", "sans-serif"],
-        maruBold: ["MaruBuriBold", "sans-serif"],
-        maruLight: ["MaruBuriLight", "sans-serif"],
-        maruExtraLight: ["MaruBuriExtraLight", "sans-serif"],
+        sbAggro: ["SBAggroB", "sans-serif"], // 기본 폰트로 설정
       },
     },
   },
