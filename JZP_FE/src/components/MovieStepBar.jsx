@@ -11,13 +11,13 @@ const MovieSelectBar = () => {
       case "/juniortMovieSelect":
         setCurrentStep(1);
         break;
-      case "/juniorSeatSelect":
+      case "/juniorSeat":
         setCurrentStep(2);
         break;
       case "/juniorPay":
         setCurrentStep(3);
         break;
-      case "/juniorBookHistory":
+      case "/juniorBooking":
         setCurrentStep(4);
         break;
       default:
