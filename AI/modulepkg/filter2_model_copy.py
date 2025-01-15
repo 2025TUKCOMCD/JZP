@@ -8,49 +8,85 @@
 
 import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+# from tensorflow.keras.mixed_precision import experimental as mixed_precision
+from tensorflow.python.keras.mixed_precision import policy as pc
+import tensorflow.python.keras.callbacks as cb
+
+# policy = pc.Policy('float32') # when uses CPU
+policy = pc.Policy('mixed_float16')
+pc.set_global_policy(policy)
+
 import numpy as np
+import tensorflow
+
+from keras.api.preprocessing.image import img_to_array, load_img
+
+import tensorflow as tf
+# from keras.api.preprocessing.image import Image
+# from tensorflow import ImageDataGenerator
+import keras
+from sklearn.model_selection import train_test_split
 
 image_directory = 'AI/training/All-Age-Faces_Dataset/aglined_faces'
+img_siz=(32,32,3)               # 영상의 크기
+# img_siz = (224, 224, 3)   #value error (need to much memory)
 
-def load_custom_dataset(image_directory, img_size):
-    images = []
+def parse_image(filename, img_size):
+    image = tf.io.read_file(filename)
+    image = tf.image.decode_jpeg(image, channels=3)
+    image = tf.image.resize(image, img_size[:2])
+    image /= 255.0  # 정규화
+    return image
+
+def extract_age_from_filename(filename):
+    age = int(filename[-6:-4])
+    if 2 <= age <= 19:
+        return 0
+    elif 20 <= age <= 60:
+        return 1
+    else:
+        return 2
+
+def load_data(image_directory, img_size):
+    filenames = []
     labels = []
 
     for filename in os.listdir(image_directory):
         if filename.endswith('.jpg'):
-            # 이미지 파일 경로
-            img_path = os.path.join(image_directory, filename)
-            
-            # 이미지 로드 및 배열로 변환
-            img = load_img(img_path, target_size=img_size[:2])  # 이미지 크기 조정
-            img_array = img_to_array(img)
-            images.append(img_array)
-            
-            # 파일 이름에서 레이블(나이) 추출 및 분류
-            age = int(filename[-6:-4])
-            if 2 <= age <= 19:
-                label = 0
-            elif 20 <= age <= 60:
-                label = 1
-            else:
-                label = 2
+            full_path = os.path.join(image_directory, filename)
+            filenames.append(full_path)
+            label = extract_age_from_filename(filename)
             labels.append(label)
 
-    # numpy 배열로 변환
-    images = np.array(images, dtype='float32')
-    labels = np.array(labels, dtype='int')
+    filenames = tf.constant(filenames)
+    labels = tf.constant(labels)
 
-    # print(f"Loaded {len(images)} images.")
-    # print(f"Loaded {len(labels)} labels.")
+    dataset = tf.data.Dataset.from_tensor_slices((filenames, labels))
+    dataset = dataset.map(lambda x, y: (parse_image(x, img_size), y), num_parallel_calls=tf.data.experimental.AUTOTUNE)
+    return dataset
 
-    return images, labels
+dataset = load_data(image_directory, img_siz)
+
+def prepare_for_training(ds, batch_size, shuffle_buffer_size=1000):
+    ds = ds.shuffle(buffer_size=shuffle_buffer_size)
+    ds = ds.cache()  # 데이터 캐싱
+    ds = ds.batch(batch_size)
+    ds = ds.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
+    return ds
+
+# 데이터셋을 훈련 및 검증 세트로 분할
+dataset_size = sum(1 for _ in dataset)
+train_size = int(0.8 * dataset_size)
+train_dataset = dataset.take(train_size)
+validation_dataset = dataset.skip(train_size)
+
+batch_size = 32  # 배치 크기 조정
+train_dataset = prepare_for_training(train_dataset, batch_size)
+validation_dataset = prepare_for_training(validation_dataset, batch_size)
+
+###################33
 
 
-
-import tensorflow as tf
-from keras.api.preprocessing.image import img_to_array, load_img
-import keras
-from sklearn.model_selection import train_test_split
 
 # from tensorflow import keras
 # sys.path.append('C:\\Users\\82106\\Anaconda3\\Lib\\site-packages')
@@ -66,19 +102,14 @@ from keras import *
 
 
 n_class=3                      # 부류 수
-# img_siz=(32,32,3)               # 영상의 크기
-img_siz = (224, 224, 3)
-
-
 patch_siz=4                     # 패치 크기
 p2=(img_siz[0]//patch_siz)**2   # 패치 개수
 d_model=64                      # 임베딩 벡터 차원
 h=8                             # 헤드 개수
 N=6                             # 인코더 블록의 개수
 
-x_data, y_data = load_custom_dataset(image_directory, img_siz)
-x_data /= 255.0
-x_train, x_test, y_train, y_test = train_test_split(x_data, y_data, test_size=0.2, random_state=42)
+# train_generator, validation_generator = load_data(image_directory, img_siz)
+# x_train, x_test, y_train, y_test = train_test_split(x_data, y_data, test_size=0.2, random_state=42)
 
 class Patches(layers.Layer):
     def __init__(self, patch_size):
@@ -136,15 +167,42 @@ def create_vit_classifier():
 
 
 model=create_vit_classifier()
-model.layers[1].adapt(x_train)
 
-#Adam, SparseCategoricalCrossentropy 수정정
-model.compile(optimizer=optimizers.Adam(),loss=losses.SparseCategoricalCrossentropy(from_logits=True),metrics=['accuracy'])
-hist=model.fit(x_train,y_train,batch_size=128,epochs=100,validation_data=(x_test,y_test),verbose=1)
+checkpoint = cb.ModelCheckpoint(
+    filepath='tf_AAFD.keras', # 모델을 저장할 파일명
+    monitor='val_accuracy', # 검증 정확도를 모니터링
+    save_best_only=True, # 가장 높은 정확도를 가진 모델만 저장
+    mode='max', # 높은 정확도가 더 좋은 것이므로 'max'
+    verbose=1 # 진행 상황을 출력
+)
 
-res=model.evaluate(x_test,y_test,verbose=0)
+#Adam, SparseCategoricalCrossentropy 수정
+model.compile(optimizer=optimizers.Adam(),
+              loss=losses.SparseCategoricalCrossentropy(from_logits=False),
+              metrics=['accuracy']
+)
+
+# batch size revising
+'''
+hist=model.fit(train_dataset,
+               batch_size=32,
+               epochs=40,
+               validation_data=validation_dataset,
+               verbose=1,
+               callbacks=[checkpoint]
+)
+'''
+
+hist=model.fit(train_dataset,
+               batch_size=32,
+               epochs=40,
+               validation_data=validation_dataset,
+               verbose=1
+)
+
+res=model.evaluate(validation_dataset,verbose=0)
 print('정확률=',res[1]*100)
-# model.save("tf_model.keras")
+model.save("tf_AAFD")
 
 import matplotlib.pyplot as plt
 

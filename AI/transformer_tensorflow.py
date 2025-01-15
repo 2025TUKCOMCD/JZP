@@ -1,56 +1,12 @@
 #
-#   2nd filter (age classification) Transfer-Learning based
-#   2025-01-14, chlgideh
-#
 #   source : 11-1.py
 #   Revised by chlgideh
 #
 
 import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
-import numpy as np
-
-image_directory = 'AI/training/All-Age-Faces_Dataset/aglined_faces'
-
-def load_custom_dataset(image_directory, img_size):
-    images = []
-    labels = []
-
-    for filename in os.listdir(image_directory):
-        if filename.endswith('.jpg'):
-            # 이미지 파일 경로
-            img_path = os.path.join(image_directory, filename)
-            
-            # 이미지 로드 및 배열로 변환
-            img = load_img(img_path, target_size=img_size[:2])  # 이미지 크기 조정
-            img_array = img_to_array(img)
-            images.append(img_array)
-            
-            # 파일 이름에서 레이블(나이) 추출 및 분류
-            age = int(filename[-6:-4])
-            if 2 <= age <= 19:
-                label = 0
-            elif 20 <= age <= 60:
-                label = 1
-            else:
-                label = 2
-            labels.append(label)
-
-    # numpy 배열로 변환
-    images = np.array(images, dtype='float32')
-    labels = np.array(labels, dtype='int')
-
-    # print(f"Loaded {len(images)} images.")
-    # print(f"Loaded {len(labels)} labels.")
-
-    return images, labels
-
-
-
 import tensorflow as tf
-from keras.api.preprocessing.image import img_to_array, load_img
 import keras
-from sklearn.model_selection import train_test_split
 
 # from tensorflow import keras
 # sys.path.append('C:\\Users\\82106\\Anaconda3\\Lib\\site-packages')
@@ -61,24 +17,16 @@ from sklearn.model_selection import train_test_split
 from keras import *
 # import keras.src.optimizers.adam
 
-# (x_train,y_train),(x_test,y_test)=keras.datasets.cifar10.load_data()
+(x_train,y_train),(x_test,y_test)=keras.datasets.cifar10.load_data()
 
-
-
-n_class=3                      # 부류 수
-# img_siz=(32,32,3)               # 영상의 크기
-img_siz = (224, 224, 3)
-
+n_class=10                      # 부류 수
+img_siz=(32,32,3)               # 영상의 크기
 
 patch_siz=4                     # 패치 크기
 p2=(img_siz[0]//patch_siz)**2   # 패치 개수
 d_model=64                      # 임베딩 벡터 차원
 h=8                             # 헤드 개수
 N=6                             # 인코더 블록의 개수
-
-x_data, y_data = load_custom_dataset(image_directory, img_siz)
-x_data /= 255.0
-x_train, x_test, y_train, y_test = train_test_split(x_data, y_data, test_size=0.2, random_state=42)
 
 class Patches(layers.Layer):
     def __init__(self, patch_size):
@@ -144,7 +92,7 @@ hist=model.fit(x_train,y_train,batch_size=128,epochs=100,validation_data=(x_test
 
 res=model.evaluate(x_test,y_test,verbose=0)
 print('정확률=',res[1]*100)
-# model.save("tf_model.keras")
+model.save("tf_model.keras")
 
 import matplotlib.pyplot as plt
 
