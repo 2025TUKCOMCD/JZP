@@ -11,6 +11,8 @@ os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 # from tensorflow.keras.mixed_precision import experimental as mixed_precision
 from tensorflow.python.keras.mixed_precision import policy as pc
 import tensorflow.python.keras.callbacks as cb
+
+# policy = pc.Policy('float32') # when uses CPU
 policy = pc.Policy('mixed_float16')
 pc.set_global_policy(policy)
 
@@ -181,6 +183,7 @@ model.compile(optimizer=optimizers.Adam(),
 )
 
 # batch size revising
+'''
 hist=model.fit(train_dataset,
                batch_size=32,
                epochs=40,
@@ -188,10 +191,18 @@ hist=model.fit(train_dataset,
                verbose=1,
                callbacks=[checkpoint]
 )
+'''
+
+hist=model.fit(train_dataset,
+               batch_size=32,
+               epochs=40,
+               validation_data=validation_dataset,
+               verbose=1
+)
 
 res=model.evaluate(validation_dataset,verbose=0)
 print('정확률=',res[1]*100)
-# model.save("tf_AAFD.keras")
+model.save("tf_AAFD")
 
 import matplotlib.pyplot as plt
 
