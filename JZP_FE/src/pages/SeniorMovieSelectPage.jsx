@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Header from "../components/header.jsx";
 import { useNavigate } from "react-router-dom";
-import StepBar from "../components/movieStepBar.jsx";
+import StepBar from "../components/MovieStepBar2.jsx";
 import DateSelectBar from "../components/dateSelectBar2.jsx";
 import movie1Image from "../assets/images/movie1.png";
 import movie2Image from "../assets/images/movie2.png";
