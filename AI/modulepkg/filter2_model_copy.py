@@ -1,5 +1,5 @@
 #
-#   2nd filter (age classification) Transfer-Learning based
+#   2nd filter (age classification) Transformer (accuracy ~76%)
 #   2025-01-14, chlgideh
 #
 #   source : 11-1.py

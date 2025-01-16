@@ -18,7 +18,7 @@ from tensorflow.python.keras import engine
 import keras.src.models as model
 import sys
 import types
-from tensorflow.distribute
+# from tensorflow.distribute
 
 sys.modules['keras.engine'] = engine
 # sys.modules['keras.model'] = model
@@ -27,7 +27,7 @@ sys.modules['keras.engine'] = engine
 detector = MTCNN()
 
 # load the model
-age_model = pickle.load(open('training/models/age-model-final.pkl', 'rb'))
+age_model = pickle.load(open('AI/training/models/age-model-final.pkl', 'rb'))
 
 '''
 age_model._distribution_strategy = 0
