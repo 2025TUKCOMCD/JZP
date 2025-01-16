@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useEffect } from "react";
 
-// eslint-disable-next-line react/prop-types
 function SeatSelector({
   totalSeats,
   selectedSeats,
