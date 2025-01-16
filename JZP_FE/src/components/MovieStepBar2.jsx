@@ -1,23 +1,23 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-const MovieSelectBar = () => {
+const MovieSelectBar2 = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const location = useLocation();
 
   useEffect(() => {
     // Set currentStep based on the current pathname
     switch (location.pathname) {
-      case "/juniortMovieSelect":
+      case "/seniortMovieSelect":
         setCurrentStep(1);
         break;
-      case "/juniorSeat":
+      case "/seniorSeat":
         setCurrentStep(2);
         break;
-      case "/juniorPay":
+      case "/seniorPay":
         setCurrentStep(3);
         break;
-      case "/juniorBooking":
+      case "/seniorBooking":
         setCurrentStep(4);
         break;
       default:
@@ -83,4 +83,4 @@ const MovieSelectBar = () => {
   );
 };
 
-export default MovieSelectBar;
+export default MovieSelectBar2;
