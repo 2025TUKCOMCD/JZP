@@ -7,11 +7,11 @@ function Pay() {
   };
 
   return (
-    <div className="flex justify-center mt-6">
+    <div className="flex justify-center mt-8">
       <button
         onClick={handleButtonClick}
-        className="flex items-center bg-customYellow text-black px-6 py-6 rounded-lg font-semibold hover:opacity-90 transition duration-300"
-        style={{ width: "400px" }} // 버튼 폭을 더 크게 설정
+        className="flex items-center bg-customYellow text-black px-6 py-5 rounded-lg font-semibold hover:opacity-90 transition duration-300"
+        style={{ width: "350px" }} // 버튼 폭을 더 크게 설정
       >
         {/* 아이콘 */}
         <img
