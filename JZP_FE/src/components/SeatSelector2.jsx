@@ -1,21 +1,11 @@
 /* eslint-disable react/prop-types */
 import { useEffect } from "react";
 
-function SeatSelector({
-  totalSeats,
-  selectedSeats,
-  setSelectedSeats,
-  onSeatClickWithoutPeople,
-}) {
+function SeatSelector2({ totalSeats, selectedSeats, setSelectedSeats }) {
   const rows = ["A", "B", "C", "D", "E", "F"];
   const cols = 12;
 
   const handleSeatClick = (row, col) => {
-    if (totalSeats === 0) {
-      onSeatClickWithoutPeople(); // 인원 수가 없으면 모달 호출
-      return;
-    }
-
     const seat = `${row}${col}`;
     if (selectedSeats.includes(seat)) {
       setSelectedSeats(selectedSeats.filter((s) => s !== seat));
@@ -38,12 +28,18 @@ function SeatSelector({
   };
 
   return (
-    <div className="mt-8">
+    <div className="mt-6">
+      <div className="flex justify-center mb-6">
+        <p className="text-[18px] text-white">
+          인원 수만큼 좌석 선택 후 결제하기 버튼을 눌러주세요.
+        </p>
+      </div>
       <div className="text-center">
         {/* SCREEN 텍스트 */}
-        <div className="w-[80%] mx-auto bg-gray-500 mb-4 py-1">
-          <h2 className="text-white text-sm font-bold tracking-widest">
-            S C R E E N
+        <div className="w-[80%] mx-auto bg-screenGray mb-6 py-1">
+          <h2 className="text-white text-[20px] font-bold">
+            <span className="mr-[70px]">화</span>
+            <span>면</span>
           </h2>
         </div>
 
@@ -62,7 +58,7 @@ function SeatSelector({
                   return (
                     <button
                       key={`${row}${colIndex}`}
-                      className={`w-6 h-6 text-xs flex items-center justify-center rounded-t-md ${
+                      className={`w-7 h-7 text-xs flex items-center justify-center rounded-t-md ${
                         status === "available"
                           ? "bg-white text-black"
                           : status === "reserved"
@@ -104,4 +100,4 @@ function SeatSelector({
   );
 }
 
-export default SeatSelector;
+export default SeatSelector2;

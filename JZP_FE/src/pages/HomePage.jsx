@@ -29,18 +29,16 @@ function HomePage() {
 
       <div className="flex justify-center mt-[auto] mb-[10%]">
         <button
-          className="bg-red-700 hover:bg-red-600 text-white font-bold w-[70%] max-w-[822px] h-[120px] md:h-[140px] rounded-[30px] flex items-center justify-center relative"
+          className="bg-red-700 hover:bg-red-600 text-white font-bold w-[70%] max-w-[822px] h-[140px] rounded-[30px] flex items-center justify-center relative"
           onClick={handleStartClick}
         >
           <div className="flex items-center">
             <img
               src={TouchIcon}
               alt="터치 아이콘"
-              className="w-[70px] h-[70px] md:w-[100px] md:h-[100px] relative ml-[-20px]" /* 아이콘 왼쪽 이동 */
+              className="w-[100px] h-[100px] relative ml-[-20px]"
             />
-            <span className="font-sbAggro font-bold text-3xl md:text-5xl">
-              시작하기
-            </span>
+            <span className="font-sbAggro font-bold text-5xl">시작하기</span>
           </div>
         </button>
       </div>
