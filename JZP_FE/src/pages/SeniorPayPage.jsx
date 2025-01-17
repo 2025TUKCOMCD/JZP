@@ -57,7 +57,7 @@ function SeniorPayPage() {
                     <p className="font-semibold text-[16px] text-textGray mt-1">
                       {item.label}
                     </p>
-                    <p className="text-[18px] font-medium">{item.value}</p>
+                    <p className="text-[18px] font-medium mt-1">{item.value}</p>
                   </div>
                 ))}
               </div>
@@ -72,7 +72,7 @@ function SeniorPayPage() {
                     <p className="font-semibold text-[16px] text-textGray mt-1">
                       {item.label}
                     </p>
-                    <p className="text-[18px] font-medium">{item.value}</p>
+                    <p className="text-[18px] font-medium mt-1">{item.value}</p>
                   </div>
                 ))}
               </div>
