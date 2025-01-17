@@ -16,6 +16,8 @@ export default {
         screenGray: "#9A9A9A",
         keyPadGray: "#8087A1",
         customBlack: "#1A1A1A",
+        textGray: "#B4B4B4",
+        kakaoPayGray: "#7B7B7B",
       },
       fontFamily: {
         sbAggro: ["SBAggroB", "sans-serif"], // 기본 폰트로 설정
