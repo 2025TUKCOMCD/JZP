@@ -34,7 +34,7 @@ function JuniorPayPage() {
               <img
                 src={movieImage}
                 alt="Movie Poster"
-                className="w-3/4 h-auto mx-auto" // 사진 크기를 줄임
+                className="w-3/4 h-auto mx-auto"
               />
             </div>
 
