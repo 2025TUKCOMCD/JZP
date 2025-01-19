@@ -3,34 +3,39 @@
 #           https://diane-space.tistory.com/333
 #   face recognition & age/sex/emotion classification model
 #   2025-01-09, Revised by chlgideh
+#   dead code.
 #
 
+import os
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import cv2
 from PIL import Image
 import numpy as np
 from mtcnn import MTCNN
 import pickle
-import tensorflow.python.keras as keras
+from keras import *
+from tensorflow.python.keras import engine
 import keras.src.models as model
 import sys
 import types
+# from tensorflow.distribute
 
-sys.modules['keras.engine'] = keras.engine
-sys.modules['keras.model'] = model
+sys.modules['keras.engine'] = engine
+# sys.modules['keras.model'] = model
 
 # load face detector
 detector = MTCNN()
 
 # load the model
-age_model = pickle.load(open('training/models/age-model-final.pkl', 'rb'))
+age_model = pickle.load(open('AI/training/models/age-model-final.pkl', 'rb'))
+
+'''
 age_model._distribution_strategy = 0
 age_model._cluster_coordinator = 0
-
 age_model._steps_per_execution = 0
 age_model._is_distributed_dataset = 0
 age_model.DistributedDatasetInterface = 0
-
-
+'''
 
 # emotion_model = pickle.load(open('./model/emotion-model-final.pkl', 'rb'))
 # sex_model = pickle.load(open('./model/sex-model-final.pkl', 'rb'))
