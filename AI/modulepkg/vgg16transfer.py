@@ -71,8 +71,8 @@ for counter, random_index in enumerate(random_range, 1):
     Data Preprocessing
 '''
 
-img_height=224
-img_width=224
+img_height=64
+img_width=64
 
 def image_preprocessing(img_path):
     #Read the image
@@ -186,7 +186,7 @@ model = Model(inputs=vgg.input, outputs=prediction)
 early_stopping_callback = EarlyStopping(monitor = 'val_loss', patience = 5, mode = 'min', restore_best_weights = True)
 
 # checkpoint
-filepath="weights.best.hdf5"
+filepath="weights_best.keras"
 checkpoint = ModelCheckpoint(filepath, monitor='val_accuracy', verbose=1, save_best_only=True, mode='max')
 
 #Callbacks
@@ -196,12 +196,12 @@ callbacks_list=[early_stopping_callback,checkpoint]
 model.compile(loss = 'categorical_crossentropy', optimizer = "adam", metrics = ["accuracy"])
 
 # Start training the model.
-history = model.fit(x = features_train, y = labels_train, epochs = 50, 
+history = model.fit(x = features_train, y = labels_train, epochs = 50, batch_size=32,
                     shuffle = True, validation_split = 0.1, 
                     callbacks = callbacks_list )
 
 # load weights of model with best validation accuracy
-model.load_weights("weights.best.hdf5")
+model.load_weights("weights_best.keras")
 model_evaluation_history_base = model.evaluate(features_test, labels_test)
 model_evaluation_history = model.evaluate(features_test, labels_test)
 model.save("best_val_acc_model")
