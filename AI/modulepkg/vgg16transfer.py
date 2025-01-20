@@ -196,7 +196,7 @@ callbacks_list=[early_stopping_callback,checkpoint]
 model.compile(loss = 'categorical_crossentropy', optimizer = "adam", metrics = ["accuracy"])
 
 # Start training the model.
-history = model.fit(x = features_train, y = labels_train, epochs = 50, batch_size=32,
+history = model.fit(x = features_train, y = labels_train, epochs = 30, batch_size=32,
                     shuffle = True, validation_split = 0.1, 
                     callbacks = callbacks_list )
 
@@ -204,7 +204,7 @@ history = model.fit(x = features_train, y = labels_train, epochs = 50, batch_siz
 model.load_weights("weights_best.keras")
 model_evaluation_history_base = model.evaluate(features_test, labels_test)
 model_evaluation_history = model.evaluate(features_test, labels_test)
-model.save("best_val_acc_model")
+model.save("best_val_acc_model.keras")
 
 '''
     Visualization
