@@ -106,11 +106,11 @@
 ### Tools
 | **개발일정 관리 (Github Projects)** |
 | :----: |
-| ![개발일정 관리](https://github.com/user-attachments/assets/f0667def-e605-4743-b9de-b9201a2ff050){: width="800" height="400" } |
+| ![개발일정 관리](https://github.com/user-attachments/assets/f0667def-e605-4743-b9de-b9201a2ff050) |
 
 | **이슈 (Github Issues)** |
 | :----: |
-| ![이슈](https://github.com/user-attachments/assets/c9b7575a-1f69-433f-aa29-4939e62e985c){: width="800" height="509" } |
+| ![이슈](https://github.com/user-attachments/assets/c9b7575a-1f69-433f-aa29-4939e62e985c)|
 
 
 
