@@ -106,7 +106,7 @@
 ### Tools
 개발일정 관리 (Github Projects)
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/f0667def-e605-4743-b9de-b9201a2ff050" width="1000" height="509"/>
+  <img src="https://github.com/user-attachments/assets/f0667def-e605-4743-b9de-b9201a2ff050" width="800" height="600"/>
 </div>
 
 이슈 (Github Issues)
