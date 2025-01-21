@@ -94,28 +94,24 @@
 </details>
 
 
-# 1st Sprint(1차 구현 단계)
-### 2024/12/30 ~ 2025/02/03 까지 진행할 1차 스프린트
+### 1st Sprint(1차 구현 단계)
+#### 2024/12/30 ~ 2025/02/03 까지 진행할 1차 스프린트
 
 *키오스크 예매하기 프론트/백 API 연동*
 
-
 | **영화 예매 화면** | **영화 불러오기 API** |
 | :----: | :---: |
-| ![영화 예매 화면](https://github.com/user-attachments/assets/5a2959d7-c95d-4769-8118-07bf74eae581) | ![영화 불러오기 API](https://github.com/user-attachments/assets/40ac0791-b8fa-4f1b-8d1a-f8e67296c863) |
-
-
+| <div style="padding: 10px;"><img src="https://github.com/user-attachments/assets/5a2959d7-c95d-4769-8118-07bf74eae581" width="600" height="300" /></div> | <div style="padding: 10px;"><img src="https://github.com/user-attachments/assets/40ac0791-b8fa-4f1b-8d1a-f8e67296c863" width="600" height="300" /></div> |
 
 ### Tools
 | **개발일정 관리 (Github Projects)** |
 | :----: |
-| ![개발일정 관리](https://github.com/user-attachments/assets/f0667def-e605-4743-b9de-b9201a2ff050) |
-
-
+| <div style="padding: 10px;"><img src="https://github.com/user-attachments/assets/f0667def-e605-4743-b9de-b9201a2ff050" width="600" height="300" /></div> |
 
 | **이슈 (Github Issues)** |
 | :----: |
-| ![이슈](https://github.com/user-attachments/assets/c9b7575a-1f69-433f-aa29-4939e62e985c)|
+| <div style="padding: 10px;"><img src="https://github.com/user-attachments/assets/c9b7575a-1f69-433f-aa29-4939e62e985c" width="600" height="300" /></div> |
+
 
 
 
