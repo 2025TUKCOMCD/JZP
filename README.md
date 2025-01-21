@@ -94,6 +94,17 @@
 </details>
 
 
+# 1st Sprint(1차 구현 단계)
+### 2024/12/30 ~ 2025/02/03 까지 진행할 1차 스프린트
+
+*키오스크 예매하기 프론트/백 API 연동*
+
+### Tools
+개발일정 관리 (Github Projects)
+
+이슈 트래킹 (Github Issues)
+
+
 # 🛠️ Tech Stack
 <p align="center">
 <strong> Frontend <br></strong>
