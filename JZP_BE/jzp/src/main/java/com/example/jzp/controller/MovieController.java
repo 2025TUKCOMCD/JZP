@@ -179,4 +179,49 @@ public class MovieController {
             this.movieTheater = movieTheater;
         }
     }
+    // 영화 좌석 저장
+    @PostMapping("/seat")
+    public ResponseEntity<?> setMovieSeat(@RequestBody MovieSeatRequest request) {
+        boolean success = movieService.setMovieSeat(
+                request.getMovieId(),
+                request.getMovieSeat()
+        );
+
+        if (!success) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Movie not found or seat reservation failed"
+            ));
+        }
+
+        int remainingSeats = movieService.getMovieSeatRemain(request.getMovieId());
+
+        return ResponseEntity.ok(Map.of(
+                "success", true,
+                "movieSeatRemain", remainingSeats
+        ));
+    }
+
+    // DTO: 영화 좌석 저장 요청
+    public static class MovieSeatRequest {
+        private UUID movieId;
+        private String movieSeat;
+
+        // Getters and Setters
+        public UUID getMovieId() {
+            return movieId;
+        }
+
+        public void setMovieId(UUID movieId) {
+            this.movieId = movieId;
+        }
+
+        public String getMovieSeat() {
+            return movieSeat;
+        }
+
+        public void setMovieSeat(String movieSeat) {
+            this.movieSeat = movieSeat;
+        }
+    }
 }
