@@ -27,7 +27,7 @@ public class MovieController {
     }
 
     // 영화 시간 저장
-    @PostMapping("/movietime")
+    @PostMapping("/time")
     public ResponseEntity<?> setMovieTime(@RequestBody MovieRequest request) {
         boolean success = movieService.updateMovieTime(
                 request.getMovieId(),
@@ -179,6 +179,7 @@ public class MovieController {
             this.movieTheater = movieTheater;
         }
     }
+
     // 영화 좌석 저장
     @PostMapping("/seat")
     public ResponseEntity<?> setMovieSeat(@RequestBody MovieSeatRequest request) {
@@ -202,7 +203,7 @@ public class MovieController {
         ));
     }
 
-    // DTO: 영화 좌석 저장 요청
+    // DTO: 영화 좌석 저장
     public static class MovieSeatRequest {
         private UUID movieId;
         private String movieSeat;

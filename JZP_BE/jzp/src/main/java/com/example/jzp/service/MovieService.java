@@ -57,7 +57,7 @@ public class MovieService {
         Movie movie = movieOptional.get();
         int remainingSeats = movie.getMovieSeatRemain();
 
-        // 이미 예약된 좌석인지 확인 후 처리 (추가 로직 가능)
+        // 이미 예약된 좌석인지 확인 후 감소
         if (remainingSeats > 0) {
             movie.setMovieSeatRemain(remainingSeats - 1); // 좌석 감소
             movieRepository.save(movie);
