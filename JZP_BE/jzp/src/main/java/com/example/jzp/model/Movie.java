@@ -21,13 +21,13 @@ public class Movie {
 
     private String movieTheater;
 
-    // Additional fields as needed
+
     private String movieImage;
     private String movieType;
     private String movieRating;
     private int movieSeatRemain;
 
-    // Getters and Setters
+
     public UUID getMovieId() {
         return movieId;
     }

@@ -72,4 +72,22 @@ public class MovieService {
                 .map(Movie::getMovieSeatRemain)
                 .orElse(0);
     }
+
+    public boolean saveMovieCustomer(MovieController.MovieCustomerRequest request) {
+        Optional<Movie> movieOptional = movieRepository.findById(request.getMovieId());
+        if (movieOptional.isEmpty()) {
+            return false;
+        }
+
+        Movie movie = movieOptional.get();
+        movie.setMovieSeatRemain(request.getMovieSeatRemain());
+        // 영화 고객 정보 저장 로직 추가
+        movie.setMovieCustomerDisabled(request.getMovieCustomerDisabled());
+        movie.setMovieCustomerYouth(request.getMovieCustomerYouth());
+        movie.setMovieCustomerAdult(request.getMovieCustomerAdult());
+        movie.setMovieCustomerOld(request.getMovieCustomerOld());
+
+        movieRepository.save(movie);
+        return true;
+    }
 }
