@@ -46,4 +46,30 @@ public class MovieService {
 
         return true;
     }
+
+    // 영화 좌석 저장
+    public boolean setMovieSeat(UUID movieId, String movieSeat) {
+        Optional<Movie> movieOptional = movieRepository.findById(movieId);
+        if (movieOptional.isEmpty()) {
+            return false;
+        }
+
+        Movie movie = movieOptional.get();
+        int remainingSeats = movie.getMovieSeatRemain();
+
+        // 이미 예약된 좌석인지 확인 후 감소
+        if (remainingSeats > 0) {
+            movie.setMovieSeatRemain(remainingSeats - 1); // 좌석 감소
+            movieRepository.save(movie);
+            return true;
+        }
+
+        return false;
+    }
+    // 남은 좌석 수 조회
+    public int getMovieSeatRemain(UUID movieId) {
+        return movieRepository.findById(movieId)
+                .map(Movie::getMovieSeatRemain)
+                .orElse(0);
+    }
 }
