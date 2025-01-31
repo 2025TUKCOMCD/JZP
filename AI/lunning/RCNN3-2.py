@@ -79,11 +79,11 @@ model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accur
 history = model.fit(
     train_X, train_y,
     validation_data=(val_X, val_y),
-    epochs=10,
+    epochs=40,
     batch_size=32
 )
 
 # 모델 저장
-keras.saving.save_model(model, 'age_classification_model.keras')
+keras.saving.save_model(model, 'age_classification_model_40.keras')
 
 print("Model saved to age_classification_model.keras")
