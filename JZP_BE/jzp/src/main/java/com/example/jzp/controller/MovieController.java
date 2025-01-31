@@ -403,5 +403,14 @@ public class MovieController {
             this.movieSeat = movieSeat;
         }
     }
+
+    // 결제 내역 확인
+    @GetMapping("/payment/history")
+    public ResponseEntity<Map<String, Object>> showPayment() {
+        // MovieService에서 결제 내역과 총 금액 처리
+        Map<String, Object> paymentHistory = movieService.getPaymentHistory();
+
+        return ResponseEntity.ok(paymentHistory);
+    }
 }
 
