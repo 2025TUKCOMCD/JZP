@@ -41,7 +41,6 @@ public class MovieService {
         if (movieOptional.isEmpty()) {
             return false;
         }
-
         Movie movie = movieOptional.get();
         movie.setMovieTime(movieTime);
         movie.setMovieTheater(movieTheater);
@@ -67,7 +66,7 @@ public class MovieService {
     public boolean saveMovieCustomer(MovieController.MovieCustomerRequest request) {
         return ticketService.bookTicket(
                 request.getMovieId(),
-                request.getMovieSeat(),  // 실제 좌석 정보 필요
+                request.getMovieSeat(),
                 request.getMovieCustomerDisabled(),
                 request.getMovieCustomerYouth(),
                 request.getMovieCustomerAdult(),

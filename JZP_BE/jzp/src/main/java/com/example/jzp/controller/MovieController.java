@@ -185,7 +185,7 @@ public class MovieController {
         boolean success = movieService.setMovieSeat(
                 request.getMovieId(),
                 request.getMovieSeat(),
-                request.getDisabled(),  // 인원 수 전달
+                request.getDisabled(),
                 request.getYouth(),
                 request.getAdult(),
                 request.getOld()
@@ -215,7 +215,7 @@ public class MovieController {
         private int adult; // 성인 인원 수
         private int old; // 노인 인원 수
 
-        // Getter & Setter methods
+
         public UUID getMovieId() {
             return movieId;
         }
@@ -272,7 +272,7 @@ public class MovieController {
         if (!success) {
             return ResponseEntity.badRequest().body(Map.of(
                     "status", "failed",
-                    "message", "Movie not found or update failed"
+                    "message", "영화 정보를 찾을 수 없습니다."
             ));
         }
 
@@ -372,6 +372,7 @@ public class MovieController {
         }
 
         public void setMovieCustomerYouth(int movieCustomerYouth) {
+
             this.movieCustomerYouth = movieCustomerYouth;
         }
 
@@ -380,6 +381,7 @@ public class MovieController {
         }
 
         public void setMovieCustomerAdult(int movieCustomerAdult) {
+
             this.movieCustomerAdult = movieCustomerAdult;
         }
 
@@ -388,14 +390,16 @@ public class MovieController {
         }
 
         public void setMovieCustomerOld(int movieCustomerOld) {
+
             this.movieCustomerOld = movieCustomerOld;
         }
 
-        public String getMovieSeat() {  // getter 추가
+        public String getMovieSeat() {
             return movieSeat;
         }
 
-        public void setMovieSeat(String movieSeat) {  // setter 추가
+        public void setMovieSeat(String movieSeat) {
+
             this.movieSeat = movieSeat;
         }
     }

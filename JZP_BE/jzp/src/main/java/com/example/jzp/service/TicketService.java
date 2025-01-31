@@ -25,7 +25,7 @@ public class TicketService {
         // Movie 객체 조회
         Optional<Movie> movieOptional = movieRepository.findById(movieId);
         if (movieOptional.isEmpty()) {
-            return null; // 영화가 없으면 null 반환
+            return null;
         }
 
         Movie movie = movieOptional.get();
@@ -36,11 +36,11 @@ public class TicketService {
         // 티켓 정보 설정
         ticket.setMovie(movie); // movieId 대신 movie 객체를 설정
         ticket.setMovieSeat(movieSeat);
-        ticket.setCustomerDisabled(disabled); // 변경된 부분
-        ticket.setCustomerYouth(youth); // 변경된 부분
-        ticket.setCustomerAdult(adult); // 변경된 부분
-        ticket.setCustomerOld(old); // 변경된 부분
-        ticket.setMovieTheater(movie.getMovieTheater()); // 영화관 정보 저장
+        ticket.setCustomerDisabled(disabled);
+        ticket.setCustomerYouth(youth);
+        ticket.setCustomerAdult(adult);
+        ticket.setCustomerOld(old);
+        ticket.setMovieTheater(movie.getMovieTheater());
 
         // 티켓 저장
         ticketRepository.save(ticket);
@@ -66,7 +66,7 @@ public class TicketService {
         }).collect(Collectors.toList());
     }
 
-    // 영화 시간 저장 (영화 정보만 갱신)
+    // 영화 시간 저장
     public boolean updateMovieTime(UUID movieId, Date movieTime, String movieTheater) {
         Optional<Movie> movieOptional = movieRepository.findById(movieId);
         if (movieOptional.isEmpty()) {
@@ -81,7 +81,7 @@ public class TicketService {
         return true;
     }
 
-    // 영화 좌석 예약 -> TicketService에서 처리하도록 변경
+    // 영화 좌석 예약
     public boolean setMovieSeat(UUID movieId, String movieSeat, int disabled, int youth, int adult, int old) {
         return bookTicket(movieId, movieSeat, disabled, youth, adult, old) != null;
     }
@@ -102,11 +102,6 @@ public class TicketService {
 
         // Movie 객체 조회
         Movie movie = movieOptional.get();
-
-        System.out.println("Disabled: " + request.getMovieCustomerDisabled());
-        System.out.println("Youth: " + request.getMovieCustomerYouth());
-        System.out.println("Adult: " + request.getMovieCustomerAdult());
-        System.out.println("Old: " + request.getMovieCustomerOld());
 
 
         // 새 티켓 생성
