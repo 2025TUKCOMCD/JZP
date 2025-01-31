@@ -6,7 +6,7 @@ import HomeIcon from "../assets/icons/homeIcon.svg";
 import Pay from "../components/Pay2.jsx";
 
 function SeniorPayPage() {
-  const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate
+  const navigate = useNavigate();
 
   const handleSeniorMain = () => {
     navigate("/seniorMain");
@@ -14,6 +14,10 @@ function SeniorPayPage() {
 
   const handleSeniorSeat = () => {
     navigate("/seniorSeat");
+  };
+
+  const handlePayment = () => {
+    navigate("/seniorBooking");
   };
 
   return (
@@ -124,7 +128,7 @@ function SeniorPayPage() {
         {/* 하단 디바이더 */}
         <div className="border-t border-gray-500 mt-2"></div>
       </div>
-      <Pay />
+      <Pay handleButtonClick={handlePayment} />
       {/* Footer 컴포넌트 */}
       <footer className="fixed bottom-0 w-[450px] bg-gray-800 flex mx-auto">
         <button
