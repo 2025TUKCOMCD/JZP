@@ -14,6 +14,9 @@ public class Ticket {
     @JoinColumn(name = "movie_id")
     private Movie movie;
 
+    @Column(nullable = false)
+    private String movieTheater;
+
     private String movieSeat;
     private int customerDisabled;
     private int customerYouth;
@@ -52,6 +55,14 @@ public class Ticket {
         this.movieSeat = movieSeat;
     }
 
+    public String getMovieTheater() {
+        return movieTheater;
+    }
+
+    public void setMovieTheater(String movieTheater) {
+        this.movieTheater = movieTheater;
+    }
+
     public int getCustomerDisabled() {
         return customerDisabled;
     }
@@ -83,7 +94,6 @@ public class Ticket {
     public void setCustomerOld(int customerOld) {
         this.customerOld = customerOld;
     }
-
     public Date getCreatedAt() {
         return createdAt;
     }

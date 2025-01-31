@@ -2,6 +2,7 @@ package com.example.jzp.controller;
 
 import com.example.jzp.model.Movie;
 import com.example.jzp.service.MovieService;
+import com.example.jzp.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,9 @@ public class MovieController {
 
     @Autowired
     private MovieService movieService;
+
+    @Autowired
+    private TicketService ticketService;
 
     // 영화 불러오기
     @PostMapping("/showmovie")
@@ -35,15 +39,11 @@ public class MovieController {
                 request.getMovieTheater()
         );
 
-        if (!success) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "status", "failed",
-                    "message", "Movie not found or update failed"
-            ));
-        }
-
-        return ResponseEntity.ok(Map.of("status", "success"));
+        return success ? ResponseEntity.ok(Map.of("status", "success"))
+                : ResponseEntity.badRequest().body(Map.of("status", "failed", "message", "Movie not found"));
     }
+
+
 
     // DTO: 영화 날짜 요청
     public static class MovieCalendarRequest {
@@ -185,7 +185,11 @@ public class MovieController {
     public ResponseEntity<?> setMovieSeat(@RequestBody MovieSeatRequest request) {
         boolean success = movieService.setMovieSeat(
                 request.getMovieId(),
-                request.getMovieSeat()
+                request.getMovieSeat(),
+                request.getDisabled(),  // 인원 수 전달
+                request.getYouth(),
+                request.getAdult(),
+                request.getOld()
         );
 
         if (!success) {
@@ -204,11 +208,15 @@ public class MovieController {
     }
 
     // DTO: 영화 좌석 저장
-    public static class MovieSeatRequest {
+    public class MovieSeatRequest {
         private UUID movieId;
         private String movieSeat;
+        private int disabled; // 장애인 인원 수
+        private int youth; // 청소년 인원 수
+        private int adult; // 성인 인원 수
+        private int old; // 노인 인원 수
 
-        // Getters and Setters
+        // Getter & Setter methods
         public UUID getMovieId() {
             return movieId;
         }
@@ -224,7 +232,40 @@ public class MovieController {
         public void setMovieSeat(String movieSeat) {
             this.movieSeat = movieSeat;
         }
+
+        public int getDisabled() {
+            return disabled;
+        }
+
+        public void setDisabled(int disabled) {
+            this.disabled = disabled;
+        }
+
+        public int getYouth() {
+            return youth;
+        }
+
+        public void setYouth(int youth) {
+            this.youth = youth;
+        }
+
+        public int getAdult() {
+            return adult;
+        }
+
+        public void setAdult(int adult) {
+            this.adult = adult;
+        }
+
+        public int getOld() {
+            return old;
+        }
+
+        public void setOld(int old) {
+            this.old = old;
+        }
     }
+
     @PostMapping("/customer")
     public ResponseEntity<?> setMovieCustomer(@RequestBody MovieCustomerRequest request) {
         boolean success = movieService.saveMovieCustomer(request);
