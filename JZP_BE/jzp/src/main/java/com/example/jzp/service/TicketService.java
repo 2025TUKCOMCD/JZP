@@ -82,8 +82,8 @@ public class TicketService {
     }
 
     // 영화 좌석 예약 -> TicketService에서 처리하도록 변경
-    public boolean setMovieSeat(UUID movieId, String movieSeat) {
-        return bookTicket(movieId, movieSeat, 0, 0, 0, 0) != null;
+    public boolean setMovieSeat(UUID movieId, String movieSeat, int disabled, int youth, int adult, int old) {
+        return bookTicket(movieId, movieSeat, disabled, youth, adult, old) != null;
     }
 
     // 남은 좌석 수 조회
@@ -100,16 +100,32 @@ public class TicketService {
             return false;
         }
 
-        // Ticket 생성 및 저장 (좌석 및 고객 정보 포함)
-        UUID ticketId = bookTicket(
-                request.getMovieId(),
-                "좌석 정보 필요",
-                request.getMovieCustomerDisabled(),
-                request.getMovieCustomerYouth(),
-                request.getMovieCustomerAdult(),
-                request.getMovieCustomerOld()
-        );
+        // Movie 객체 조회
+        Movie movie = movieOptional.get();
 
-        return ticketId != null;
+        System.out.println("Disabled: " + request.getMovieCustomerDisabled());
+        System.out.println("Youth: " + request.getMovieCustomerYouth());
+        System.out.println("Adult: " + request.getMovieCustomerAdult());
+        System.out.println("Old: " + request.getMovieCustomerOld());
+
+
+        // 새 티켓 생성
+        Ticket ticket = new Ticket();
+
+        // 고객 정보 설정
+        ticket.setMovie(movie); // movieId 대신 movie 객체를 설정
+        ticket.setMovieSeat(request.getMovieSeat());
+        ticket.setCustomerDisabled(request.getMovieCustomerDisabled());
+        ticket.setCustomerYouth(request.getMovieCustomerYouth());
+        ticket.setCustomerAdult(request.getMovieCustomerAdult());
+        ticket.setCustomerOld(request.getMovieCustomerOld());
+        ticket.setMovieTheater(movie.getMovieTheater());
+
+        // 티켓 저장
+        ticketRepository.save(ticket);
+
+
+        // 티켓 저장 후 성공적인 ID 반환 여부
+        return true;
     }
 }

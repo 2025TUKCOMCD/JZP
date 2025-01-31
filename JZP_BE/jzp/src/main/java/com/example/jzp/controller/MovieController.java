@@ -44,7 +44,6 @@ public class MovieController {
     }
 
 
-
     // DTO: 영화 날짜 요청
     public static class MovieCalendarRequest {
         @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -293,6 +292,7 @@ public class MovieController {
         private int movieCustomerYouth;
         private int movieCustomerAdult;
         private int movieCustomerOld;
+        private String movieSeat;
 
         // Getters and Setters
         public UUID getMovieId() {
@@ -390,5 +390,14 @@ public class MovieController {
         public void setMovieCustomerOld(int movieCustomerOld) {
             this.movieCustomerOld = movieCustomerOld;
         }
+
+        public String getMovieSeat() {  // getter 추가
+            return movieSeat;
+        }
+
+        public void setMovieSeat(String movieSeat) {  // setter 추가
+            this.movieSeat = movieSeat;
+        }
     }
 }
+

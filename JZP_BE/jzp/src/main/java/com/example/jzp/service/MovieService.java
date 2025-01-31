@@ -67,7 +67,7 @@ public class MovieService {
     public boolean saveMovieCustomer(MovieController.MovieCustomerRequest request) {
         return ticketService.bookTicket(
                 request.getMovieId(),
-                "좌석 정보 필요",  // 실제 좌석 정보 필요
+                request.getMovieSeat(),  // 실제 좌석 정보 필요
                 request.getMovieCustomerDisabled(),
                 request.getMovieCustomerYouth(),
                 request.getMovieCustomerAdult(),
