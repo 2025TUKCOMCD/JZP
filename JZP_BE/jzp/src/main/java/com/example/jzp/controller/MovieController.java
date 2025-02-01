@@ -3,10 +3,12 @@ package com.example.jzp.controller;
 import com.example.jzp.model.Movie;
 import com.example.jzp.service.MovieService;
 import com.example.jzp.service.TicketService;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.format.annotation.DateTimeFormat;
+import java.util.stream.Collectors;
 
 import java.util.*;
 
@@ -20,15 +22,41 @@ public class MovieController {
     @Autowired
     private TicketService ticketService;
 
-    // 영화 불러오기
-    @PostMapping("/showmovie")
-    public ResponseEntity<?> showMovie(@RequestBody MovieCalendarRequest request) {
+    @PostMapping("/showmovie/{group}")
+    public ResponseEntity<?> showMovieByGroup(@PathVariable("group") String group,
+                                              @RequestBody MovieCalendarRequest request) {
+        // 영화 리스트를 요청된 날짜로 가져옴
         List<MovieResponse> movies = movieService.getMoviesByDate(request.getMovieCalendar());
+
+        // 사용자 그룹에 맞는 우선순위 처리
+        if ("youth".equals(group)) {
+            movies = prioritizeForYouth(movies); // 청소년 우선순위 정렬
+        } else if ("old".equals(group)) {
+            movies = prioritizeForOld(movies); // 노인 우선순위 정렬
+        }
+
         return ResponseEntity.ok(Map.of(
                 "movieCalendar", request.getMovieCalendar(),
                 "movies", movies
         ));
     }
+
+
+    // 청소년 우선순위로 영화 정렬 (예시: 인기순)
+    private List<MovieResponse> prioritizeForYouth(List<MovieResponse> movies) {
+        return movies.stream()
+                .sorted(Comparator.comparingInt(MovieResponse::getMovieSeatRemain).reversed()) // 예시: 좌석이 많은 영화부터 우선
+                .collect(Collectors.toList());
+    }
+
+    // 노인 우선순위로 영화 정렬 (예시: 노인 선호 장르 순)
+    private List<MovieResponse> prioritizeForOld(List<MovieResponse> movies) {
+        return movies.stream()
+                .filter(movie -> movie.getMovieType().contains("드라마")) // 예시: 드라마 장르 우선
+                .sorted(Comparator.comparingInt(MovieResponse::getMovieSeatRemain).reversed()) // 좌석이 많은 드라마 영화부터 우선
+                .collect(Collectors.toList());
+    }
+
 
     // 영화 시간 저장
     @PostMapping("/time")
@@ -46,7 +74,7 @@ public class MovieController {
 
     // DTO: 영화 날짜 요청
     public static class MovieCalendarRequest {
-        @DateTimeFormat(pattern = "yyyy-MM-dd")
+        @JsonFormat(pattern = "yyyy-MM-dd")
         private Date movieCalendar;
 
         public Date getMovieCalendar() {
