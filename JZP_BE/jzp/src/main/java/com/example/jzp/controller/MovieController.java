@@ -41,7 +41,6 @@ public class MovieController {
         ));
     }
 
-
     // 청소년 우선순위로 영화 정렬 (예시: 인기순)
     private List<MovieResponse> prioritizeForYouth(List<MovieResponse> movies) {
         return movies.stream()
@@ -52,10 +51,13 @@ public class MovieController {
     // 노인 우선순위로 영화 정렬 (예시: 노인 선호 장르 순)
     private List<MovieResponse> prioritizeForOld(List<MovieResponse> movies) {
         return movies.stream()
-                .filter(movie -> movie.getMovieType().contains("드라마")) // 예시: 드라마 장르 우선
-                .sorted(Comparator.comparingInt(MovieResponse::getMovieSeatRemain).reversed()) // 좌석이 많은 드라마 영화부터 우선
+                .sorted(Comparator.comparingInt((MovieResponse movie) -> movie.getMovieType().contains("드라마") ? 1 : 0)
+                        .reversed()
+                        .thenComparingInt(MovieResponse::getMovieSeatRemain)
+                        .reversed()) // 드라마 장르 우선 -> 좌석이 많은 영화부터 우선
                 .collect(Collectors.toList());
     }
+
 
 
     // 영화 시간 저장
