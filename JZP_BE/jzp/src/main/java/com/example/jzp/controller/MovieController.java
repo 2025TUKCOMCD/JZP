@@ -41,22 +41,26 @@ public class MovieController {
         ));
     }
 
-    // 청소년 우선순위로 영화 정렬 (좌석이 적은 영화부터 우선)
+
+// 청소년 우선순위로 영화 정렬 (영화 순위순서대로)
     private List<MovieResponse> prioritizeForYouth(List<MovieResponse> movies) {
         return movies.stream()
-                .sorted(Comparator.comparingInt(MovieResponse::getMovieSeatRemain)) // 좌석이 적은 영화
+                .sorted(Comparator.comparingInt(movie -> Integer.parseInt(movie.getMovieRating())))
                 .collect(Collectors.toList());
     }
 
-    // 노인 우선순위로 영화 정렬 (드라마 장르를 우선시, 좌석이 적은 드라마 영화부터 우선)
+
+// 노인 우선순위로 영화 정렬 (드라마 장르 우선, 영화 순위순으로 정렬)
     private List<MovieResponse> prioritizeForOld(List<MovieResponse> movies) {
         return movies.stream()
                 .sorted(Comparator.comparingInt((MovieResponse movie) ->
                                 movie.getMovieType().equals("드라마") ? 1 : 0)
                         .reversed() // 드라마 영화를 먼저
-                        .thenComparingInt(MovieResponse::getMovieSeatRemain)) // 좌석 수가 적은 영화
+                        .thenComparingInt(movie -> Integer.parseInt(movie.getMovieRating()))) // 영화 순위순으로 정렬
                 .collect(Collectors.toList());
     }
+
+
 
 
 
