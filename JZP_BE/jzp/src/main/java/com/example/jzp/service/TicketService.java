@@ -21,7 +21,7 @@ public class TicketService {
     private TicketRepository ticketRepository;
 
     // 티켓 예약 메서드
-    public UUID bookTicket(UUID movieId, String movieSeat, int disabled, int youth, int adult, int old) {
+    public UUID bookTicket(UUID movieId, String movieSeat,String movieTheater, int disabled, int youth, int adult, int old) {
         // Movie 객체 조회
         Optional<Movie> movieOptional = movieRepository.findById(movieId);
         if (movieOptional.isEmpty()) {
@@ -34,13 +34,13 @@ public class TicketService {
         Ticket ticket = new Ticket();
 
         // 티켓 정보 설정
-        ticket.setMovie(movie); // movieId 대신 movie 객체를 설정
+        ticket.setMovie(movie);
         ticket.setMovieSeat(movieSeat);
+        ticket.setMovieTheater(movieTheater);
         ticket.setCustomerDisabled(disabled);
         ticket.setCustomerYouth(youth);
         ticket.setCustomerAdult(adult);
         ticket.setCustomerOld(old);
-        ticket.setMovieTheater(movie.getMovieTheater());
 
         // 티켓 저장
         ticketRepository.save(ticket);
@@ -81,10 +81,12 @@ public class TicketService {
         return true;
     }
 
-    // 영화 좌석 예약
-    public boolean setMovieSeat(UUID movieId, String movieSeat, int disabled, int youth, int adult, int old) {
-        return bookTicket(movieId, movieSeat, disabled, youth, adult, old) != null;
+// 영화 좌석 예약 처리
+    public boolean setMovieSeat(UUID movieId, String movieSeat, String movieTheater) {
+        // 좌석 예약을 위한 bookTicket 호출
+        return bookTicket(movieId, movieSeat, movieTheater, 0, 0, 0, 0) != null; // 고객 정보는 0으로 넘김
     }
+
 
     // 남은 좌석 수 조회
     public int getMovieSeatRemain(UUID movieId) {
@@ -115,6 +117,7 @@ public class TicketService {
         ticket.setCustomerAdult(request.getMovieCustomerAdult());
         ticket.setCustomerOld(request.getMovieCustomerOld());
         ticket.setMovieTheater(movie.getMovieTheater());
+
 
         // 티켓 저장
         ticketRepository.save(ticket);
