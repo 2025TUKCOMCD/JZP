@@ -3,10 +3,8 @@ package com.example.jzp.service;
 import com.example.jzp.model.Movie;
 import com.example.jzp.controller.MovieController;
 import com.example.jzp.repository.MovieRepository;
-import com.example.jzp.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.example.jzp.model.Ticket;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -18,15 +16,7 @@ public class MovieService {
     private MovieRepository movieRepository;
 
     @Autowired
-    private TicketRepository ticketRepository;
-
-    @Autowired
     private TicketService ticketService; // TicketService 사용
-
-    private static final int YOUTH_TICKET_PRICE = 10000;  // 청소년 가격
-    private static final int ADULT_TICKET_PRICE = 15000;  // 성인 가격
-    private static final int OLD_TICKET_PRICE = 8000;    // 노인 가격
-    private static final int DISABLED_TICKET_PRICE = 5000; // 장애인 가격
 
     // 날짜별 영화 조회
     public List<MovieController.MovieResponse> getMoviesByDate(Date movieCalendar) {
@@ -83,73 +73,4 @@ public class MovieService {
                 request.getMovieCustomerOld()
         ) != null;
     }
-
-    // 결제 내역 조회
-    public Map<String, Object> getPaymentHistory() {
-        // 결제 내역 조회
-        List<Ticket> tickets = ticketRepository.findAll(); // 조건에 맞는 티켓 조회 가능
-
-        // 응답을 위한 데이터 맵 생성
-        Map<String, Object> response = new HashMap<>();
-
-        // 총 결제 금액 초기화
-        int totalPrice = 0;
-
-        // 영화 정보와 가격 정보 목록 생성
-        List<Map<String, Object>> movieHistoryList = new ArrayList<>();
-
-        // 각 티켓에 대해 필요한 정보를 처리
-        for (Ticket ticket : tickets) {
-            Map<String, Object> movieHistory = new HashMap<>();
-
-            // 영화 정보 설정
-            Movie movie = ticket.getMovie(); // Ticket 객체에서 Movie 정보 가져오기
-            Map<String, Object> movieInfo = new HashMap<>();
-            movieInfo.put("movieId", movie.getMovieId());
-            movieInfo.put("movieImage", movie.getMovieImage());
-            movieInfo.put("movieName", movie.getMovieName());
-            movieInfo.put("movieType", movie.getMovieType());
-            movieInfo.put("movieRating", movie.getMovieRating());
-            movieInfo.put("movieTime", movie.getMovieTime());
-            movieInfo.put("movieSeatRemain", movie.getMovieSeatRemain());
-            movieInfo.put("movieTheater", movie.getMovieTheater());
-
-            movieHistory.put("movie", movieInfo);
-
-            // 고객 정보 설정
-            Map<String, Integer> movieCustomerInfo = new HashMap<>();
-            movieCustomerInfo.put("movieCustomerDisabled", ticket.getCustomerDisabled());
-            movieCustomerInfo.put("movieCustomerYouth", ticket.getCustomerYouth());
-            movieCustomerInfo.put("movieCustomerAdult", ticket.getCustomerAdult());
-            movieCustomerInfo.put("movieCustomerOld", ticket.getCustomerOld());
-
-            movieHistory.put("movieCustomer", movieCustomerInfo);
-
-            // 가격 계산 (인원수 * 가격)
-            int youthPrice = ticket.getCustomerYouth() * YOUTH_TICKET_PRICE;
-            int adultPrice = ticket.getCustomerAdult() * ADULT_TICKET_PRICE;
-            int oldPrice = ticket.getCustomerOld() * OLD_TICKET_PRICE;
-            int disabledPrice = ticket.getCustomerDisabled() * DISABLED_TICKET_PRICE;
-
-            Map<String, Integer> priceInfo = new HashMap<>();
-            priceInfo.put("youthPrice", youthPrice);
-            priceInfo.put("adultPrice", adultPrice);
-            priceInfo.put("oldPrice", oldPrice);
-            priceInfo.put("disabledPrice", disabledPrice);
-
-            movieHistory.put("price", priceInfo);
-
-            // 총 금액 계산
-            totalPrice += youthPrice + adultPrice + oldPrice + disabledPrice;
-
-            movieHistoryList.add(movieHistory);
-        }
-
-        // 전체 응답에 영화 내역과 총 금액 추가
-        response.put("movieHistory", movieHistoryList);
-        response.put("totalPrice", totalPrice);
-
-        return response;
-    }
-
 }

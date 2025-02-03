@@ -3,12 +3,10 @@ package com.example.jzp.controller;
 import com.example.jzp.model.Movie;
 import com.example.jzp.service.MovieService;
 import com.example.jzp.service.TicketService;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.format.annotation.DateTimeFormat;
-import java.util.stream.Collectors;
 
 import java.util.*;
 
@@ -22,44 +20,15 @@ public class MovieController {
     @Autowired
     private TicketService ticketService;
 
-    @PostMapping("/showmovie/{group}")
-    public ResponseEntity<?> showMovieByGroup(@PathVariable("group") String group,
-                                              @RequestBody MovieCalendarRequest request) {
-        // 영화 리스트를 요청된 날짜로 가져옴
+    // 영화 불러오기
+    @PostMapping("/showmovie")
+    public ResponseEntity<?> showMovie(@RequestBody MovieCalendarRequest request) {
         List<MovieResponse> movies = movieService.getMoviesByDate(request.getMovieCalendar());
-
-        // 사용자 그룹에 맞는 우선순위 처리
-        if ("youth".equals(group)) {
-            movies = prioritizeForYouth(movies); // 청소년 우선순위 정렬
-        } else if ("old".equals(group)) {
-            movies = prioritizeForOld(movies); // 노인 우선순위 정렬
-        }
-
         return ResponseEntity.ok(Map.of(
                 "movieCalendar", request.getMovieCalendar(),
                 "movies", movies
         ));
     }
-
-    // 청소년 우선순위로 영화 정렬 (좌석이 적은 영화부터 우선)
-    private List<MovieResponse> prioritizeForYouth(List<MovieResponse> movies) {
-        return movies.stream()
-                .sorted(Comparator.comparingInt(MovieResponse::getMovieSeatRemain)) // 좌석이 적은 영화
-                .collect(Collectors.toList());
-    }
-
-    // 노인 우선순위로 영화 정렬 (드라마 장르를 우선시, 좌석이 적은 드라마 영화부터 우선)
-    private List<MovieResponse> prioritizeForOld(List<MovieResponse> movies) {
-        return movies.stream()
-                .sorted(Comparator.comparingInt((MovieResponse movie) ->
-                                movie.getMovieType().equals("드라마") ? 1 : 0)
-                        .reversed() // 드라마 영화를 먼저
-                        .thenComparingInt(MovieResponse::getMovieSeatRemain)) // 좌석 수가 적은 영화
-                .collect(Collectors.toList());
-    }
-
-
-
 
     // 영화 시간 저장
     @PostMapping("/time")
@@ -77,7 +46,7 @@ public class MovieController {
 
     // DTO: 영화 날짜 요청
     public static class MovieCalendarRequest {
-        @JsonFormat(pattern = "yyyy-MM-dd")
+        @DateTimeFormat(pattern = "yyyy-MM-dd")
         private Date movieCalendar;
 
         public Date getMovieCalendar() {
@@ -433,15 +402,6 @@ public class MovieController {
 
             this.movieSeat = movieSeat;
         }
-    }
-
-    // 결제 내역 확인
-    @GetMapping("/payment/history")
-    public ResponseEntity<Map<String, Object>> showPayment() {
-        // MovieService에서 결제 내역과 총 금액 처리
-        Map<String, Object> paymentHistory = movieService.getPaymentHistory();
-
-        return ResponseEntity.ok(paymentHistory);
     }
 }
 

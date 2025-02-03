@@ -20,6 +20,8 @@ public class Movie {
     private Date movieTime;
 
     private String movieTheater;
+
+
     private String movieImage;
     private String movieType;
     private String movieRating;
