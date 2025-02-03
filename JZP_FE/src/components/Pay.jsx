@@ -1,11 +1,8 @@
 import "react";
-import kakaopayIcon from "../assets/images/kakaopay.png"; // 카카오페이 아이콘 경로
+import kakaopayIcon from "../assets/images/kakaopay.png";
 
-function Pay() {
-  const handleButtonClick = () => {
-    alert("카카오페이 버튼이 클릭되었습니다!");
-  };
-
+// eslint-disable-next-line react/prop-types
+function Pay({ handleButtonClick }) {
   return (
     <div className="flex justify-center mt-8">
       <button
