@@ -1,6 +1,8 @@
 package com.example.jzp.model;
 
 import java.time.LocalTime;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import java.util.Date;
 import java.util.UUID;
@@ -16,6 +18,7 @@ public class Movie {
 
     @Temporal(TemporalType.DATE)
     private Date movieCalendar;
+    @JsonFormat(pattern = "HH:mm:ss")
     private LocalTime movieTime;
     private String movieTheater;
     private String movieImage;
@@ -48,13 +51,13 @@ public class Movie {
         this.movieCalendar = movieCalendar;
     }
 
-    public LocalTime getMovieTime() {
-        return movieTime;
-    }
+        public LocalTime getMovieTime() {
+            return movieTime;
+        }
 
-    public void setMovieTime(LocalTime movieTime) {
-        this.movieTime = movieTime;
-    }
+        public void setMovieTime(LocalTime movieTime) {
+            this.movieTime = movieTime;
+        }
 
     public String getMovieTheater() {
         return movieTheater;
