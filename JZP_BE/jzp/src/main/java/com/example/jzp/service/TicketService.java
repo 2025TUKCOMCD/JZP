@@ -97,34 +97,31 @@ public class TicketService {
     }
 
     // 고객 정보 저장 후 Ticket 생성
-    public boolean saveMovieCustomer(MovieController.MovieCustomerRequest request) {
-        Optional<Movie> movieOptional = movieRepository.findById(request.getMovieId());
-        if (movieOptional.isEmpty()) {
-            return false;
+        public Ticket bookTicket(UUID movieId, int movieCustomerDisabled, int movieCustomerYouth, int movieCustomerAdult, int movieCustomerOld) {
+            Optional<Movie> movieOptional = movieRepository.findById(movieId);
+            if (movieOptional.isEmpty()) {
+                return null;  // Return null if movie is not found
+            }
+
+            // Movie 객체 조회
+            Movie movie = movieOptional.get();
+
+            // 새 티켓 생성
+            Ticket ticket = new Ticket();
+
+            // 고객 정보 설정
+            ticket.setMovie(movie); // movieId 대신 movie 객체를 설정
+            ticket.setCustomerDisabled(movieCustomerDisabled);
+            ticket.setCustomerYouth(movieCustomerYouth);
+            ticket.setCustomerAdult(movieCustomerAdult);
+            ticket.setCustomerOld(movieCustomerOld);
+            ticket.setMovieTheater(movie.getMovieTheater());
+
+            // 티켓 저장
+            ticketRepository.save(ticket);
+
+            // 티켓 객체 반환
+            return ticket;  // Return the saved ticket (or null in case of failure)
         }
 
-        // Movie 객체 조회
-        Movie movie = movieOptional.get();
-
-
-        // 새 티켓 생성
-        Ticket ticket = new Ticket();
-
-        // 고객 정보 설정
-        ticket.setMovie(movie); // movieId 대신 movie 객체를 설정
-        ticket.setMovieSeat(request.getMovieSeat());
-        ticket.setCustomerDisabled(request.getMovieCustomerDisabled());
-        ticket.setCustomerYouth(request.getMovieCustomerYouth());
-        ticket.setCustomerAdult(request.getMovieCustomerAdult());
-        ticket.setCustomerOld(request.getMovieCustomerOld());
-        ticket.setMovieTheater(movie.getMovieTheater());
-
-
-        // 티켓 저장
-        ticketRepository.save(ticket);
-
-
-        // 티켓 저장 후 성공적인 ID 반환 여부
-        return true;
     }
-}

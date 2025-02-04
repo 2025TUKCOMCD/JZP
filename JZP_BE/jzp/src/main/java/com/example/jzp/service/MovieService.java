@@ -96,12 +96,9 @@ public class MovieService {
     }
 
 
-    // 고객 정보 저장 (예매 관련 정보는 TicketService에서 처리)
     public boolean saveMovieCustomer(MovieController.MovieCustomerRequest request) {
         return ticketService.bookTicket(
                 request.getMovieId(),
-                request.getMovieSeat(),
-                request.getMovieTheater(),
                 request.getMovieCustomerDisabled(),
                 request.getMovieCustomerYouth(),
                 request.getMovieCustomerAdult(),
@@ -163,6 +160,7 @@ public class MovieService {
             priceInfo.put("disabledPrice", disabledPrice);
 
             movieHistory.put("price", priceInfo);
+            movieHistory.put("ticketId", ticket.getTicketId());
 
             // 총 금액 계산
             totalPrice += youthPrice + adultPrice + oldPrice + disabledPrice;

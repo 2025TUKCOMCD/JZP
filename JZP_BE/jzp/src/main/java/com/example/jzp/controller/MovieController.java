@@ -311,20 +311,13 @@ public class MovieController {
         return ResponseEntity.ok(Map.of("status", "success"));
     }
 
+
     public static class MovieCustomerRequest {
         private UUID movieId;
-        private String movieImage;
-        private String movieName;
-        private String movieType;
-        private String movieRating;
-        private LocalTime movieTime;
-        private int movieSeatRemain;
-        private String movieTheater;
         private int movieCustomerDisabled;
         private int movieCustomerYouth;
         private int movieCustomerAdult;
         private int movieCustomerOld;
-        private String movieSeat;
 
         // Getters and Setters
         public UUID getMovieId() {
@@ -333,62 +326,6 @@ public class MovieController {
 
         public void setMovieId(UUID movieId) {
             this.movieId = movieId;
-        }
-
-        public String getMovieImage() {
-            return movieImage;
-        }
-
-        public void setMovieImage(String movieImage) {
-            this.movieImage = movieImage;
-        }
-
-        public String getMovieName() {
-            return movieName;
-        }
-
-        public void setMovieName(String movieName) {
-            this.movieName = movieName;
-        }
-
-        public String getMovieType() {
-            return movieType;
-        }
-
-        public void setMovieType(String movieType) {
-            this.movieType = movieType;
-        }
-
-        public String getMovieRating() {
-            return movieRating;
-        }
-
-        public void setMovieRating(String movieRating) {
-            this.movieRating = movieRating;
-        }
-
-        public LocalTime getMovieTime() {
-            return movieTime;
-        }
-
-        public void setMovieTime(LocalTime movieTime) {
-            this.movieTime = movieTime;
-        }
-
-        public int getMovieSeatRemain() {
-            return movieSeatRemain;
-        }
-
-        public void setMovieSeatRemain(int movieSeatRemain) {
-            this.movieSeatRemain = movieSeatRemain;
-        }
-
-        public String getMovieTheater() {
-            return movieTheater;
-        }
-
-        public void setMovieTheater(String movieTheater) {
-            this.movieTheater = movieTheater;
         }
 
         public int getMovieCustomerDisabled() {
@@ -404,7 +341,6 @@ public class MovieController {
         }
 
         public void setMovieCustomerYouth(int movieCustomerYouth) {
-
             this.movieCustomerYouth = movieCustomerYouth;
         }
 
@@ -413,7 +349,6 @@ public class MovieController {
         }
 
         public void setMovieCustomerAdult(int movieCustomerAdult) {
-
             this.movieCustomerAdult = movieCustomerAdult;
         }
 
@@ -422,17 +357,7 @@ public class MovieController {
         }
 
         public void setMovieCustomerOld(int movieCustomerOld) {
-
             this.movieCustomerOld = movieCustomerOld;
-        }
-
-        public String getMovieSeat() {
-            return movieSeat;
-        }
-
-        public void setMovieSeat(String movieSeat) {
-
-            this.movieSeat = movieSeat;
         }
     }
 
