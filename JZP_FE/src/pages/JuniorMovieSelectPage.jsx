@@ -13,12 +13,40 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function JuniorMovieSelectPage() {
   const [selectedButton, setSelectedButton] = useState(null);
+  const [selectedMovie, setSelectedMovie] = useState(null);
   const [movies, setMovies] = useState([]);
   const [selectedDate, setSelectedDate] = useState("2025-02-15");
   const navigate = useNavigate();
 
   const handleJuniorMain = () => navigate("/juniorMain");
-  const handleJuniorSeatSelect = () => navigate("/juniorSeat");
+
+  const handleJuniorSeatSelect = async () => {
+    if (!selectedMovie) return;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/movie/time`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          movieId: selectedMovie.movieId,
+          movieTime: selectedMovie.movieTime,
+          movieTheater: selectedMovie.movieTheater,
+        }),
+      });
+
+      const result = await response.json();
+      console.log("🎟️ 좌석 선택 응답:", result);
+
+      if (result.status === "success") {
+        navigate("/juniorSeat");
+      } else {
+        alert(`좌석 선택 실패: ${result.message || "알 수 없는 오류"}`);
+      }
+    } catch (error) {
+      console.error("🚨 좌석 선택 요청 실패:", error);
+      alert("좌석 선택 요청 중 오류가 발생했습니다.");
+    }
+  };
 
   const fetchMovies = async (selectedDate) => {
     try {
@@ -55,10 +83,8 @@ function JuniorMovieSelectPage() {
     <div className="bg-customBg h-screen text-white flex flex-col">
       <Header />
       <StepBar />
-      <DateSelectBar onDateChange={setSelectedDate} />{" "}
-      {/* 날짜 선택 핸들러 추가 */}
+      <DateSelectBar onDateChange={setSelectedDate} />
       <div className="h-[1px] bg-gray-700 my-4"></div>
-      {/* 영화 리스트 */}
       <div className="flex-1 overflow-y-auto px-4 pb-16">
         {movies.length > 0 ? (
           movies.map((movie, index) => (
@@ -95,7 +121,10 @@ function JuniorMovieSelectPage() {
                   </div>
                   <div className="flex flex-wrap gap-2 mt-2">
                     <button
-                      onClick={() => setSelectedButton(movie.movieId)}
+                      onClick={() => {
+                        setSelectedButton(movie.movieId);
+                        setSelectedMovie(movie);
+                      }}
                       className={`border w-24 h-12 flex flex-col justify-center items-center ${
                         selectedButton === movie.movieId
                           ? "border-black bg-white text-black"
@@ -114,7 +143,6 @@ function JuniorMovieSelectPage() {
                 </div>
               </div>
 
-              {/* 마지막 영화 이후에는 디바이더를 추가하지 않음 */}
               {index !== movies.length - 1 && (
                 <div className="h-[1px] bg-gray-700 my-4"></div>
               )}
@@ -126,7 +154,6 @@ function JuniorMovieSelectPage() {
           </p>
         )}
       </div>
-      {/* 하단 네비게이션 */}
       <footer className="fixed bottom-0 w-[450px] bg-gray-800 flex">
         <button
           className="flex-1 bg-white text-black text-sm font-bold h-16 flex items-center justify-center leading-none gap-2"
@@ -137,7 +164,7 @@ function JuniorMovieSelectPage() {
         <button
           className="flex-1 bg-red-600 text-white text-sm font-bold h-16 flex items-center justify-center leading-none"
           onClick={handleJuniorSeatSelect}
-          disabled={!selectedButton}
+          disabled={!selectedMovie}
         >
           인원 및 좌석 선택 하기
         </button>

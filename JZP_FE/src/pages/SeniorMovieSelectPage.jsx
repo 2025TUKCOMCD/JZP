@@ -13,12 +13,40 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function SeniorMovieSelectPage() {
   const [selectedButton, setSelectedButton] = useState(null);
+  const [selectedMovie, setSelectedMovie] = useState(null);
   const [movies, setMovies] = useState([]);
   const [selectedDate, setSelectedDate] = useState("2025-02-15");
   const navigate = useNavigate();
 
   const handleSeniorMain = () => navigate("/seniorMain");
-  const handleSeniorSeatSelect = () => navigate("/seniorSeat");
+
+  const handleSeniorSeatSelect = async () => {
+    if (!selectedMovie) return;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/movie/time`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          movieId: selectedMovie.movieId,
+          movieTime: selectedMovie.movieTime,
+          movieTheater: selectedMovie.movieTheater,
+        }),
+      });
+
+      const result = await response.json();
+      console.log("🎟️ 좌석 선택 응답:", result);
+
+      if (result.status === "success") {
+        navigate("/seniorSeat");
+      } else {
+        alert(`좌석 선택 실패: ${result.message || "알 수 없는 오류"}`);
+      }
+    } catch (error) {
+      console.error("🚨 좌석 선택 요청 실패:", error);
+      alert("좌석 선택 요청 중 오류가 발생했습니다.");
+    }
+  };
 
   const fetchMovies = async (selectedDate) => {
     try {
@@ -95,7 +123,10 @@ function SeniorMovieSelectPage() {
                   </div>
                   <div className="grid grid-cols-2 gap-2 mt-2">
                     <button
-                      onClick={() => setSelectedButton(movie.movieId)}
+                      onClick={() => {
+                        setSelectedButton(movie.movieId);
+                        setSelectedMovie(movie);
+                      }}
                       className={`border w-36 h-[66px] flex flex-col justify-center items-center ${
                         selectedButton === movie.movieId
                           ? "border-black bg-white text-black"
@@ -139,6 +170,7 @@ function SeniorMovieSelectPage() {
         <button
           className="flex-1 bg-red-600 text-white text-xl font-bold h-20 flex items-center justify-center leading-none"
           onClick={handleSeniorSeatSelect}
+          disabled={!selectedMovie}
         >
           인원 및 좌석 선택 하기
         </button>
