@@ -2,15 +2,14 @@ import { useState } from "react";
 import DayBefore from "../assets/icons/theDayBefore.svg";
 import DayAfter from "../assets/icons/theDayAfter.svg";
 
-const DateSelectBar2 = () => {
-  const today = new Date(); // 오늘 날짜
+// eslint-disable-next-line react/prop-types
+const DateSelectBar2 = ({ onDateChange }) => {
+  const today = new Date();
   const [selectedDate, setSelectedDate] = useState(today);
 
+  // 날짜 포맷 변경 함수 (yyyy-MM-dd)
   const formatDate = (date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return { year, month, day };
+    return date.toISOString().split("T")[0];
   };
 
   const generateDates = () => {
@@ -25,23 +24,13 @@ const DateSelectBar2 = () => {
   };
 
   const dates = generateDates();
-  const lastDate = dates[dates.length - 2].date; // 19일 날짜
-  const firstDate = dates[0].date; // 15일 날짜
+  const lastDate = dates[dates.length - 2].date; // 마지막 날짜
+  const firstDate = dates[0].date; // 첫 날짜
 
-  const handleLeftClick = () => {
-    setSelectedDate((prevDate) => {
-      const newDate = new Date(prevDate);
-      newDate.setDate(prevDate.getDate() - 1);
-      return newDate;
-    });
-  };
-
-  const handleRightClick = () => {
-    setSelectedDate((prevDate) => {
-      const newDate = new Date(prevDate);
-      newDate.setDate(prevDate.getDate() + 1);
-      return newDate;
-    });
+  const handleDateChange = (newDate) => {
+    const formattedDate = formatDate(newDate);
+    setSelectedDate(new Date(formattedDate)); // 날짜 업데이트
+    onDateChange(formattedDate); // 부모 컴포넌트로 전달
   };
 
   return (
@@ -51,7 +40,11 @@ const DateSelectBar2 = () => {
         className={`flex items-center justify-center w-16 h-16 ${
           selectedDate <= firstDate ? "opacity-50 cursor-not-allowed" : ""
         }`}
-        onClick={selectedDate > firstDate ? handleLeftClick : undefined}
+        onClick={() => {
+          const newDate = new Date(selectedDate);
+          newDate.setDate(newDate.getDate() - 1);
+          handleDateChange(newDate);
+        }}
         disabled={selectedDate <= firstDate}
       >
         <img src={DayBefore} alt="Previous Day" className="w-14 h-14" />
@@ -62,16 +55,19 @@ const DateSelectBar2 = () => {
         {dates.map((item, index) => (
           <div
             key={index}
-            className={`flex flex-col items-center justify-center mt-1 p-3 rounded-[18px] ${
-              selectedDate.toDateString() === item.date.toDateString()
+            className={`flex flex-col items-center justify-center mt-1 p-3 rounded-[18px] cursor-pointer ${
+              formatDate(selectedDate) === item.formatted
                 ? "bg-red-700"
                 : "bg-[#444855]"
             }`}
+            onClick={() => handleDateChange(item.date)}
           >
-            <div className="text-[12px]">{`${item.formatted.year}.${item.formatted.month}`}</div>
-            <div className="text-xl font-bold">{item.formatted.day}</div>
+            <div className="text-[12px]">{`${item.formatted.split("-")[0]}.${item.formatted.split("-")[1]}`}</div>
+            <div className="text-xl font-bold">
+              {item.formatted.split("-")[2]}
+            </div>
             <div className="text-[12px]">
-              {today.toDateString() === item.date.toDateString()
+              {formatDate(today) === item.formatted
                 ? "오늘"
                 : ["일", "월", "화", "수", "목", "금", "토"][
                     item.date.getDay()
@@ -86,7 +82,11 @@ const DateSelectBar2 = () => {
         className={`flex items-center justify-center w-16 h-16 ${
           selectedDate >= lastDate ? "opacity-50 cursor-not-allowed" : ""
         }`}
-        onClick={selectedDate < lastDate ? handleRightClick : undefined}
+        onClick={() => {
+          const newDate = new Date(selectedDate);
+          newDate.setDate(newDate.getDate() + 1);
+          handleDateChange(newDate);
+        }}
         disabled={selectedDate >= lastDate}
       >
         <img src={DayAfter} alt="Next Day" className="w-14 h-14" />
