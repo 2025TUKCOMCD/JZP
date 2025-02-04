@@ -175,4 +175,45 @@ public class MovieService {
         return response;
     }
 
+    // 예매 내역 확인
+    public Map<String, Object> getTicketDetails(UUID ticketId) {
+        Optional<Ticket> ticketOptional = ticketRepository.findById(ticketId);
+
+        if (ticketOptional.isEmpty()) {
+            return null; // 예매 정보가 없으면 null 반환
+        }
+
+        Ticket ticket = ticketOptional.get();
+        Movie movie = ticket.getMovie();
+
+        Map<String, Object> response = new HashMap<>();
+
+        // 영화 정보
+        Map<String, Object> movieInfo = new HashMap<>();
+        movieInfo.put("movieId", movie.getMovieId());
+        movieInfo.put("movieImage", movie.getMovieImage());
+        movieInfo.put("movieName", movie.getMovieName());
+        movieInfo.put("movieType", movie.getMovieType());
+        movieInfo.put("movieRating", movie.getMovieRating());
+        movieInfo.put("movieTime", movie.getMovieTime());
+        movieInfo.put("movieSeatremain", movie.getMovieSeatRemain());
+        movieInfo.put("movieTheater", movie.getMovieTheater());
+
+        response.put("movie", movieInfo);
+
+        // 고객 정보
+        Map<String, Integer> movieCustomerInfo = new HashMap<>();
+        movieCustomerInfo.put("movieCustomerdisabled", ticket.getCustomerDisabled());
+        movieCustomerInfo.put("movieCustomeryouth", ticket.getCustomerYouth());
+        movieCustomerInfo.put("movieCustomeradult", ticket.getCustomerAdult());
+        movieCustomerInfo.put("movieCustomerold", ticket.getCustomerOld());
+
+        response.put("movieCustomer", movieCustomerInfo);
+
+        // 티켓 정보
+        response.put("ticketId", ticket.getTicketId());
+
+        return response;
+    }
+
 }

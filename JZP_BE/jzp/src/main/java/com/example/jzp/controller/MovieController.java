@@ -369,4 +369,27 @@ public class MovieController {
 
         return ResponseEntity.ok(paymentHistory);
     }
+
+    // 예매 내역 확인
+    @PostMapping("/ticket")
+    public ResponseEntity<Map<String, Object>> showTicket(@RequestBody TicketRequest request) {
+        Map<String, Object> ticketDetails = movieService.getTicketDetails(request.getTicketId());
+        if (ticketDetails != null) {
+            return ResponseEntity.ok(ticketDetails);
+        }
+        return ResponseEntity.notFound().build(); // 예매 정보가 없을 경우 404 반환
+    }
+
+    // Request Body를 위한 DTO (Data Transfer Object) 클래스
+    public static class TicketRequest {
+        private UUID ticketId;
+
+        public UUID getTicketId() {
+            return ticketId;
+        }
+
+        public void setTicketId(UUID ticketId) {
+            this.ticketId = ticketId;
+        }
+    }
 }
