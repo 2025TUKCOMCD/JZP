@@ -8,6 +8,7 @@ import com.example.jzp.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -67,7 +68,7 @@ public class TicketService {
     }
 
     // 영화 시간 저장
-    public boolean updateMovieTime(UUID movieId, Date movieTime, String movieTheater) {
+    public boolean updateMovieTime(UUID movieId, LocalTime movieTime, String movieTheater) {
         Optional<Movie> movieOptional = movieRepository.findById(movieId);
         if (movieOptional.isEmpty()) {
             return false;

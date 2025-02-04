@@ -1,5 +1,6 @@
 package com.example.jzp.model;
 
+import java.time.LocalTime;
 import jakarta.persistence.*;
 import java.util.Date;
 import java.util.UUID;
@@ -15,13 +16,8 @@ public class Movie {
 
     @Temporal(TemporalType.DATE)
     private Date movieCalendar;
-
-    @Temporal(TemporalType.DATE)
-    private Date movieTime;
-
+    private LocalTime movieTime;
     private String movieTheater;
-
-
     private String movieImage;
     private String movieType;
     private String movieRating;
@@ -52,11 +48,11 @@ public class Movie {
         this.movieCalendar = movieCalendar;
     }
 
-    public Date getMovieTime() {
+    public LocalTime getMovieTime() {
         return movieTime;
     }
 
-    public void setMovieTime(Date movieTime) {
+    public void setMovieTime(LocalTime movieTime) {
         this.movieTime = movieTime;
     }
 

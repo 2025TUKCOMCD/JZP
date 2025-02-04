@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.jzp.model.Ticket;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -39,7 +40,7 @@ public class MovieService {
             response.setMovieName(movie.getMovieName());
             response.setMovieType(movie.getMovieType());
             response.setMovieRating(movie.getMovieRating());
-            response.setMovieTime(movie.getMovieTime());
+            response.setMovieTime(movie.getMovieTime());  // LocalTime 사용
             response.setMovieSeatRemain(movie.getMovieSeatRemain());
             response.setMovieTheater(movie.getMovieTheater());
             return response;
@@ -47,7 +48,7 @@ public class MovieService {
     }
 
     // 영화 시간 저장 (영화 정보만 갱신)
-    public boolean updateMovieTime(UUID movieId, Date movieTime, String movieTheater) {
+    public boolean updateMovieTime(UUID movieId, LocalTime movieTime, String movieTheater) {
         Optional<Movie> movieOptional = movieRepository.findById(movieId);
         if (movieOptional.isEmpty()) {
             return false;
