@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import HomeIcon from "../assets/icons/homeIcon.svg";
 import Header from "../components/header.jsx";
 import StepBar from "../components/movieStepBar.jsx";
 import PeopleSelector from "../components/PeopleSelector.jsx";
@@ -22,8 +21,8 @@ function JuniorSeatSelectPage() {
   };
 
   // 홈으로 이동
-  const handleJuniorMain = () => {
-    navigate("/juniorMain");
+  const handleJuniorMovieSelect = () => {
+    navigate("/juniorMovie");
   };
 
   // 결제 페이지로 이동
@@ -69,10 +68,10 @@ function JuniorSeatSelectPage() {
       {/* Footer 컴포넌트 */}
       <footer className="fixed bottom-0 w-[450px] bg-gray-800 flex mx-auto">
         <button
-          className="flex-1 bg-white text-black text-sm font-bold h-16 flex items-center justify-center leading-none gap-2"
-          onClick={handleJuniorMain}
+          className="flex-1 bg-buttonGray text-white text-sm font-bold h-16 flex items-center justify-center leading-none"
+          onClick={handleJuniorMovieSelect}
         >
-          <img src={HomeIcon} alt="홈 아이콘" className="w-4 h-4" />홈
+          영화 다시 선택하기
         </button>
 
         {/* 결제하기 버튼 */}

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import HomeIcon from "../assets/icons/homeIcon.svg";
 import movieImage from "../assets/images/movie2.png";
 import ageImage from "../assets/images/12.png";
 import Header from "../components/header.jsx";
@@ -29,8 +28,8 @@ function SeniorSeatSelectPage() {
     setModalMessage(""); // 메시지 초기화
   };
 
-  const handleJuniorMain = () => {
-    navigate("/seniorMain");
+  const handleJuniorMovie = () => {
+    navigate("/seniorMovie");
   };
 
   const handleJuniorPay = () => {
@@ -86,10 +85,10 @@ function SeniorSeatSelectPage() {
 
       <footer className="fixed bottom-0 w-[450px] bg-gray-800 flex mx-auto">
         <button
-          className="flex-1 bg-white text-black text-xl font-bold h-16 flex items-center justify-center leading-none gap-2"
-          onClick={handleJuniorMain}
+          className="flex-1 bg-buttonGray text-white text-xl font-bold h-16 flex items-center justify-center leading-none gap-2"
+          onClick={handleJuniorMovie}
         >
-          <img src={HomeIcon} alt="홈 아이콘" className="w-8 h-8" />홈
+          영화 다시 선택하기
         </button>
         <button
           className="flex-1 bg-red-600 text-white text-xl font-bold h-16 flex items-center justify-center leading-none"
