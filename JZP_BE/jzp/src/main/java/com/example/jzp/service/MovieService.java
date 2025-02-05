@@ -230,7 +230,6 @@ public class MovieService {
         return response;
     }
 
-    // 예매 내역 확인
     public Map<String, Object> getTicketDetails(UUID ticketId) {
         Optional<Ticket> ticketOptional = ticketRepository.findById(ticketId);
 
@@ -251,19 +250,18 @@ public class MovieService {
         movieInfo.put("movieType", movie.getMovieType());
         movieInfo.put("movieRating", movie.getMovieRating());
         movieInfo.put("movieTime", movie.getMovieTime());
-        movieInfo.put("movieSeatremain", movie.getMovieSeatRemain());
+        movieInfo.put("movieSeatRemain", movie.getMovieSeatRemain());
         movieInfo.put("movieTheater", movie.getMovieTheater());
         movieInfo.put("movieGrade", movie.getMovieGrade());
-
 
         response.put("movie", movieInfo);
 
         // 고객 정보
         Map<String, Integer> movieCustomerInfo = new HashMap<>();
-        movieCustomerInfo.put("movieCustomerdisabled", ticket.getCustomerDisabled());
-        movieCustomerInfo.put("movieCustomeryouth", ticket.getCustomerYouth());
-        movieCustomerInfo.put("movieCustomeradult", ticket.getCustomerAdult());
-        movieCustomerInfo.put("movieCustomerold", ticket.getCustomerOld());
+        movieCustomerInfo.put("movieCustomerAdult", ticket.getCustomerAdult());
+        movieCustomerInfo.put("movieCustomerDisabled", ticket.getCustomerDisabled());
+        movieCustomerInfo.put("movieCustomerYouth", ticket.getCustomerYouth());
+        movieCustomerInfo.put("movieCustomerOld", ticket.getCustomerOld());
 
         response.put("movieCustomer", movieCustomerInfo);
 
@@ -272,5 +270,4 @@ public class MovieService {
 
         return response;
     }
-
 }

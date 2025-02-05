@@ -353,14 +353,14 @@ public class MovieController {
         }
     }
 
-    // 예매 내역 확인
-    @PostMapping("/ticket")
-    public ResponseEntity<Map<String, Object>> showTicket(@RequestBody TicketRequest request) {
-        Map<String, Object> ticketDetails = movieService.getTicketDetails(request.getTicketId());
+    @GetMapping("/ticket")
+    public ResponseEntity<Map<String, Object>> getTicketDetails(@RequestParam("ticketId") UUID ticketId){
+        Map<String, Object> ticketDetails = movieService.getTicketDetails(ticketId);
+
         if (ticketDetails != null) {
-            return ResponseEntity.ok(ticketDetails);
+            return ResponseEntity.ok(ticketDetails); // 티켓 정보가 존재하면 반환
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.notFound().build(); // 티켓이 존재하지 않으면 404 반환
     }
 
     public static class TicketRequest {
@@ -492,6 +492,15 @@ public class MovieController {
                         movie.getMovieGrade()))
                 .collect(Collectors.toList());
     }
+
+        // 결제 내역 확인
+        @GetMapping("/payment/history")
+        public ResponseEntity<Map<String, Object>> showPayment() {
+            // MovieService에서 결제 내역과 총 금액 처리
+            Map<String, Object> paymentHistory = movieService.getPaymentHistory();
+
+            return ResponseEntity.ok(paymentHistory);
+        }
 
 
 }
