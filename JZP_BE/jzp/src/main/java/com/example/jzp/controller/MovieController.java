@@ -47,12 +47,10 @@ public class MovieController {
         ));
     }
 
-
     // 청소년 우선순위로 영화 정렬
     private List<MovieResponse> prioritizeForYouth(List<MovieResponse> movies) {
         return movies.stream()
-                .sorted(Comparator.comparingInt(MovieResponse::getMovieSeatRemain) // 좌석 수로 우선 정렬
-                        .thenComparingInt(movie -> Integer.parseInt(movie.getMovieRating()))) // movieRating으로 추가 정렬
+                .sorted(Comparator.comparingInt(MovieResponse::getMovieRating)) // 영화 평점으로 우선 정렬
                 .collect(Collectors.toList());
     }
 
@@ -62,26 +60,9 @@ public class MovieController {
                 .sorted(Comparator.comparingInt((MovieResponse movie) ->
                                 movie.getMovieType().equals("드라마") ? 1 : 0) // 드라마 영화를 먼저
                         .reversed() // 드라마 우선
-                        .thenComparingInt(MovieResponse::getMovieSeatRemain) // 좌석 수로 정렬
-                        .thenComparingInt(movie -> Integer.parseInt(movie.getMovieRating()))) // movieRating으로 추가 정렬
+                        .thenComparingInt(MovieResponse::getMovieRating)) // 영화 평점으로 정렬
                 .collect(Collectors.toList());
     }
-
-
-
-    // 영화 시간 저장
-    @PostMapping("/time")
-    public ResponseEntity<?> setMovieTime(@RequestBody MovieRequest request) {
-        boolean success = movieService.updateMovieTime(
-                request.getMovieId(),
-                request.getMovieTime(),
-                request.getMovieTheater()
-        );
-
-        return success ? ResponseEntity.ok(Map.of("status", "success"))
-                : ResponseEntity.badRequest().body(Map.of("status", "failed", "message", "영화를 찾을 수 없습니다"));
-    }
-
 
     // DTO: 영화 날짜 요청
     public static class MovieCalendarRequest {
@@ -97,46 +78,55 @@ public class MovieController {
         }
     }
 
-    // DTO: 영화 시간 저장 요청
-    public static class MovieRequest {
-        private UUID movieId;
-        private String movieName;
-        private LocalTime movieTime;
-        private String movieTheater;
 
-        // Getters and Setters
-        public UUID getMovieId() {
-            return movieId;
+    // 영화 시간 저장
+        @PostMapping("/time")
+        public ResponseEntity<?> updateMovieTime(@RequestBody MovieTimeRequest request) {
+            boolean success = movieService.updateMovieTime(request.getMovieId(), request.getMovieTime(), request.getMovieTheater());
+
+            if (!success) {
+                return ResponseEntity.badRequest().body(Map.of(
+                        "status", "failed",
+                        "message", "영화 정보를 찾을 수 없습니다."
+                ));
+            }
+
+            return ResponseEntity.ok(Map.of("status", "success"));
         }
 
-        public void setMovieId(UUID movieId) {
-            this.movieId = movieId;
+        // MovieTimeRequest를 static 클래스로 변경
+        public static class MovieTimeRequest {
+            private UUID movieId;
+            private LocalTime movieTime;
+            private String movieTheater;
+
+            // Getters and Setters
+            public UUID getMovieId() {
+                return movieId;
+            }
+
+            public void setMovieId(UUID movieId) {
+                this.movieId = movieId;
+            }
+
+            public LocalTime getMovieTime() {
+                return movieTime;
+            }
+
+            public void setMovieTime(LocalTime movieTime) {
+                this.movieTime = movieTime;
+            }
+
+            public String getMovieTheater() {
+                return movieTheater;
+            }
+
+            public void setMovieTheater(String movieTheater) {
+                this.movieTheater = movieTheater;
+            }
         }
 
-        public String getMovieName() {
-            return movieName;
-        }
 
-        public void setMovieName(String movieName) {
-            this.movieName = movieName;
-        }
-
-        public LocalTime getMovieTime() {
-            return movieTime;
-        }
-
-        public void setMovieTime(LocalTime movieTime) {
-            this.movieTime = movieTime;
-        }
-
-        public String getMovieTheater() {
-            return movieTheater;
-        }
-
-        public void setMovieTheater(String movieTheater) {
-            this.movieTheater = movieTheater;
-        }
-    }
 
     // DTO: 영화 응답 데이터
     public static class MovieResponse {
@@ -144,10 +134,11 @@ public class MovieController {
         private String movieImage;
         private String movieName;
         private String movieType;
-        private String movieRating;
+        private int movieRating;
         private LocalTime movieTime;
         private int movieSeatRemain;
         private String movieTheater;
+        private String movieGrade;
 
         // Getters and Setters
         public UUID getMovieId() {
@@ -182,11 +173,11 @@ public class MovieController {
             this.movieType = movieType;
         }
 
-        public String getMovieRating() {
+        public int getMovieRating() {
             return movieRating;
         }
 
-        public void setMovieRating(String movieRating) {
+        public void setMovieRating(int movieRating) {
             this.movieRating = movieRating;
         }
 
@@ -203,6 +194,14 @@ public class MovieController {
 
         public void setMovieSeatRemain(int movieSeatRemain) {
             this.movieSeatRemain = movieSeatRemain;
+        }
+
+        public String getMovieGrade() {
+            return movieGrade;
+        }
+
+        public void setMovieGrade(String movieGrade) {
+            this.movieGrade = movieGrade;
         }
 
         public String getMovieTheater() {
@@ -384,7 +383,6 @@ public class MovieController {
         return ResponseEntity.notFound().build(); // 예매 정보가 없을 경우 404 반환
     }
 
-    // Request Body를 위한 DTO (Data Transfer Object) 클래스
     public static class TicketRequest {
         private UUID ticketId;
 
@@ -395,5 +393,13 @@ public class MovieController {
         public void setTicketId(UUID ticketId) {
             this.ticketId = ticketId;
         }
+    }
+
+    @GetMapping("/banner")
+    public ResponseEntity<?> getBanner() {
+        return ResponseEntity.ok(Map.of(
+                "success", true,
+                "movieImage", "http://3.106.89.95/images/harry2.jpg"
+        ));
     }
 }

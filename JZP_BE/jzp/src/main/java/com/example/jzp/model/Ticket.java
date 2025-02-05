@@ -1,6 +1,8 @@
 package com.example.jzp.model;
 
 import jakarta.persistence.*;
+
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -13,10 +15,9 @@ public class Ticket {
     @ManyToOne
     @JoinColumn(name = "movie_id")
     private Movie movie;
-
     @Column(nullable = false)
     private String movieTheater;
-
+    private LocalTime movieTime;
     private String movieSeat;
     private int customerDisabled;
     private int customerYouth;
@@ -45,6 +46,14 @@ public class Ticket {
 
     public void setMovie(Movie movie) {
         this.movie = movie;
+    }
+
+    public LocalTime getMovieTime() {
+        return movieTime;
+    }
+
+    public void setMovieTime(LocalTime movieTime) {
+        this.movieTime = movieTime;
     }
 
     public String getMovieSeat() {

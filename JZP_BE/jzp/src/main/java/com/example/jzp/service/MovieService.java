@@ -7,13 +7,12 @@ import com.example.jzp.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.jzp.model.Ticket;
-import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+
 public class MovieService {
 
     @Autowired
@@ -40,6 +39,7 @@ public class MovieService {
             response.setMovieName(movie.getMovieName());
             response.setMovieType(movie.getMovieType());
             response.setMovieRating(movie.getMovieRating());
+            response.setMovieGrade(movie.getMovieGrade());
             response.setMovieTime(movie.getMovieTime());  // LocalTime 사용
             response.setMovieSeatRemain(movie.getMovieSeatRemain());
             response.setMovieTheater(movie.getMovieTheater());
@@ -47,18 +47,32 @@ public class MovieService {
         }).collect(Collectors.toList());
     }
 
-    // 영화 시간 저장 (영화 정보만 갱신)
+    // 영화 시간과 극장 정보 업데이트
     public boolean updateMovieTime(UUID movieId, LocalTime movieTime, String movieTheater) {
         Optional<Movie> movieOptional = movieRepository.findById(movieId);
         if (movieOptional.isEmpty()) {
-            return false;
+            return false;  // 영화 정보가 없으면 false 반환
         }
+
         Movie movie = movieOptional.get();
         movie.setMovieTime(movieTime);
         movie.setMovieTheater(movieTheater);
         movieRepository.save(movie);
 
+        // 해당 영화의 티켓 정보도 업데이트 (필요한 경우)
+        updateTicketsForMovie(movie);
+
         return true;
+    }
+
+    // 영화에 해당하는 티켓 정보 업데이트
+    private void updateTicketsForMovie(Movie movie) {
+        List<Ticket> tickets = ticketRepository.findByMovie(movie);
+        for (Ticket ticket : tickets) {
+            ticket.setMovieTheater(movie.getMovieTheater());
+            ticket.setMovieTime(movie.getMovieTime());
+            ticketRepository.save(ticket);
+        }
     }
 
     // 영화 좌석 예약 처리 (요청된 좌석 개수만큼 감소)
@@ -135,6 +149,7 @@ public class MovieService {
             movieInfo.put("movieTime", movie.getMovieTime());
             movieInfo.put("movieSeatRemain", movie.getMovieSeatRemain());
             movieInfo.put("movieTheater", movie.getMovieTheater());
+            movieInfo.put("movieGrade", movie.getMovieGrade());
 
             movieHistory.put("movie", movieInfo);
 
@@ -198,6 +213,8 @@ public class MovieService {
         movieInfo.put("movieTime", movie.getMovieTime());
         movieInfo.put("movieSeatremain", movie.getMovieSeatRemain());
         movieInfo.put("movieTheater", movie.getMovieTheater());
+        movieInfo.put("movieGrade", movie.getMovieGrade());
+
 
         response.put("movie", movieInfo);
 

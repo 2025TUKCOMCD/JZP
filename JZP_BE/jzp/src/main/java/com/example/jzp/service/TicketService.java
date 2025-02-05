@@ -12,6 +12,7 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
 @Service
 public class TicketService {
 
@@ -63,6 +64,7 @@ public class TicketService {
             response.setMovieTime(movie.getMovieTime());
             response.setMovieSeatRemain(movie.getMovieSeatRemain());
             response.setMovieTheater(movie.getMovieTheater());
+            response.setMovieGrade(movie.getMovieGrade());
             return response;
         }).collect(Collectors.toList());
     }
