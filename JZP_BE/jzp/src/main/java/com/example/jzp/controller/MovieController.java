@@ -358,9 +358,9 @@ public class MovieController {
         Map<String, Object> ticketDetails = movieService.getTicketDetails(ticketId);
 
         if (ticketDetails != null) {
-            return ResponseEntity.ok(ticketDetails); // 티켓 정보가 존재하면 반환
+            return ResponseEntity.ok(ticketDetails);
         }
-        return ResponseEntity.notFound().build(); // 티켓이 존재하지 않으면 404 반환
+        return ResponseEntity.notFound().build();
     }
 
     public static class TicketRequest {
