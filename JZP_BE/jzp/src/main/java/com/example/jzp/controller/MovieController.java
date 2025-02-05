@@ -274,9 +274,8 @@ public class MovieController {
         }
     }
 
-    // 고객 정보를 저장하는 API
     @PostMapping("/customer")
-    public ResponseEntity<?> saveMovieCustomer(@RequestBody MovieCustomerRequest request) {
+    public ResponseEntity<?> setMovieCustomer(@RequestBody MovieCustomerRequest request) {
         if (request.getMovieId() == null) {
             return ResponseEntity.badRequest().body(Map.of(
                     "success", false,
@@ -284,7 +283,6 @@ public class MovieController {
             ));
         }
 
-        // 고객 정보를 저장
         boolean success = movieService.saveMovieCustomer(
                 request.getMovieId(),
                 request.getMovieCustomerDisabled(),
@@ -303,6 +301,7 @@ public class MovieController {
                 "success", true
         ));
     }
+
 
     // MovieCustomerRequest DTO 정의
     public static class MovieCustomerRequest {

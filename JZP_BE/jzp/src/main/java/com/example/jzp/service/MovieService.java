@@ -158,6 +158,8 @@ public class MovieService {
         // TicketService의 saveCustomerTicket 호출
         return ticketService.saveCustomerTicket(movieId, disabled, youth, adult, old);
     }
+
+
     // 결제 내역 조회
     public Map<String, Object> getPaymentHistory() {
         // 결제 내역 조회
