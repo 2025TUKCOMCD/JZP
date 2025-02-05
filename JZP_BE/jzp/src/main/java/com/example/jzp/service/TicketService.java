@@ -84,7 +84,7 @@ public class TicketService {
         return true;
     }
 
-// 영화 좌석 예약 처리
+    // 영화 좌석 예약 처리
     public boolean setMovieSeat(UUID movieId, String movieSeat, String movieTheater) {
         // 좌석 예약을 위한 bookTicket 호출
         return bookTicket(movieId, movieSeat, movieTheater, 0, 0, 0, 0) != null; // 고객 정보는 0으로 넘김
@@ -98,32 +98,35 @@ public class TicketService {
                 .orElse(0);
     }
 
-    // 고객 정보 저장 후 Ticket 생성
-        public Ticket bookTicket(UUID movieId, int movieCustomerDisabled, int movieCustomerYouth, int movieCustomerAdult, int movieCustomerOld) {
-            Optional<Movie> movieOptional = movieRepository.findById(movieId);
-            if (movieOptional.isEmpty()) {
-                return null;  // Return null if movie is not found
-            }
-
-            // Movie 객체 조회
-            Movie movie = movieOptional.get();
-
-            // 새 티켓 생성
-            Ticket ticket = new Ticket();
-
-            // 고객 정보 설정
-            ticket.setMovie(movie); // movieId 대신 movie 객체를 설정
-            ticket.setCustomerDisabled(movieCustomerDisabled);
-            ticket.setCustomerYouth(movieCustomerYouth);
-            ticket.setCustomerAdult(movieCustomerAdult);
-            ticket.setCustomerOld(movieCustomerOld);
-            ticket.setMovieTheater(movie.getMovieTheater());
-
-            // 티켓 저장
-            ticketRepository.save(ticket);
-
-            // 티켓 객체 반환
-            return ticket;  // Return the saved ticket (or null in case of failure)
+    public boolean saveCustomerTicket(UUID movieId, int disabled, int youth, int adult, int old) {
+        // 영화 ID로 Movie 객체를 조회
+        Optional<Movie> movieOptional = movieRepository.findById(movieId);
+        if (movieOptional.isEmpty()) {
+            return false; // 영화가 존재하지 않으면 실패
         }
 
+        Movie movie = movieOptional.get();
+
+        // 가장 최근에 생성된 티켓 조회
+        Optional<Ticket> latestTicketOptional = ticketRepository.findTopByMovieOrderByCreatedAtDesc(movie);
+
+        if (latestTicketOptional.isPresent()) {
+            Ticket latestTicket = latestTicketOptional.get();
+
+            // 고객 정보 저장
+            latestTicket.setCustomerDisabled(disabled);
+            latestTicket.setCustomerYouth(youth);
+            latestTicket.setCustomerAdult(adult);
+            latestTicket.setCustomerOld(old);
+
+            // 변경된 티켓 저장
+            ticketRepository.save(latestTicket);
+            return true;
+        }
+
+        return false;
     }
+
+
+
+}

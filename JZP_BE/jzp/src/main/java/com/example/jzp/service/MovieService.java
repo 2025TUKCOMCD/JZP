@@ -29,6 +29,18 @@ public class MovieService {
     private static final int OLD_TICKET_PRICE = 8000;    // 노인 가격
     private static final int DISABLED_TICKET_PRICE = 5000; // 장애인 가격
 
+    public MovieService(TicketRepository ticketRepository) {
+        this.ticketRepository = ticketRepository;
+    }
+
+    public List<Movie> getMoviesByTime(Date movieCalendar, LocalTime movieTime) {
+        List<Ticket> tickets = ticketRepository.findByMovieMovieCalendarAndMovieMovieTime(movieCalendar, movieTime);
+        return tickets.stream()
+                .map(Ticket::getMovie)  // Ticket에서 Movie를 추출
+                .distinct()  // 중복된 영화가 있을 경우 제거
+                .collect(Collectors.toList());
+    }
+
     // 날짜별 영화 조회
     public List<MovieController.MovieResponse> getMoviesByDate(Date movieCalendar) {
         List<Movie> movies = movieRepository.findByMovieCalendar(movieCalendar);
@@ -48,21 +60,40 @@ public class MovieService {
     }
 
     // 영화 시간과 극장 정보 업데이트
-    public boolean updateMovieTime(UUID movieId, LocalTime movieTime, String movieTheater) {
-        Optional<Movie> movieOptional = movieRepository.findById(movieId);
-        if (movieOptional.isEmpty()) {
-            return false;  // 영화 정보가 없으면 false 반환
+        public boolean updateMovieTime(UUID movieId, LocalTime movieTime, String movieTheater) {
+            // 영화 ID로 Movie 객체를 조회
+            Optional<Movie> movieOptional = movieRepository.findById(movieId);
+            if (movieOptional.isEmpty()) {
+                return false;  // 영화 정보가 없으면 false 반환
+            }
+
+            Movie movie = movieOptional.get();
+
+            // 해당 영화와 관련된 모든 티켓 조회
+            List<Ticket> tickets = ticketRepository.findByMovie(movie);
+            if (tickets.isEmpty()) {
+                // 티켓이 없다면 새로 생성
+                Ticket newTicket = createNewTicket(movie, movieTime, movieTheater);
+                ticketRepository.save(newTicket);  // 새 티켓 저장
+            } else {
+                // 기존 티켓은 업데이트하지 않음 (필요한 경우 업데이트 가능)
+                for (Ticket ticket : tickets) {
+                    ticket.setMovieTime(movieTime);
+                    ticket.setMovieTheater(movieTheater);
+                    ticketRepository.save(ticket);  // 각 티켓 저장
+                }
+            }
+
+            return true;
         }
 
-        Movie movie = movieOptional.get();
-        movie.setMovieTime(movieTime);
-        movie.setMovieTheater(movieTheater);
-        movieRepository.save(movie);
+    private Ticket createNewTicket(Movie movie, LocalTime movieTime, String movieTheater) {
+        Ticket ticket = new Ticket();
+        ticket.setMovie(movie);
+        ticket.setMovieTime(movieTime);
+        ticket.setMovieTheater(movieTheater);
 
-        // 해당 영화의 티켓 정보도 업데이트 (필요한 경우)
-        updateTicketsForMovie(movie);
-
-        return true;
+        return ticket;
     }
 
     // 영화에 해당하는 티켓 정보 업데이트
@@ -99,27 +130,34 @@ public class MovieService {
         // 변경된 정보 저장
         movieRepository.save(movie);
 
-        // Ticket 정보 저장 (필요하면 추가)
-        return ticketService.bookTicket(movieId, movieSeat, movieTheater, 0, 0, 0, 0) != null;
-    }
+        // 해당 영화에 대한 가장 최근에 생성된 티켓 조회 (생성일자 기준 내림차순)
+        Optional<Ticket> latestTicketOptional = ticketRepository.findTopByMovieOrderByCreatedAtDesc(movie);
+        if (latestTicketOptional.isPresent()) {
+            Ticket latestTicket = latestTicketOptional.get();
 
+            // 기존 티켓에 좌석 정보 업데이트
+            latestTicket.setMovieSeat(movieSeat);
+            latestTicket.setMovieTheater(movieTheater);
+
+            // 업데이트된 티켓 저장
+            ticketRepository.save(latestTicket);
+        } else {
+            // 기존 티켓이 없다면 새로운 티켓을 생성하지 않음 (기존 티켓이 있어야만 업데이트)
+            return false;
+        }
+
+        return true;
+    }
 
     // 남은 좌석 수 조회
     public int getMovieSeatRemain(UUID movieId) {
         return ticketService.getMovieSeatRemain(movieId);
     }
 
-
-    public boolean saveMovieCustomer(MovieController.MovieCustomerRequest request) {
-        return ticketService.bookTicket(
-                request.getMovieId(),
-                request.getMovieCustomerDisabled(),
-                request.getMovieCustomerYouth(),
-                request.getMovieCustomerAdult(),
-                request.getMovieCustomerOld()
-        ) != null;
+    public boolean saveMovieCustomer(UUID movieId, int disabled, int youth, int adult, int old) {
+        // TicketService의 saveCustomerTicket 호출
+        return ticketService.saveCustomerTicket(movieId, disabled, youth, adult, old);
     }
-
     // 결제 내역 조회
     public Map<String, Object> getPaymentHistory() {
         // 결제 내역 조회
