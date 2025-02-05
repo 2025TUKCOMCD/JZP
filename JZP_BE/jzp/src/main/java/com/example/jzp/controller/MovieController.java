@@ -8,13 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalTime;
 import java.util.stream.Collectors;
 
 import java.util.*;
 
 @RestController
+@CrossOrigin("*")
+
 @RequestMapping("/api/movie")
 public class MovieController {
+    
 
     @Autowired
     private MovieService movieService;
@@ -92,10 +97,7 @@ public class MovieController {
     public static class MovieRequest {
         private UUID movieId;
         private String movieName;
-
-        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-        private Date movieTime;
-
+        private LocalTime movieTime;
         private String movieTheater;
 
         // Getters and Setters
@@ -115,11 +117,11 @@ public class MovieController {
             this.movieName = movieName;
         }
 
-        public Date getMovieTime() {
+        public LocalTime getMovieTime() {
             return movieTime;
         }
 
-        public void setMovieTime(Date movieTime) {
+        public void setMovieTime(LocalTime movieTime) {
             this.movieTime = movieTime;
         }
 
@@ -139,7 +141,7 @@ public class MovieController {
         private String movieName;
         private String movieType;
         private String movieRating;
-        private Date movieTime;
+        private LocalTime movieTime;
         private int movieSeatRemain;
         private String movieTheater;
 
@@ -184,11 +186,10 @@ public class MovieController {
             this.movieRating = movieRating;
         }
 
-        public Date getMovieTime() {
+        public LocalTime getMovieTime() {
             return movieTime;
         }
-
-        public void setMovieTime(Date movieTime) {
+        public void setMovieTime(LocalTime movieTime) {
             this.movieTime = movieTime;
         }
 
@@ -248,7 +249,7 @@ public class MovieController {
     public static class MovieSeatRequest {
         private UUID movieId;         // 영화 ID
         private String movieName;     // 영화 이름
-        private Date movieTime;       // 영화 시간
+        private LocalTime movieTime;       // 영화 시간
         private String movieSeat;     // 좌석
         private String movieTheater;  // 영화관 정보
 
@@ -268,11 +269,11 @@ public class MovieController {
             this.movieName = movieName;
         }
 
-        public Date getMovieTime() {
+        public LocalTime getMovieTime() {
             return movieTime;
         }
 
-        public void setMovieTime(Date movieTime) {
+        public void setMovieTime(LocalTime movieTime) {
             this.movieTime = movieTime;
         }
 
@@ -316,7 +317,7 @@ public class MovieController {
         private String movieName;
         private String movieType;
         private String movieRating;
-        private Date movieTime;
+        private LocalTime movieTime;
         private int movieSeatRemain;
         private String movieTheater;
         private int movieCustomerDisabled;
@@ -366,11 +367,11 @@ public class MovieController {
             this.movieRating = movieRating;
         }
 
-        public Date getMovieTime() {
+        public LocalTime getMovieTime() {
             return movieTime;
         }
 
-        public void setMovieTime(Date movieTime) {
+        public void setMovieTime(LocalTime movieTime) {
             this.movieTime = movieTime;
         }
 

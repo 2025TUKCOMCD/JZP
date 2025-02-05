@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.jzp.model.Ticket;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -39,7 +40,7 @@ public class MovieService {
             response.setMovieName(movie.getMovieName());
             response.setMovieType(movie.getMovieType());
             response.setMovieRating(movie.getMovieRating());
-            response.setMovieTime(movie.getMovieTime());
+            response.setMovieTime(movie.getMovieTime());  // LocalTime 사용
             response.setMovieSeatRemain(movie.getMovieSeatRemain());
             response.setMovieTheater(movie.getMovieTheater());
             return response;
@@ -47,7 +48,7 @@ public class MovieService {
     }
 
     // 영화 시간 저장 (영화 정보만 갱신)
-    public boolean updateMovieTime(UUID movieId, Date movieTime, String movieTheater) {
+    public boolean updateMovieTime(UUID movieId, LocalTime movieTime, String movieTheater) {
         Optional<Movie> movieOptional = movieRepository.findById(movieId);
         if (movieOptional.isEmpty()) {
             return false;
@@ -60,10 +61,34 @@ public class MovieService {
         return true;
     }
 
-    // 영화 좌석 예약 처리 (TicketService 사용)
+    // 영화 좌석 예약 처리 (요청된 좌석 개수만큼 감소)
     public boolean setMovieSeat(UUID movieId, String movieSeat, String movieTheater) {
-        return ticketService.bookTicket(movieId, movieSeat,movieTheater,0, 0, 0, 0) != null;
+        Optional<Movie> movieOptional = movieRepository.findById(movieId);
+        if (movieOptional.isEmpty()) {
+            return false; // 영화 정보가 없으면 실패
+        }
+
+        Movie movie = movieOptional.get();
+
+        // 요청된 좌석 개수 확인
+        int reservedCount = movieSeat.split(",").length;
+        int remainingSeats = movie.getMovieSeatRemain();
+
+        // 좌석 부족 체크
+        if (remainingSeats < reservedCount) {
+            return false; // 예약할 좌석 수보다 남은 좌석이 적으면 실패
+        }
+
+        // 남은 좌석 수 감소
+        movie.setMovieSeatRemain(remainingSeats - reservedCount);
+
+        // 변경된 정보 저장
+        movieRepository.save(movie);
+
+        // Ticket 정보 저장 (필요하면 추가)
+        return ticketService.bookTicket(movieId, movieSeat, movieTheater, 0, 0, 0, 0) != null;
     }
+
 
     // 남은 좌석 수 조회
     public int getMovieSeatRemain(UUID movieId) {
