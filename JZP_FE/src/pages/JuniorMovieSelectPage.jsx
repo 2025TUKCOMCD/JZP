@@ -15,36 +15,38 @@ function JuniorMovieSelectPage() {
   const [selectedButton, setSelectedButton] = useState(null);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [movies, setMovies] = useState([]);
-  const [selectedDate, setSelectedDate] = useState("2025-02-15");
+  const [selectedDate, setSelectedDate] = useState("2025-02-06");
   const navigate = useNavigate();
 
   const handleJuniorMain = () => navigate("/juniorMain");
 
   const handleJuniorSeatSelect = async () => {
-    if (!selectedMovie) return;
+    if (!selectedMovie) {
+      alert("🎬 영화를 선택해주세요!");
+      return;
+    }
+
+    if (!selectedMovie.movieTime || !selectedMovie.movieTheater) {
+      alert("❗ 영화 시간 또는 상영관 정보가 없습니다. 다시 선택해주세요!");
+      return;
+    }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/movie/time`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          movieId: selectedMovie.movieId,
-          movieTime: selectedMovie.movieTime,
-          movieTheater: selectedMovie.movieTheater,
-        }),
-      });
+      const requestBody = {
+        movieId: selectedMovie.movieId,
+        movieCalendar: selectedDate,
+        movieTime: selectedMovie.movieTime,
+        movieTheater: selectedMovie.movieTheater,
+      };
 
-      const result = await response.json();
-      console.log("🎟️ 좌석 선택 응답:", result);
+      console.log("📤 영화 데이터 저장:", requestBody);
 
-      if (result.status === "success") {
-        navigate("/juniorSeat");
-      } else {
-        alert(`좌석 선택 실패: ${result.message || "알 수 없는 오류"}`);
-      }
+      // ✅ `localStorage`에 저장 (JuniorSeatSelectPage에서 사용할 데이터)
+      localStorage.setItem("selectedMovie", JSON.stringify(requestBody));
+
+      navigate("/juniorSeat"); // ✅ `state` 없이 이동
     } catch (error) {
-      console.error("🚨 좌석 선택 요청 실패:", error);
-      alert("좌석 선택 요청 중 오류가 발생했습니다.");
+      console.error("🚨 영화 데이터 저장 실패:", error);
     }
   };
 
