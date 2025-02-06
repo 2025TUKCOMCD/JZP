@@ -18,8 +18,7 @@
 |--------|------|----------|
 |  **홈 페이지** | 나이 분류 이후 키오스크 화면 |<img width="300" alt="스크린샷 2025-02-06 오후 12 24 54" src="https://github.com/user-attachments/assets/a0c647fb-fef9-41b2-8037-d16745672b09" />|
 |  **영화 선택 페이지** | 사용자가 원하는 날짜와 원하는 영화 선택 | <img width="300" alt="스크린샷 2025-02-06 오후 12 25 01" src="https://github.com/user-attachments/assets/e3eead68-9a20-4def-b044-3bcad39ce3df" />|
-|  **영화 인원 및 좌석 선택 페이지** | 사용자가 선택한 영화에 대한 인원수 및 좌석을 선택 |<img width="300" alt="스크린샷 2025-02-06 오후 12 36 16" src="https://github.com/user-attachments/assets/9a33914d-8874-4f14-a891-c50ed608aa40" />
- <img width="300" alt="스크린샷 2025-02-06 오후 12 25 14" src="https://github.com/user-attachments/assets/c5443041-9f98-4b24-932f-71fbf02bad43" />|
+|  **영화 인원 및 좌석 선택 페이지** | 사용자가 선택한 영화에 대한 인원수 및 좌석을 선택 |<img width="300" alt="스크린샷 2025-02-06 오후 12 36 16" src="https://github.com/user-attachments/assets/9a33914d-8874-4f14-a891-c50ed608aa40" /> <img width="300" alt="스크린샷 2025-02-06 오후 12 25 14" src="https://github.com/user-attachments/assets/c5443041-9f98-4b24-932f-71fbf02bad43" />|
 |  **영화 결제 페이지** | 예매할 영화의 정보를 보여주는 화면 |<img width="300" alt="스크린샷 2025-02-06 오후 12 25 21" src="https://github.com/user-attachments/assets/d7a0559d-3111-457f-b398-45ef5ebb9e0f" />|
 |  **영화 예매 완료 페이지** | 예매한 영화 내역을 보여주는 화면 |<img width="300" alt="스크린샷 2025-02-06 오후 12 25 25" src="https://github.com/user-attachments/assets/2fd95f3c-c374-4f38-aea6-aea278eaa9fe" /><img width="300" alt="스크린샷 2025-02-06 오후 12 25 28" src="https://github.com/user-attachments/assets/11f246b0-b9bd-4600-9bd7-3afe0093122e" />|
 
