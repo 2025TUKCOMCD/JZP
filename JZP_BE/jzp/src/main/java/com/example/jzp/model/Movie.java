@@ -113,8 +113,8 @@ public class Movie {
     public String getMovieSeat() {
         return movieSeat;
     }
-
     public void setMovieSeat(String movieSeat) {
-        this.movieSeat = this.movieSeat;
+        this.movieSeat = movieSeat;
     }
+
 }

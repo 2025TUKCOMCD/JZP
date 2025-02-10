@@ -209,7 +209,7 @@ public class MovieController {
 
     @PostMapping("/seat")
     public ResponseEntity<?> setMovieSeat(@RequestBody MovieSeatRequest request) {
-        if (request.getMovieId() == null || request.getMovieSeat() == null) {
+        if (request.getMovieId() == null || request.getMovieSeat() == null || request.getMovieName() == null || request.getMovieTime() == null) {
             return ResponseEntity.badRequest().body(Map.of(
                     "success", false,
                     "message", "필수 항목이 누락되었습니다"
@@ -219,8 +219,10 @@ public class MovieController {
         UUID movieId = request.getMovieId();
         String movieSeat = request.getMovieSeat();
         String movieTheater = request.getMovieTheater();
+        String movieName = request.getMovieName();  // 영화 이름
+        String movieTime = request.getMovieTime();  // 영화 시간
 
-        boolean success = movieService.setMovieSeat(movieId, movieSeat, movieTheater);
+        boolean success = movieService.setMovieSeat(movieId, movieSeat, movieTheater, movieName, movieTime); // Pass all the required parameters
 
         if (!success) {
             return ResponseEntity.badRequest().body(Map.of(
@@ -231,12 +233,12 @@ public class MovieController {
 
         // 예약 후 최신 좌석 정보 조회
         int remainingSeats = movieService.getMovieSeatRemain(movieId);
-        String updatedSeats = movieService.getMovieSeat(movieId);
+        String updatedSeats = movieService.getUpdatedMovieSeat(movieId);  // Get updated movie seat info
 
         return ResponseEntity.ok(Map.of(
                 "success", true,
-                "movieSeatRemain", remainingSeats,
-                "movieSeat", updatedSeats
+                "movieId", movieId,
+                "movieSeatRemain", remainingSeats
         ));
     }
 
@@ -247,6 +249,8 @@ public class MovieController {
         private UUID movieId;
         private String movieSeat;
         private String movieTheater;
+        private String movieName;  // 영화 이름 추가
+        private String movieTime;
 
         // Getters and Setters
         public UUID getMovieId() {
@@ -271,6 +275,22 @@ public class MovieController {
 
         public void setMovieTheater(String movieTheater) {
             this.movieTheater = movieTheater;
+        }
+
+        public String getMovieName() {
+            return movieName;
+        }
+
+        public void setMovieName(String movieName) {
+            this.movieName = movieName;
+        }
+
+        public String getMovieTime() {
+            return movieTime;
+        }
+
+        public void setMovieTime(String movieTime) {
+            this.movieTime = movieTime;
         }
     }
 
