@@ -118,48 +118,44 @@ public class MovieService {
 
         Movie movie = movieOptional.get();
 
-        // 영화 이름과 시간이 요청된 내용과 일치하는지 확인
-        LocalTime requestedTime = LocalTime.parse(movieTime); // 요청된 시간을 LocalTime으로 변환
+
+        LocalTime requestedTime = LocalTime.parse(movieTime);
         if (!movie.getMovieName().equals(movieName) || !movie.getMovieTime().equals(requestedTime)) {
-            return false; // 영화 이름 또는 시간 불일치
+            return false;
         }
+        String currentReservedSeats = movie.getMovieSeat();
+        Set<String> reservedSeatsSet = new HashSet<>(Arrays.asList(currentReservedSeats.split(",")));
 
-        // 기존 예약된 좌석 확인
-        String currentReservedSeats = movie.getMovieSeat();  // 현재 예약된 좌석 정보
-        Set<String> reservedSeatsSet = new HashSet<>(Arrays.asList(currentReservedSeats.split(",")));  // 예약된 좌석을 Set으로 변환
-
-        // 요청된 좌석이 기존 좌석과 동일하지 않으면, 새로운 좌석 추가
-        String[] requestedSeats = movieSeat.split(",");  // 요청된 좌석을 분리
+        String[] requestedSeats = movieSeat.split(",");
         for (String seat : requestedSeats) {
             if (reservedSeatsSet.contains(seat)) {
-                return false; // 요청된 좌석이 이미 예약된 좌석이면 실패
+                return false;
             }
-            reservedSeatsSet.add(seat); // 새로운 좌석을 추가
+            reservedSeatsSet.add(seat);
         }
 
-        // 남은 좌석 수 확인
         int reservedCount = requestedSeats.length;
         int remainingSeats = movie.getMovieSeatRemain();
 
-        // 좌석 부족 체크
+
         if (remainingSeats < reservedCount) {
-            return false; // 예약할 좌석 수보다 남은 좌석이 적으면 실패
+            return false;
         }
 
-        // 남은 좌석 수 감소
+
         movie.setMovieSeatRemain(remainingSeats - reservedCount);
 
-        // 변경된 영화 정보 저장
-        movie.setMovieSeat(String.join(",", reservedSeatsSet)); // 새로운 좌석 정보를 문자열로 결합
-        movieRepository.save(movie); // DB에 반영된 후
 
-        // 입력받은 좌석만 새로운 티켓에 저장
+        movie.setMovieSeat(String.join(",", reservedSeatsSet));
+        movieRepository.save(movie);
+
+
         Ticket newTicket = new Ticket();
-        newTicket.setMovie(movie);  // 해당 영화
-        newTicket.setMovieSeat(movieSeat);  // 요청된 좌석만 저장
-        newTicket.setMovieTheater(movieTheater);  // 상영관 정보
+        newTicket.setMovie(movie);
+        newTicket.setMovieSeat(movieSeat);
+        newTicket.setMovieTheater(movieTheater);
 
-        // 새로운 티켓 저장
+
         ticketRepository.save(newTicket);
 
         return true;
@@ -167,12 +163,12 @@ public class MovieService {
 
 
 
-    // 최신 영화 좌석 정보 조회
+
     public String getUpdatedMovieSeat(UUID movieId) {
         Optional<Movie> movieOptional = movieRepository.findById(movieId);
         if (movieOptional.isPresent()) {
             Movie movie = movieOptional.get();
-            return movie.getMovieSeat();  // 영화 좌석 정보 반환
+            return movie.getMovieSeat();
         }
         return "";
     }
