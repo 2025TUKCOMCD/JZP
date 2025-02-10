@@ -216,12 +216,10 @@ public class MovieController {
             ));
         }
 
-        // 영화 ID와 좌석 정보를 받아서 예약 처리
         UUID movieId = request.getMovieId();
         String movieSeat = request.getMovieSeat();
         String movieTheater = request.getMovieTheater();
 
-        // 좌석 예약을 위해 MovieService의 setMovieSeat 호출
         boolean success = movieService.setMovieSeat(movieId, movieSeat, movieTheater);
 
         if (!success) {
@@ -231,12 +229,14 @@ public class MovieController {
             ));
         }
 
-        // 예약 후 남은 좌석 수 조회
+        // 예약 후 최신 좌석 정보 조회
         int remainingSeats = movieService.getMovieSeatRemain(movieId);
+        String updatedSeats = movieService.getMovieSeat(movieId);
 
         return ResponseEntity.ok(Map.of(
                 "success", true,
-                "movieSeatRemain", remainingSeats
+                "movieSeatRemain", remainingSeats,
+                "movieSeat", updatedSeats
         ));
     }
 
@@ -302,8 +302,6 @@ public class MovieController {
         ));
     }
 
-
-    // MovieCustomerRequest DTO 정의
     public static class MovieCustomerRequest {
         private UUID movieId;
         private int movieCustomerDisabled;
@@ -311,7 +309,6 @@ public class MovieController {
         private int movieCustomerAdult;
         private int movieCustomerOld;
 
-        // Getters and Setters
         public UUID getMovieId() {
             return movieId;
         }
@@ -393,10 +390,12 @@ public class MovieController {
         private LocalTime movieTime;
         private String movieTheater;
         private String movieGrade;
+        private String movieSeat;
+        private int movieSeatRemain;
 
         public MovieTimeResponse(UUID movieId, String movieImage, String movieName,
                                  String movieType, int movieRating, LocalTime movieTime,
-                                 String movieTheater, String movieGrade) {
+                                 String movieTheater, String movieGrade,String movieSeat, int movieSeatRemain) {
             this.movieId = movieId;
             this.movieImage = movieImage;
             this.movieName = movieName;
@@ -405,6 +404,8 @@ public class MovieController {
             this.movieTime = movieTime;
             this.movieTheater = movieTheater;
             this.movieGrade = movieGrade;
+            this.movieSeat = movieSeat;
+            this.movieSeatRemain = movieSeatRemain;
         }
 
         // Getters and Setters
@@ -471,6 +472,21 @@ public class MovieController {
         public void setMovieGrade(String movieGrade) {
             this.movieGrade = movieGrade;
         }
+        public String getMovieSeat() {
+            return movieSeat;
+        }
+
+        public void setMovieSeat(String movieSeat) {
+            this.movieSeat = movieSeat;
+        }
+
+        public int getMovieSeatRemain() {
+            return movieSeatRemain;
+        }
+
+        public void setMovieSeatRemain(int movieSeatRemain) {
+            this.movieSeatRemain = movieSeatRemain;
+        }
     }
 
     @GetMapping("/movietime")
@@ -489,7 +505,10 @@ public class MovieController {
                         movie.getMovieRating(),
                         movie.getMovieTime(),
                         movie.getMovieTheater(),
-                        movie.getMovieGrade()))
+                        movie.getMovieGrade(),
+                        movie.getMovieSeat(),
+                        movie.getMovieSeatRemain()))
+
                 .collect(Collectors.toList());
     }
 

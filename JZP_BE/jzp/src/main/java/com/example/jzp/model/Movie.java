@@ -28,9 +28,9 @@ public class Movie {
 
     private int movieRating;
     private String movieGrade;
-
     private int movieSeatRemain;
-
+    @Column
+    private String movieSeat;
     public UUID getMovieId() {
         return movieId;
     }
@@ -109,5 +109,12 @@ public class Movie {
 
     public void setMovieSeatRemain(int movieSeatRemain) {
         this.movieSeatRemain = movieSeatRemain;
+    }
+    public String getMovieSeat() {
+        return movieSeat;
+    }
+
+    public void setMovieSeat(String movieSeat) {
+        this.movieSeat = this.movieSeat;
     }
 }
