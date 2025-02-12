@@ -11,6 +11,7 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
 @Service
 
 public class MovieService {
@@ -34,12 +35,15 @@ public class MovieService {
     }
 
     public List<Movie> getMoviesByTime(Date movieCalendar, LocalTime movieTime) {
+        // movieCalendar와 movieTime을 기반으로 티켓을 찾음
         List<Ticket> tickets = ticketRepository.findByMovieMovieCalendarAndMovieMovieTime(movieCalendar, movieTime);
+
         return tickets.stream()
                 .map(Ticket::getMovie)  // Ticket에서 Movie를 추출
                 .distinct()  // 중복된 영화가 있을 경우 제거
                 .collect(Collectors.toList());
     }
+
 
     // 날짜별 영화 조회
     public List<MovieController.MovieResponse> getMoviesByDate(Date movieCalendar) {
@@ -106,8 +110,7 @@ public class MovieService {
         }
     }
 
-    // 영화 좌석 예약 처리 (요청된 좌석 개수만큼 감소)
-    public boolean setMovieSeat(UUID movieId, String movieSeat, String movieTheater) {
+    public boolean setMovieSeat(UUID movieId, String movieSeat, String movieTheater, String movieName, String movieTime) {
         Optional<Movie> movieOptional = movieRepository.findById(movieId);
         if (movieOptional.isEmpty()) {
             return false; // 영화 정보가 없으면 실패
@@ -115,39 +118,66 @@ public class MovieService {
 
         Movie movie = movieOptional.get();
 
-        // 요청된 좌석 개수 확인
-        int reservedCount = movieSeat.split(",").length;
-        int remainingSeats = movie.getMovieSeatRemain();
-
-        // 좌석 부족 체크
-        if (remainingSeats < reservedCount) {
-            return false; // 예약할 좌석 수보다 남은 좌석이 적으면 실패
+        LocalTime requestedTime = LocalTime.parse(movieTime);
+        if (!movie.getMovieName().equals(movieName) || !movie.getMovieTime().equals(requestedTime)) {
+            return false;
         }
 
-        // 남은 좌석 수 감소
+        String currentReservedSeats = movie.getMovieSeat();
+        List<String> reservedSeatsList = new ArrayList<>(Arrays.asList(currentReservedSeats.split(",")));
+
+        String[] requestedSeats = movieSeat.split(",");
+        for (String seat : requestedSeats) {
+            if (reservedSeatsList.contains(seat)) {
+                return false; // 이미 예약된 좌석이면 실패
+            }
+            reservedSeatsList.add(seat); // 새로운 좌석 추가
+        }
+
+        int reservedCount = requestedSeats.length;
+        int remainingSeats = movie.getMovieSeatRemain();
+
+        if (remainingSeats < reservedCount) {
+            return false; // 좌석 부족
+        }
+
         movie.setMovieSeatRemain(remainingSeats - reservedCount);
 
-        // 변경된 정보 저장
-        movieRepository.save(movie);
+        // 리스트를 결합하기 전에 불필요한 공백 및 빈 요소 제거
+        reservedSeatsList.removeIf(String::isEmpty);  // 빈 문자열이 있으면 제거
 
-        // 해당 영화에 대한 가장 최근에 생성된 티켓 조회 (생성일자 기준 내림차순)
+        // 결합된 좌석 정보 업데이트
+        movie.setMovieSeat(String.join(",", reservedSeatsList));
+        movieRepository.save(movie); // DB에 반영
+
+        // 최근 티켓을 찾아서 좌석을 업데이트
         Optional<Ticket> latestTicketOptional = ticketRepository.findTopByMovieOrderByCreatedAtDesc(movie);
         if (latestTicketOptional.isPresent()) {
             Ticket latestTicket = latestTicketOptional.get();
-
-            // 기존 티켓에 좌석 정보 업데이트
-            latestTicket.setMovieSeat(movieSeat);
-            latestTicket.setMovieTheater(movieTheater);
-
-            // 업데이트된 티켓 저장
-            ticketRepository.save(latestTicket);
-        } else {
-            // 기존 티켓이 없다면 새로운 티켓을 생성하지 않음 (기존 티켓이 있어야만 업데이트)
-            return false;
+            latestTicket.setMovieSeat(movieSeat); // 입력된 좌석 정보로 업데이트
+            latestTicket.setMovieTheater(movieTheater); // 상영관 정보 업데이트
+            ticketRepository.save(latestTicket); // 변경된 티켓 저장
         }
 
         return true;
     }
+
+
+
+
+
+
+    public String getUpdatedMovieSeat(UUID movieId) {
+        Optional<Movie> movieOptional = movieRepository.findById(movieId);
+        if (movieOptional.isPresent()) {
+            Movie movie = movieOptional.get();
+            return movie.getMovieSeat();
+        }
+        return "";
+    }
+
+
+
 
     // 남은 좌석 수 조회
     public int getMovieSeatRemain(UUID movieId) {
