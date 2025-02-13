@@ -10,7 +10,7 @@ from tensorflow.keras.utils import to_categorical
 
 # 데이터 경로 설정
 data_dir = "C:\\Users\\rladb\\OneDrive\\바탕 화면\\코딩공부\\git\\JZP\\AI\\training\\All-Age-Faces_Dataset\\aglined_faces"
-image_size = (309, 395)  # 모델 입력 이미지 크기
+image_size = (128, 128)  # 모델 입력 이미지 크기
 categories = ['2-19', '20-60', '61+']  # 나이대 클래스
 
 # 데이터 및 레이블 리스트 초기화

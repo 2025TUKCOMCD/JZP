@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split
 from tensorflow.keras.utils import to_categorical
 
 # 데이터 경로 설정
-data_dir = "C:\\Users\\rladb\\OneDrive\\바탕 화면\\.JZP(졸업작품)\\한국인 마스크\\sample_image"
+data_dir = "C:\Users\rladb\OneDrive\바탕 화면\코딩공부\git\JZP\AI\training\All-Age-Faces_Dataset"
 image_size = (128, 128)  # 모델 입력 이미지 크기
 categories = ['2-19', '20-60', '61+']  # 나이대 클래스
 
@@ -20,7 +20,7 @@ labels = []
 # 파일 구조를 탐색하여 이미지 로드 및 전처리
 for root, dirs, files in os.walk(data_dir):
     for file in files:
-        if file.endswith(".png"):  # PNG 파일만 처리
+        if file.endswith(".jpg"):  # PNG 파일만 처리
             # 이미지 파일 경로
             file_path = os.path.join(root, file)
             
