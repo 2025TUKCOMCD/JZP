@@ -300,4 +300,12 @@ public class MovieService {
 
         return response;
     }
+
+    public Movie getMovieById(UUID movieId) {
+        Optional<Movie> movieOptional = movieRepository.findById(movieId);  // movieId로 영화 조회
+        if (movieOptional.isPresent()) {
+            return movieOptional.get();  // 영화가 있으면 반환
+        }
+        return null;  // 영화가 없으면 null 반환
+    }
 }

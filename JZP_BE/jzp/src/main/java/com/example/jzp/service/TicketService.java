@@ -127,6 +127,19 @@ public class TicketService {
         return false;
     }
 
+    public Ticket getTicketById(UUID ticketId) {
+        Optional<Ticket> ticket = ticketRepository.findById(ticketId);
+        return ticket.orElse(null);
+    }
+
+    public Movie getMovieByTicketId(UUID ticketId) {
+        Optional<Ticket> ticketOptional = ticketRepository.findById(ticketId);
+        if (ticketOptional.isPresent()) {
+            Ticket ticket = ticketOptional.get();
+            return ticket.getMovie(); }
+        return null;
+    }
+
 
 
 }

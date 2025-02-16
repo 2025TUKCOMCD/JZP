@@ -1,6 +1,7 @@
 package com.example.jzp.controller;
 
 import com.example.jzp.model.Movie;
+import com.example.jzp.model.Ticket;
 import com.example.jzp.service.MovieService;
 import com.example.jzp.service.TicketService;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -8,6 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.*;
+import net.nurigo.sdk.NurigoApp;
+import net.nurigo.sdk.message.model.Message;
+import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
+import net.nurigo.sdk.message.response.SingleMessageSentResponse;
+import net.nurigo.sdk.message.service.DefaultMessageService;
+
 
 import java.time.LocalTime;
 import java.util.stream.Collectors;
@@ -23,6 +32,56 @@ public class MovieController {
 
     @Autowired
     private TicketService ticketService;
+
+    private final DefaultMessageService messageService;
+
+    public MovieController(
+            @Value("${coolsms.api.key}") String apiKey,
+            @Value("${coolsms.api.secret}") String apiSecret,
+            TicketService ticketService
+    ) {
+        this.messageService = NurigoApp.INSTANCE.initialize(apiKey, apiSecret, "https://api.coolsms.co.kr");
+        this.ticketService = ticketService;
+    }
+
+    @GetMapping("/send-ticket/{ticketId}")
+    public String sendTicketInfo(@PathVariable("ticketId") UUID ticketId) {
+        // Ticket 정보를 불러옴
+        Ticket ticket = ticketService.getTicketById(ticketId);  // TicketService에서 구현 필요
+
+        if (ticket == null) {
+            return "Ticket not found!";
+        }
+
+        // Ticket에서 movieId를 이용해 Movie 정보를 가져오기
+        Movie movie = movieService.getMovieById(ticket.getMovie().getMovieId());
+        if (movie != null) {
+            // 가져온 movie 객체를 활용
+            System.out.println("영화 이름: " + movie.getMovieName());
+        } else {
+            // 영화가 없으면 처리
+            System.out.println("해당 영화를 찾을 수 없습니다.");
+        }
+
+
+        String phoneNumber = ticket.getPhoneNumber();
+        String movieInfo = "예매된 영화: " + movie.getMovieName() + "\n시간: " + movie.getMovieTime();
+
+        Message message = new Message();
+        message.setFrom("발신번호 입력");  // 발신 번호 설정
+        message.setTo(phoneNumber);  // 수신 번호 설정
+        message.setText(movieInfo);  // 메시지 내용 설정
+
+        try {
+            // 메시지 전송
+            SingleMessageSentResponse response = messageService.sendOne(new SingleMessageSendingRequest(message));
+            System.out.println(response);
+            return "예매 정보 전송 성공!";
+        } catch (Exception e) {  // `CoolsmsException`을 일반적인 `Exception`으로 변경
+            e.printStackTrace();  // 예외 정보 출력
+            return "예매 정보 전송 실패: " + e.getMessage();
+        }
+    }
 
     // 영화 그룹별 요청
     @PostMapping("/showmovie/{group}")
