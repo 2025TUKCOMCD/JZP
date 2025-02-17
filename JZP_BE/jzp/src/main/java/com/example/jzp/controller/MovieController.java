@@ -46,39 +46,47 @@ public class MovieController {
 
     @GetMapping("/send-ticket/{ticketId}")
     public String sendTicketInfo(@PathVariable("ticketId") UUID ticketId) {
-        // Ticket 정보를 불러옴
-        Ticket ticket = ticketService.getTicketById(ticketId);  // TicketService에서 구현 필요
+        Ticket ticket = ticketService.getTicketById(ticketId);
 
         if (ticket == null) {
-            return "Ticket not found!";
+            return "티켓이 존재하지 않습니다.";
         }
 
-        // Ticket에서 movieId를 이용해 Movie 정보를 가져오기
-        Movie movie = movieService.getMovieById(ticket.getMovie().getMovieId());
-        if (movie != null) {
-            // 가져온 movie 객체를 활용
-            System.out.println("영화 이름: " + movie.getMovieName());
-        } else {
-            // 영화가 없으면 처리
-            System.out.println("해당 영화를 찾을 수 없습니다.");
+        Movie movie = ticket.getMovie();
+
+        if (movie == null) {
+            return "해당 영화 정보를 찾을 수 없습니다.";
         }
 
+        String subject = "[영화_예매알림]";
+        String messageText = String.format(
+                        "\n\n영화명: %s\n" +
+                        "예매번호: %s\n" +
+                        "좌석: %s\n" +
+                        "상영일시: %s\n\n" +
+                        "영화 상영시작 10분전에 입장해주세요.",
+                movie.getMovieName(),
+                ticket.getTicketId(),
+                ticket.getMovieSeat(),
+                movie.getMovieTime()
+        );
 
         String phoneNumber = ticket.getPhoneNumber();
-        String movieInfo = "예매된 영화: " + movie.getMovieName() + "\n시간: " + movie.getMovieTime();
+        String senderPhoneNumber = "01050619483";
 
         Message message = new Message();
-        message.setFrom("발신번호 입력");  // 발신 번호 설정
-        message.setTo(phoneNumber);  // 수신 번호 설정
-        message.setText(movieInfo);  // 메시지 내용 설정
+            message.setFrom(senderPhoneNumber);
+            message.setTo(phoneNumber);  // 수신 번호 설정
+            message.setText(messageText);  // 설정한 메시지 내용
+            message.setSubject(subject);
 
         try {
             // 메시지 전송
             SingleMessageSentResponse response = messageService.sendOne(new SingleMessageSendingRequest(message));
             System.out.println(response);
             return "예매 정보 전송 성공!";
-        } catch (Exception e) {  // `CoolsmsException`을 일반적인 `Exception`으로 변경
-            e.printStackTrace();  // 예외 정보 출력
+        } catch (Exception e) {
+            e.printStackTrace();
             return "예매 정보 전송 실패: " + e.getMessage();
         }
     }
