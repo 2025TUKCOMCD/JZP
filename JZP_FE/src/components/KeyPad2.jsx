@@ -17,9 +17,9 @@ const Keypad2 = ({ onKeyPress, onDelete, onReset }) => {
             type="button"
             className={`w-20 aspect-square text-[30px] font-bold rounded-md flex items-center justify-center ${
               key === "초기화"
-                ? "bg-keyPadGray text-[26px]"
+                ? "bg-keyPadGray text-[21px]"
                 : key === "⌫"
-                  ? "bg-deleteBlack text-[45px]"
+                  ? "bg-deleteBlack text-[40px]"
                   : "bg-keyPadGray"
             }`}
             onClick={() => {
