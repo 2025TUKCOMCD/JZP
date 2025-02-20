@@ -85,13 +85,13 @@ function SeniorSeatSelectPage() {
 
       <footer className="fixed bottom-0 w-[450px] bg-gray-800 flex mx-auto">
         <button
-          className="flex-1 bg-buttonGray text-white text-xl font-bold h-16 flex items-center justify-center leading-none gap-2"
+          className="flex-1 bg-buttonGray text-white text-xl font-bold h-20 flex items-center justify-center leading-none gap-2"
           onClick={handleJuniorMovie}
         >
           영화 다시 선택하기
         </button>
         <button
-          className="flex-1 bg-red-600 text-white text-xl font-bold h-16 flex items-center justify-center leading-none"
+          className="flex-1 bg-red-600 text-white text-xl font-bold h-20 flex items-center justify-center leading-none"
           onClick={handleJuniorPay}
         >
           결제하기
