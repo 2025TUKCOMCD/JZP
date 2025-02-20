@@ -30,22 +30,6 @@ function JuniorSeatSelectPage() {
     navigate("/juniorMovie");
   };
 
-  const handleJuniorPay = () => {
-    if (totalSeats === 0 && selectedSeats.length === 0) {
-      setModalMessage("인원 수와 좌석을 선택해주세요!");
-      setIsModalOpen(true);
-    } else if (totalSeats > 0 && selectedSeats.length === 0) {
-      setModalMessage("좌석을 선택해주세요!");
-      setIsModalOpen(true);
-    } else if (totalSeats !== selectedSeats.length) {
-      setModalMessage("인원 수와 좌석 수가 일치하지 않습니다!");
-      setIsModalOpen(true);
-    } else {
-      navigate("/juniorPay");
-    }
-  };
-
-  // ✅ `localStorage`에서 가져오기 (저장 X)
   const storedMovieData =
     JSON.parse(localStorage.getItem("selectedMovie")) || {};
   const { movieCalendar, movieTime } = storedMovieData;
@@ -87,6 +71,106 @@ function JuniorSeatSelectPage() {
     fetchMovieDetails();
   }, [movieCalendar, movieTime, navigate]);
 
+  // ✅ 인원 정보 저장
+  const handleSaveCustomerCount = async (adult, teen, senior, disabled) => {
+    if (!movieDetails || !movieDetails.movieId) {
+      console.error("🚨 영화 정보가 없습니다.");
+      return;
+    }
+
+    const requestBody = {
+      movieId: movieDetails.movieId,
+      movieCustomerDisabled: disabled,
+      movieCustomerYouth: teen,
+      movieCustomerAdult: adult,
+      movieCustomerOld: senior,
+    };
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/movie/customer`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
+      });
+
+      const result = await response.json();
+      if (result.status === "success") {
+        console.log("✅ 인원 저장 성공:", result);
+      } else {
+        console.error("🚨 인원 저장 실패:", result.message);
+      }
+    } catch (error) {
+      console.error("🚨 API 요청 실패:", error);
+    }
+  };
+
+  // ✅ 좌석 정보 저장
+  const handleSaveSeatSelection = async () => {
+    if (!movieDetails || !movieDetails.movieId) {
+      console.error("🚨 영화 정보가 없습니다.");
+      return;
+    }
+
+    const requestBody = {
+      movieId: movieDetails.movieId, // UUID 그대로 전달
+      movieName: movieDetails.movieName.trim(), // 공백 제거
+      movieTime: `${movieCalendar} ${movieTime}:00`, // 'YYYY-MM-DD HH:mm:ss' 형식으로 변환
+      movieSeat: selectedSeats.join(","), // 쉼표 구분 문자열로 변환
+      movietheater: movieDetails.movieTheater.trim(), // 공백 제거
+    };
+
+    console.log("📡 좌석 저장 요청 데이터:", requestBody);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/movie/seat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
+      });
+
+      const responseBody = await response.text();
+      console.log("📩 서버 응답 원본:", responseBody);
+
+      try {
+        const result = JSON.parse(responseBody);
+        console.log("📩 서버 응답 (파싱된 JSON):", result);
+
+        if (result.success) {
+          console.log("✅ 좌석 저장 성공:", result);
+          navigate("/juniorPay");
+        } else {
+          console.error("🚨 좌석 저장 실패:", result.message || "응답 오류");
+          setModalMessage(result.message || "좌석 저장 중 오류 발생");
+          setIsModalOpen(true);
+        }
+      } catch (jsonParseError) {
+        console.error("🚨 JSON 파싱 오류:", jsonParseError);
+        console.error("📩 원본 응답:", responseBody);
+        setModalMessage("서버 응답을 처리할 수 없습니다.");
+        setIsModalOpen(true);
+      }
+    } catch (error) {
+      console.error("🚨 API 요청 실패:", error);
+      setModalMessage("서버와 통신 중 오류가 발생했습니다.");
+      setIsModalOpen(true);
+    }
+  };
+
+  const handleJuniorPay = () => {
+    if (totalSeats === 0 && selectedSeats.length === 0) {
+      setModalMessage("인원 수와 좌석을 선택해주세요!");
+      setIsModalOpen(true);
+    } else if (totalSeats > 0 && selectedSeats.length === 0) {
+      setModalMessage("좌석을 선택해주세요!");
+      setIsModalOpen(true);
+    } else if (totalSeats !== selectedSeats.length) {
+      setModalMessage("인원 수와 좌석 수가 일치하지 않습니다!");
+      setIsModalOpen(true);
+    } else {
+      handleSaveSeatSelection(); // 좌석 저장 후 결제 페이지로 이동
+    }
+  };
+
   return (
     <div className="bg-customBg h-screen text-white flex flex-col relative">
       <Header />
@@ -97,17 +181,14 @@ function JuniorSeatSelectPage() {
         {movieDetails ? (
           <>
             {/* 상단 섹션 */}
-            <div className="flex items-start mb-4">
-              {/* 영화 이미지 */}
+            <div className="flex items-start">
               <img
                 src={movieDetails.movieImage}
                 alt="Movie Poster"
                 className="w-24 h-32 mr-4"
               />
-              {/* 텍스트 섹션 */}
               <div className="flex flex-col">
                 <div className="flex items-center">
-                  {/* 영화 등급 이미지 */}
                   <img
                     src={
                       parseInt(movieDetails.movieRating) >= 18
@@ -121,13 +202,10 @@ function JuniorSeatSelectPage() {
                     alt={`${movieDetails.movieRating}세`}
                     className="w-6 h-6 mr-2"
                   />
-
-                  {/* 영화 제목 */}
                   <h2 className="text-xl font-sbAggro font-bold mt-1">
                     {movieDetails.movieName}
                   </h2>
                 </div>
-                {/* 상영일, 상영시간, 상영관 */}
                 <div className="text-[14px] ml-10">
                   <p>
                     {movieDetails.movieCalendar} {movieDetails.movieTime}
@@ -144,18 +222,12 @@ function JuniorSeatSelectPage() {
             🎬 영화 정보를 불러오는 중...
           </p>
         )}
-
-        {/* 안내 문구 */}
-        <div className="flex justify-end">
-          <p className="text-sm text-gray-500 mt-[-30px]">
-            인원은 최대 8명까지 선택 가능합니다.
-          </p>
-        </div>
       </div>
 
-      <div className="border-t border-gray-300 mt-[-20px]"></div>
-
-      <PeopleSelector onUpdateTotalSeats={setTotalSeats} />
+      <PeopleSelector
+        onUpdateTotalSeats={setTotalSeats}
+        onSave={handleSaveCustomerCount}
+      />
 
       <SeatSelector
         totalSeats={totalSeats}

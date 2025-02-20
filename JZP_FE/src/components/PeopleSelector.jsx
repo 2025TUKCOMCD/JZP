@@ -11,7 +11,6 @@ function PeopleSelector({ onUpdateTotalSeats }) {
   const [lastSelectedCategory, setLastSelectedCategory] = useState(null);
 
   const maxSeats = 8; // 최대 선택 가능 인원
-
   const totalSeats = adultCount + teenCount + seniorCount + disabledCount;
 
   const handleIncrement = (type) => {
@@ -40,7 +39,7 @@ function PeopleSelector({ onUpdateTotalSeats }) {
   const getNoticeMessage = () => {
     switch (lastSelectedCategory) {
       case "teen":
-        return "청소년 요금은 만 4세 이상 ~ 만 19세 미만의 청소년에 한해 적용됩니다.\n※ 만 19세가 되는 해의 1월 1일을 맞이한 사람은 제외";
+        return "청소년 요금은 만 4세 이상 ~ 만 19세 미만의 청소년에 한해 적용됩니다.\n※ 만 19세가 되는 해의 1월 1일부터 제외됩니다.";
       case "senior":
         return "반드시 본인의 신분증(만 65세 이상)을 소지하신 후 입장해주세요.\n미지참 시 입장이 제한됩니다.";
       case "disabled":
@@ -61,10 +60,7 @@ function PeopleSelector({ onUpdateTotalSeats }) {
           { label: "장애인", count: disabledCount, type: "disabled" },
         ].map((category) => (
           <div key={category.type} className="flex items-center gap-1">
-            {/* 카테고리 라벨 */}
             <span className="font-bold ml-1">{category.label}</span>
-
-            {/* 카운터 영역 */}
             <div className="border border-gray-400 w-16 flex justify-between items-center px-2 py-[3px]">
               <button
                 onClick={() => handleDecrement(category.type)}
@@ -91,6 +87,7 @@ function PeopleSelector({ onUpdateTotalSeats }) {
           </div>
         ))}
       </div>
+
       <p className="text-center text-[12px] mt-3 px-4 whitespace-pre-line">
         {getNoticeMessage()}
       </p>

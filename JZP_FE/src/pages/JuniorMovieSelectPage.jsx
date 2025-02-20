@@ -15,7 +15,7 @@ function JuniorMovieSelectPage() {
   const [selectedButton, setSelectedButton] = useState(null);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [movies, setMovies] = useState([]);
-  const [selectedDate, setSelectedDate] = useState("2025-02-06");
+  const [selectedDate, setSelectedDate] = useState("2025-02-20");
   const navigate = useNavigate();
 
   const handleJuniorMain = () => navigate("/juniorMain");

@@ -67,7 +67,7 @@ function SeniorSeatSelectPage() {
       {/* PeopleSelector 모달 */}
       {isPeopleModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white rounded-lg w-[60%] max-w-md">
+          <div className="bg-white rounded-lg w-[30%] max-w-sm">
             <PeopleSelector
               onUpdateTotalSeats={(seats) => setTotalSeats(seats)}
               onConfirm={handleConfirmPeople} // 확인 버튼 핸들러
