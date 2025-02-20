@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/header.jsx";
-import StepBar from "../../components/movieStepBar.jsx";
+import StepBar from "../../components/MovieStepBar.jsx";
 import PeopleSelector from "../../components/PeopleSelector.jsx";
 import SeatSelector from "../../components/SeatSelector.jsx";
 import Modal from "../../components/Modal.jsx";
@@ -174,7 +174,7 @@ function JuniorSeatSelectPage() {
   return (
     <div className="bg-customBg h-screen text-white flex flex-col relative">
       <Header />
-      <StepBar />
+      <StepBar prefix="junior" />
 
       {/* 영화 정보 API 연동 */}
       <div className="bg-white text-black p-4 flex flex-col">

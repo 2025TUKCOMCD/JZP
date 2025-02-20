@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/header.jsx";
-import StepBar from "../../components/movieStepBar2.jsx";
+import StepBar from "../../components/MovieStepBar.jsx";
 import movieImage from "../../assets/images/movie2.png";
 import HomeIcon from "../../assets/icons/homeIcon.svg";
 import Pay from "../../components/Pay2.jsx";
@@ -23,7 +23,7 @@ function SeniorPayPage() {
   return (
     <div className="bg-customBg h-screen text-white flex flex-col">
       <Header />
-      <StepBar />
+      <StepBar prefix="senior" />
       <div className="flex justify-center py-2">
         <div className="bg-headerColor text-white p-4 flex flex-col items-center">
           {/* 제목 */}

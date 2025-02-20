@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import movieImage from "../../assets/images/movie2.png";
 import ageImage from "../../assets/images/12.png";
 import Header from "../../components/header.jsx";
-import StepBar from "../../components/movieStepBar.jsx";
+import StepBar from "../../components/MovieStepBar.jsx";
 import PeopleSelector from "../../components/PeopleSelector2.jsx";
 import SeatSelector from "../../components/SeatSelector2.jsx";
 import Modal from "../../components/Modal.jsx";
@@ -44,7 +44,7 @@ function SeniorSeatSelectPage() {
   return (
     <div className="bg-customBg h-screen text-white flex flex-col relative">
       <Header />
-      <StepBar />
+      <StepBar prefix="senior" />
       {/* 영화 정보 */}
       <div className="bg-white text-black p-4 flex flex-col">
         <div className="flex items-start">

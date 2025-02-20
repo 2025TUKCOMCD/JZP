@@ -1,11 +1,11 @@
 import Header from "../../components/header.jsx";
-import MovieStepBar from "../../components/MovieStepBar3.jsx";
+import StepBar from "../../components/MovieStepBar2.jsx";
 
 function JuniorSendingPage() {
   return (
     <div className="bg-customBg h-screen text-white flex flex-col">
       <Header />
-      <MovieStepBar />
+      <StepBar prefix="junior" />
     </div>
   );
 }

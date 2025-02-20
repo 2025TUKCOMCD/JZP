@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/header.jsx";
-import StepBar from "../../components/movieStepBar.jsx";
+import StepBar from "../../components/MovieStepBar.jsx";
 import DateSelectBar from "../../components/DateSelectBar.jsx";
 import age12Image from "../../assets/images/12.png";
 import age15Image from "../../assets/images/15.png";
@@ -84,7 +84,7 @@ function JuniorMovieSelectPage() {
   return (
     <div className="bg-customBg h-screen text-white flex flex-col">
       <Header />
-      <StepBar />
+      <StepBar prefix="junior" />
       <DateSelectBar onDateChange={setSelectedDate} />
       <div className="h-[1px] bg-gray-700 my-4"></div>
       <div className="flex-1 overflow-y-auto px-4 pb-16">
