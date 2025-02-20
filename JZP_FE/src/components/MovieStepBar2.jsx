@@ -8,10 +8,10 @@ const MovieSelectBar3 = ({ prefix }) => {
 
   useEffect(() => {
     switch (location.pathname) {
-      case "/${prefix}Sending":
+      case `/${prefix}Sending`:
         setCurrentStep(1);
         break;
-      case "/${prefix}Confirm":
+      case `/${prefix}Confirm`:
         setCurrentStep(2);
         break;
       default:
@@ -21,8 +21,8 @@ const MovieSelectBar3 = ({ prefix }) => {
   }, [location.pathname, prefix]);
 
   const steps = [
-    { id: 1, label: "영화선택" },
-    { id: 2, label: "인원 및 좌석 선택" },
+    { id: 1, label: "전화번호 입력" },
+    { id: 2, label: "예매내역 전송" },
   ];
 
   return (
