@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/header.jsx";
-import StepBar from "../../components/MovieStepBar2.jsx";
+import StepBar from "../../components/MovieStepBar3.jsx";
 import HomeAdd from "../../assets/images/homeAdd.png";
 
 function SeniorHistoryConfirmPage() {
