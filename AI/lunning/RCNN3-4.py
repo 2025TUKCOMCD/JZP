@@ -1,4 +1,7 @@
-#3-3 + gpu 하려고 하는중중
+#3-3 + gpu 하려고 하는중
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"  # 첫 번째 GPU 사용
+
 import os
 import cv2
 import numpy as np

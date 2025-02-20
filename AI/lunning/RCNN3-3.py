@@ -1,4 +1,4 @@
-#3-2 
+#3-2 + 그레이스케일
 import os
 import cv2
 import numpy as np

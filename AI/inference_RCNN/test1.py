@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 
 # ✅ 저장된 모델 로드
-model_path = "C:\\Users\\rladb\\OneDrive\\바탕 화면\\코딩공부\\git\JZP\\age_classification_model_40.keras"  # 🔹 경로 확인 필수!
+model_path = "C:\\Users\\rladb\\OneDrive\\바탕 화면\\코딩공부\\git\JZP\\age_classification_model_40_v4.keras"  # 🔹 경로 확인 필수!
 model = keras.saving.load_model(model_path)
 print("✅ Model loaded successfully!")
 
@@ -23,7 +23,7 @@ def preprocess_image(image_path):
     return img
 
 # ✅ 예측할 이미지 경로
-image_path = "C:\\Users\\rladb\\test_image\\80.jpg"  # 🔹 실제 경로 확인 필수!
+image_path = "C:\\Users\\rladb\\test_image\\20.jpg"  # 🔹 실제 경로 확인 필수!
 
 # ✅ 이미지 전처리 및 예측
 processed_img = preprocess_image(image_path)
