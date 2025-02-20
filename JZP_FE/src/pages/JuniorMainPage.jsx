@@ -9,7 +9,11 @@ function JuniorMainPage() {
   const navigate = useNavigate();
 
   const handleJuniorMovieSelect = () => {
-    navigate("/juniorMovie"); // 티켓 예매 페이지로 라우팅
+    navigate("/juniorMovie");
+  };
+
+  const handleJuniorHistorySending = () => {
+    navigate("/juniorHistorySending");
   };
 
   return (
@@ -33,7 +37,10 @@ function JuniorMainPage() {
         {" "}
         {/* margin-top 조정 */}
         {/* 예매 내역 출력 버튼 */}
-        <button className="bg-gray-700 hover:bg-gray-600 text-white font-bold w-[150px] h-[200px] rounded-[30px] flex flex-col items-center justify-center">
+        <button
+          className="bg-gray-700 hover:bg-gray-600 text-white font-bold w-[150px] h-[200px] rounded-[30px] flex flex-col items-center justify-center"
+          onClick={handleJuniorHistorySending}
+        >
           <img
             src={ticketPrintIcon}
             alt="예매 내역 출력"

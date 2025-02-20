@@ -9,7 +9,11 @@ function SeniorMainPage() {
   const navigate = useNavigate();
 
   const handleSeniorMovieSelect = () => {
-    navigate("/seniorMovie"); // 티켓 예매 페이지로 라우팅
+    navigate("/seniorMovie");
+  };
+
+  const handleSeniorHistorySending = () => {
+    navigate("/seniorHistorySending");
   };
 
   return (
@@ -27,7 +31,10 @@ function SeniorMainPage() {
       {/* 버튼 섹션 */}
       <div className="flex justify-center mt-12 gap-5">
         {/* 예매 내역 출력 버튼 */}
-        <button className="bg-gray-700 hover:bg-gray-600 text-white font-bold w-[200px] h-[250px] rounded-[30px] flex flex-col items-center justify-between py-4">
+        <button
+          className="bg-gray-700 hover:bg-gray-600 text-white font-bold w-[200px] h-[250px] rounded-[30px] flex flex-col items-center justify-between py-4"
+          onClick={handleSeniorHistorySending}
+        >
           <img
             src={ticketPrintIcon}
             alt="예매 내역 출력"
