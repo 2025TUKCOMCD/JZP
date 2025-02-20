@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import movieImage from "../assets/images/movie2.png";
-import ageImage from "../assets/images/12.png";
-import Header from "../components/header.jsx";
-import StepBar from "../components/movieStepBar.jsx";
-import PeopleSelector from "../components/PeopleSelector2.jsx";
-import SeatSelector from "../components/SeatSelector2.jsx";
-import Modal from "../components/Modal.jsx";
+import movieImage from "../../assets/images/movie2.png";
+import ageImage from "../../assets/images/12.png";
+import Header from "../../components/header.jsx";
+import StepBar from "../../components/movieStepBar.jsx";
+import PeopleSelector from "../../components/PeopleSelector2.jsx";
+import SeatSelector from "../../components/SeatSelector2.jsx";
+import Modal from "../../components/Modal.jsx";
 
 function SeniorSeatSelectPage() {
   const [totalSeats, setTotalSeats] = useState(0); // 선택된 인원 수

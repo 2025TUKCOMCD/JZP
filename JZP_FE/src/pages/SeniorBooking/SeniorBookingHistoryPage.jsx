@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import Header from "../components/header.jsx";
-import StepBar from "../components/movieStepBar2.jsx";
-import HomeIcon from "../assets/icons/homeIcon.svg";
-import BookingCard from "../components/BookingCard2";
+import Header from "../../components/header.jsx";
+import StepBar from "../../components/movieStepBar2.jsx";
+import HomeIcon from "../../assets/icons/homeIcon.svg";
+import BookingCard from "../../components/BookingCard2";
 
 function SeniorBookingHistoryPage() {
   const navigate = useNavigate();

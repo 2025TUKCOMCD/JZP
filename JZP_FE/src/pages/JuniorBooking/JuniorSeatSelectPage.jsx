@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../components/header.jsx";
-import StepBar from "../components/movieStepBar.jsx";
-import PeopleSelector from "../components/PeopleSelector.jsx";
-import SeatSelector from "../components/SeatSelector.jsx";
-import Modal from "../components/Modal.jsx";
-import age12Image from "../assets/images/12.png";
-import age15Image from "../assets/images/15.png";
-import age18Image from "../assets/images/18.png";
-import ageAllImage from "../assets/images/All.png";
+import Header from "../../components/header.jsx";
+import StepBar from "../../components/movieStepBar.jsx";
+import PeopleSelector from "../../components/PeopleSelector.jsx";
+import SeatSelector from "../../components/SeatSelector.jsx";
+import Modal from "../../components/Modal.jsx";
+import age12Image from "../../assets/images/12.png";
+import age15Image from "../../assets/images/15.png";
+import age18Image from "../../assets/images/18.png";
+import ageAllImage from "../../assets/images/All.png";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
