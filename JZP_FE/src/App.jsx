@@ -20,6 +20,7 @@ import SeniorHistoryConfirmPage from "./pages/SeniorSending/SeniorHistoryConfirm
 import JuniorHistorySendingPage from "./pages/JuniorSending/JuniorHistorySendingPage.jsx";
 import SeniorHistorySendingPage from "./pages/SeniorSending/SeniorHistorySendingPage.jsx";
 import JuniorHistoryInfoPage from "./pages/JuniorSending/JuniorHistoryInfoPage.jsx";
+import SeniorHistoryInfoPage from "./pages/SeniorSending/SeniorHistoryInfoPage.jsx";
 
 function App() {
   return (
@@ -81,6 +82,10 @@ function App() {
             <Route
               path="/seniorHistorySending"
               element={<SeniorHistorySendingPage />}
+            ></Route>
+            <Route
+              path="/seniorHistoryInfo"
+              element={<SeniorHistoryInfoPage />}
             ></Route>
           </Routes>
         </div>
