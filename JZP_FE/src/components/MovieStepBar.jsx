@@ -1,30 +1,30 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-const MovieSelectBar = () => {
+// eslint-disable-next-line react/prop-types
+const MovieSelectBar = ({ prefix }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const location = useLocation();
 
   useEffect(() => {
-    // Set currentStep based on the current pathname
     switch (location.pathname) {
-      case "/juniortMovieSelect":
+      case `/${prefix}MovieSelect`:
         setCurrentStep(1);
         break;
-      case "/juniorSeat":
+      case `/${prefix}Seat`:
         setCurrentStep(2);
         break;
-      case "/juniorPay":
+      case `/${prefix}Pay`:
         setCurrentStep(3);
         break;
-      case "/juniorBooking":
+      case `/${prefix}Booking`:
         setCurrentStep(4);
         break;
       default:
         setCurrentStep(1);
         break;
     }
-  }, [location.pathname]);
+  }, [location.pathname, prefix]);
 
   const steps = [
     { id: 1, label: "영화선택" },
