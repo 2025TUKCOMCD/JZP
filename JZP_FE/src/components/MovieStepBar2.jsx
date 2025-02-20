@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 // eslint-disable-next-line react/prop-types
-const MovieSelectBar3 = ({ prefix }) => {
+const MovieSelectBar2 = ({ prefix }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const location = useLocation();
 
@@ -67,4 +67,4 @@ const MovieSelectBar3 = ({ prefix }) => {
   );
 };
 
-export default MovieSelectBar3;
+export default MovieSelectBar2;
