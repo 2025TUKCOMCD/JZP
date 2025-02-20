@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import Header from "../components/header.jsx";
-import StepBar from "../components/movieStepBar.jsx";
-import HomeIcon from "../assets/icons/homeIcon.svg";
-import BookingCard from "../components/BookingCard";
+import Header from "../../components/header.jsx";
+import StepBar from "../../components/MovieStepBar.jsx";
+import HomeIcon from "../../assets/icons/homeIcon.svg";
+import BookingCard from "../../components/BookingCard";
 
 function JuniorBookingHistoryPage() {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ function JuniorBookingHistoryPage() {
   return (
     <div className="bg-customBg h-screen text-white flex flex-col overflow-visible">
       <Header />
-      <StepBar />
+      <StepBar prefix="junior" />
 
       <div className="flex-1 flex justify-center items-start pt-[35px]">
         <BookingCard />

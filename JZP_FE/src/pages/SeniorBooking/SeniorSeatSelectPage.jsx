@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import HomeIcon from "../assets/icons/homeIcon.svg";
-import movieImage from "../assets/images/movie2.png";
-import ageImage from "../assets/images/12.png";
-import Header from "../components/header.jsx";
-import StepBar from "../components/movieStepBar.jsx";
-import PeopleSelector from "../components/PeopleSelector2.jsx";
-import SeatSelector from "../components/SeatSelector2.jsx";
-import Modal from "../components/Modal.jsx";
+import movieImage from "../../assets/images/movie2.png";
+import ageImage from "../../assets/images/12.png";
+import Header from "../../components/header.jsx";
+import StepBar from "../../components/MovieStepBar.jsx";
+import PeopleSelector from "../../components/PeopleSelector2.jsx";
+import SeatSelector from "../../components/SeatSelector2.jsx";
+import Modal from "../../components/Modal.jsx";
 
 function SeniorSeatSelectPage() {
   const [totalSeats, setTotalSeats] = useState(0); // 선택된 인원 수
@@ -29,8 +28,8 @@ function SeniorSeatSelectPage() {
     setModalMessage(""); // 메시지 초기화
   };
 
-  const handleJuniorMain = () => {
-    navigate("/seniorMain");
+  const handleJuniorMovie = () => {
+    navigate("/seniorMovie");
   };
 
   const handleJuniorPay = () => {
@@ -45,7 +44,7 @@ function SeniorSeatSelectPage() {
   return (
     <div className="bg-customBg h-screen text-white flex flex-col relative">
       <Header />
-      <StepBar />
+      <StepBar prefix="senior" />
       {/* 영화 정보 */}
       <div className="bg-white text-black p-4 flex flex-col">
         <div className="flex items-start">
@@ -68,7 +67,7 @@ function SeniorSeatSelectPage() {
       {/* PeopleSelector 모달 */}
       {isPeopleModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white rounded-lg w-[60%] max-w-md">
+          <div className="bg-white rounded-lg w-[30%] max-w-sm">
             <PeopleSelector
               onUpdateTotalSeats={(seats) => setTotalSeats(seats)}
               onConfirm={handleConfirmPeople} // 확인 버튼 핸들러
@@ -86,13 +85,13 @@ function SeniorSeatSelectPage() {
 
       <footer className="fixed bottom-0 w-[450px] bg-gray-800 flex mx-auto">
         <button
-          className="flex-1 bg-white text-black text-xl font-bold h-16 flex items-center justify-center leading-none gap-2"
-          onClick={handleJuniorMain}
+          className="flex-1 bg-buttonGray text-white text-xl font-bold h-20 flex items-center justify-center leading-none gap-2"
+          onClick={handleJuniorMovie}
         >
-          <img src={HomeIcon} alt="홈 아이콘" className="w-8 h-8" />홈
+          영화 다시 선택하기
         </button>
         <button
-          className="flex-1 bg-red-600 text-white text-xl font-bold h-16 flex items-center justify-center leading-none"
+          className="flex-1 bg-red-600 text-white text-xl font-bold h-20 flex items-center justify-center leading-none"
           onClick={handleJuniorPay}
         >
           결제하기

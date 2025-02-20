@@ -1,54 +1,38 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-const MovieSelectBar2 = () => {
+// eslint-disable-next-line react/prop-types
+const MovieSelectBar2 = ({ prefix }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const location = useLocation();
 
   useEffect(() => {
-    // Set currentStep based on the current pathname
     switch (location.pathname) {
-      case "/seniortMovieSelect":
+      case `/${prefix}Sending`:
         setCurrentStep(1);
         break;
-      case "/seniorSeat":
+      case `/${prefix}Confirm`:
         setCurrentStep(2);
-        break;
-      case "/seniorPay":
-        setCurrentStep(3);
-        break;
-      case "/seniorBooking":
-        setCurrentStep(4);
         break;
       default:
         setCurrentStep(1);
         break;
     }
-  }, [location.pathname]);
+  }, [location.pathname, prefix]);
 
   const steps = [
-    { id: 1, label: "영화선택" },
-    { id: 2, label: "인원 및 좌석 선택" },
-    { id: 3, label: "결제하기" },
-    { id: 4, label: "예매내역" },
+    { id: 1, label: "전화번호 입력" },
+    { id: 2, label: "예매내역 전송" },
   ];
 
   return (
     <div className="relative flex flex-col items-center py-4 mt-2 mb-0">
       {/* Progress Bar */}
-      <div className="absolute top-[35%] left-[17%] w-[66%] h-0.5 bg-[#444855] z-0">
+      <div className="absolute top-[35%] left-[25%] w-[50%] h-0.5 bg-[#444855] z-0">
         <div
           className="h-full bg-white transition-all duration-300"
           style={{
-            width: `${
-              currentStep === 1
-                ? "0%"
-                : currentStep === 2
-                  ? "30%"
-                  : currentStep === 3
-                    ? "70%"
-                    : "100%"
-            }`,
+            width: `${currentStep === 1 ? "0%" : "100%"}`,
           }}
         ></div>
       </div>

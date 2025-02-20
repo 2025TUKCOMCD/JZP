@@ -7,6 +7,15 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# 환경 변수 파일 (중요)
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+.env.*.local
+
+# 빌드 및 패키지 관련 폴더
 node_modules
 dist
 dist-ssr

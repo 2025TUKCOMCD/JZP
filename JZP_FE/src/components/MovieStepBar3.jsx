@@ -2,23 +2,20 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 // eslint-disable-next-line react/prop-types
-const MovieSelectBar = ({ prefix }) => {
+const MovieSelectBar3 = ({ prefix }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const location = useLocation();
 
   useEffect(() => {
     switch (location.pathname) {
-      case `/${prefix}MovieSelect`:
+      case `/${prefix}HistorySending`:
         setCurrentStep(1);
         break;
-      case `/${prefix}Seat`:
+      case `/${prefix}HistoryInfo`:
         setCurrentStep(2);
         break;
-      case `/${prefix}Pay`:
+      case `/${prefix}HistoryConfirm`:
         setCurrentStep(3);
-        break;
-      case `/${prefix}Booking`:
-        setCurrentStep(4);
         break;
       default:
         setCurrentStep(1);
@@ -27,10 +24,9 @@ const MovieSelectBar = ({ prefix }) => {
   }, [location.pathname, prefix]);
 
   const steps = [
-    { id: 1, label: "영화선택" },
-    { id: 2, label: "인원 및 좌석 선택" },
-    { id: 3, label: "결제하기" },
-    { id: 4, label: "예매내역" },
+    { id: 1, label: "예매내역 조회" },
+    { id: 2, label: "예매정보 확인" },
+    { id: 3, label: "예매내역 전송" },
   ];
 
   return (
@@ -41,13 +37,7 @@ const MovieSelectBar = ({ prefix }) => {
           className="h-full bg-white transition-all duration-300"
           style={{
             width: `${
-              currentStep === 1
-                ? "0%"
-                : currentStep === 2
-                  ? "30%"
-                  : currentStep === 3
-                    ? "70%"
-                    : "100%"
+              currentStep === 1 ? "0%" : currentStep === 2 ? "50%" : "100%"
             }`,
           }}
         ></div>
@@ -83,4 +73,4 @@ const MovieSelectBar = ({ prefix }) => {
   );
 };
 
-export default MovieSelectBar;
+export default MovieSelectBar3;
