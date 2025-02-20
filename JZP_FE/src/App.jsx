@@ -15,6 +15,8 @@ import JuniorSendingPage from "./pages/JuniorBooking/JuniorSendingPage.jsx";
 import SeniorSendingPage from "./pages/SeniorBooking/SeniorSendingPage.jsx";
 import JuniorConfirmPage from "./pages/JuniorBooking/JuniorConfirmPage.jsx";
 import SeniorConfirmPage from "./pages/SeniorBooking/SeniorConfirmPage.jsx";
+import JuniorHistoryConfirmPage from "./pages/JuniorSending/JuniorHistoryConfirmPage.jsx";
+import SeniorHistoryConfirmPage from "./pages/SeniorSending/SeniorHistoryConfirmPage.jsx";
 
 function App() {
   return (
@@ -40,6 +42,10 @@ function App() {
               path="/juniorConfirm"
               element={<JuniorConfirmPage />}
             ></Route>
+            <Route
+              path="/juniorHistoryConfirm"
+              element={<JuniorHistoryConfirmPage />}
+            ></Route>
             <Route path="/seniorMain" element={<SeniorMainPage />}></Route>
             <Route path="/seniorMovie" element={<SeniorMovieSelect />}></Route>
             <Route path="/seniorSeat" element={<SeniorSeatSelect />}></Route>
@@ -55,6 +61,10 @@ function App() {
             <Route
               path="/seniorConfirm"
               element={<SeniorConfirmPage />}
+            ></Route>
+            <Route
+              path="/seniorHistoryConfirm"
+              element={<SeniorHistoryConfirmPage />}
             ></Route>
           </Routes>
         </div>
