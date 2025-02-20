@@ -1,5 +1,5 @@
 import Header from "../../components/header.jsx";
-import StepBar from "../../components/movieStepBar2.jsx";
+import StepBar from "../../components/MovieStepBar4.jsx";
 
 function SeniorSendingPage() {
   return (

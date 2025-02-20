@@ -1,7 +1,7 @@
 import Header from "../../components/header.jsx";
 import MovieStepBar from "../../components/MovieStepBar3.jsx";
 
-function JuniorSendingPage() {
+function JuniorConfirmPage() {
   return (
     <div className="bg-customBg h-screen text-white flex flex-col">
       <Header />
@@ -10,4 +10,4 @@ function JuniorSendingPage() {
   );
 }
 
-export default JuniorSendingPage;
+export default JuniorConfirmPage;
