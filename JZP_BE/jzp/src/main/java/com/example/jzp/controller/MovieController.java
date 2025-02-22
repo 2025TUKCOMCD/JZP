@@ -24,20 +24,18 @@ public class MovieController {
     @Autowired
     private TicketService ticketService;
 
-    // /save-tmdb는 saveMoviesFromTMDB를 호출합니다.
     @GetMapping("/save-tmdb")
     public String saveMovies() {
         movieService.saveMoviesFromTMDB(); // TMDB에서 영화 데이터를 가져오고 저장
         return "Movies saved successfully!";
     }
 
-    // /save-movies는 saveMovie를 호출합니다.
-    @GetMapping("/save-movies")
-    public String saveMovie() {
-        movieService.saveMovie(); // TMDB에서 Movie 테이블로 저장
-        return "Movies saved to Movie table successfully!";
+    /* @GetMapping("/save")
+    public String saveMovie(@RequestParam("tmdbId") Long tmdbId) {
+        movieService.saveMovie(tmdbId);  // 영화 저장 서비스 호출
+        return "Movie saved successfully for TMDB ID: " + tmdbId;
     }
-
+*/
 
     // 영화 그룹별 요청
     @PostMapping("/showmovie/{group}")
