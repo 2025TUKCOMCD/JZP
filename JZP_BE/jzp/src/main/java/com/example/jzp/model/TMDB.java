@@ -2,22 +2,20 @@ package com.example.jzp.model;
 
 import jakarta.persistence.*;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 public class TMDB {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private Long tmdbMovieId;  // TMDB 영화 ID
     private String title;  // 영화 제목
     private String posterPath;  // 영화 포스터 경로
     private Integer ranking;  // 영화 순위
     private String ageRating;  // 영화 등급
-    @ElementCollection
-    private List<String> genres;  // 영화 장르
+    @Column(name = "genres")  // 이 부분을 String으로 변경
+    private String genres;
 
     public Long getId() {
         return id;
@@ -67,11 +65,11 @@ public class TMDB {
         this.ageRating = ageRating;
     }
 
-    public List<String> getGenres() {
-        return genres;
+    public String getGenres() {
+        return genres;  // Returns the comma-separated string of genres
     }
 
-    public void setGenres(List<String> genres) {
-        this.genres = genres;
+    public void setGenres(List<String> genresList) {
+        this.genres = String.join(",", genresList);
     }
 }

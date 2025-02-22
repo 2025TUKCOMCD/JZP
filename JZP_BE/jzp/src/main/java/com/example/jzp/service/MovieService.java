@@ -8,11 +8,15 @@ import com.example.jzp.repository.TicketRepository;
 import com.example.jzp.repository.TMDBRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.jzp.model.Ticket;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import java.time.LocalTime;
 import java.time.LocalDate;
 import java.util.*;
@@ -170,7 +174,11 @@ public class MovieService {
         return "전체이용가";
     }
 
+
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public void saveMovie() {
+        Logger logger = LoggerFactory.getLogger(MovieService.class);
+
         try {
             List<TMDB> tmdbMovies = tmdbRepository.findAll();  // TMDB 테이블의 모든 영화 가져오기
 
@@ -204,19 +212,22 @@ public class MovieService {
                         movie.setMovieTheater(THEATER_NAMES[RANDOM.nextInt(THEATER_NAMES.length)]);
 
                         // Movie 테이블에 저장
-                        movieRepository.save(movie);
+                        try {
+                            movieRepository.save(movie);
+                        } catch (ObjectOptimisticLockingFailureException ole) {
+                            logger.error("영화 저장 중 낙관적 락 예외 발생: {}", ole.getMessage());
+                            // 낙관적 락 예외 발생 시 처리 로직 추가 (예: 재시도, 알림 등)
+                            throw new RuntimeException("동시성 문제로 인해 영화 저장 실패: " + ole.getMessage());
+                        }
                     }
                 }
             }
         } catch (Exception e) {
             // 예외를 기록하고 리스폰스에 포함시켜 더 구체적인 문제를 확인할 수 있습니다.
-            e.printStackTrace();  // 로그 출력
+            logger.error("영화 저장 중 오류 발생: {}", e.getMessage(), e);  // 로그 출력
             throw new RuntimeException("영화 저장 중 오류 발생: " + e.getMessage());
         }
     }
-
-
-
 
 
     private List<LocalTime> generateRandomTimes() {
