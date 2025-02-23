@@ -87,7 +87,7 @@ function SeniorMovieSelectPage() {
       <div className="h-[1px] bg-gray-700 my-4"></div>
 
       {/* 영화 리스트 */}
-      <div className="flex-1 overflow-y-auto px-4 pb-16">
+      <div className="flex-1 overflow-y-scroll scrollbar-hidden px-4 pb-16">
         {movies.length > 0 ? (
           movies.map((movie, index) => (
             <div key={movie.movieId}>
