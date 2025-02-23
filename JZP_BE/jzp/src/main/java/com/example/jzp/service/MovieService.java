@@ -118,6 +118,7 @@ public class MovieService {
             int rating = 1;
             LocalDate today = LocalDate.now();  // 오늘 날짜 기준
 
+            // 각 TMDB 영화 데이터 처리
             for (JsonNode movieNode : resultsNode) {
                 Long tmdbMovieId = movieNode.path("id").asLong();
                 String title = movieNode.path("title").asText();
@@ -125,38 +126,33 @@ public class MovieService {
                 List<String> genres = extractGenres(movieNode, genreMap);
                 boolean adult = movieNode.path("adult").asBoolean();
 
-                // 나이 등급 처리
+                // 성인 여부와 장르를 기반으로 나이 등급을 결정
                 String ageRating = getAgeRatingFromAdultAndGenres(adult, genres);
 
                 Integer ranking = rating++;
 
-                // Movie 객체 생성
-                Movie movie = new Movie();
-                movie.setMovieId(UUID.randomUUID());
-                movie.setTmdbMovieId(tmdbMovieId);
-                movie.setMovieName(title);
-                movie.setMovieImage("https://image.tmdb.org/t/p/w500" + posterPath);
-                movie.setMovieType(String.join(", ", genres));
-                movie.setMovieGrade(ageRating);
-                movie.setMovieRating(ranking);
+                // 랜덤 시간 생성
+                List<LocalTime> randomTimes = generateRandomTimes();  // 영화마다 랜덤 시간 생성
 
-                // 영화에 대한 시간 생성 (08:20 ~ 23:55) 및 좌석 정보 추가
-                for (int i = 0; i < 5; i++) {  // 오늘부터 4일 뒤까지 5일 분량 저장
-                    // 랜덤 날짜 계산 (오늘부터 +4일 사이)
-                    LocalDate movieDate = today.plusDays(RANDOM.nextInt(5));  // 오늘부터 +4일 사이 랜덤 날짜
 
-                    // 각 영화마다 랜덤한 상영 시간 생성
-                    List<LocalTime> randomTimes = generateRandomTimes();  // 영화마다 랜덤 시간 생성
+                for (int i = 0; i < 5; i++) {
+                    LocalDate movieDate = today.plusDays(i);
 
-                    // 랜덤 시간 배열에서 하나씩 영화에 할당
-                    movie.setMovieTime(randomTimes.get(i % randomTimes.size()));  // 4개의 랜덤 시간 중 하나
+                    // 각 상영 시간마다 새로운 Movie 객체 생성
+                    for (LocalTime time : randomTimes) {
+                        Movie movie = new Movie();  // 상영 시간마다 새로운 Movie 객체 생성
+                        movie.setMovieId(UUID.randomUUID());  // 고유한 movie_id 생성
+                        movie.setTmdbMovieId(tmdbMovieId);  // tmdbMovieId는 중복 가능
+                        movie.setMovieName(title);
+                        movie.setMovieImage("https://image.tmdb.org/t/p/w500" + posterPath);
+                        movie.setMovieType(String.join(", ", genres));
+                        movie.setMovieGrade(ageRating);
+                        movie.setMovieRating(ranking);
+                        movie.setMovieTime(time);  // 랜덤 시간 할당
+                        movie.setMovieCalendar(java.sql.Date.valueOf(movieDate));  // 영화 상영일 설정
+                        movie.setMovieSeatRemain(72);  // 영화의 좌석 수
+                        movie.setMovieTheater(THEATER_NAMES[RANDOM.nextInt(THEATER_NAMES.length)]);  // 랜덤 영화관
 
-                    // 영화 정보 저장
-                    movie.setMovieSeatRemain(72);  // 영화의 좌석 수
-                    movie.setMovieTheater(THEATER_NAMES[RANDOM.nextInt(THEATER_NAMES.length)]);  // 랜덤 영화관
-
-                    // TMDB movieId로 이미 존재하는 영화가 있는지 확인
-                    if (movieRepository.findByTmdbMovieId(tmdbMovieId) == null) {
                         // Movie DB에 저장
                         movieRepository.save(movie);
                     }
@@ -168,38 +164,38 @@ public class MovieService {
         }
     }
 
-    // 랜덤 시간 생성 (08:20 ~ 23:55 사이)
+
+
     private List<LocalTime> generateRandomTimes() {
         LocalTime start = LocalTime.parse("08:20", DateTimeFormatter.ofPattern("HH:mm"));
         LocalTime end = LocalTime.parse("23:55", DateTimeFormatter.ofPattern("HH:mm"));
 
-        // 5분 단위로 시간 간격을 계산
+
         int startMinutes = start.getHour() * 60 + start.getMinute();
         int endMinutes = end.getHour() * 60 + end.getMinute();
 
-        // 5분 단위로 나눈 값
+
         int totalMinutes = endMinutes - startMinutes;
         int totalIntervals = totalMinutes / 5;
 
-        // 랜덤 시간 4개 생성 (List 사용으로 유동성 확보)
-        Set<LocalTime> randomTimesSet = new HashSet<>();  // 중복을 방지하기 위해 Set 사용
+
+        Set<LocalTime> randomTimesSet = new HashSet<>();
         while (randomTimesSet.size() < 4) {
-            // 5분 단위로 랜덤한 오프셋 선택
-            int randomOffset = RANDOM.nextInt(totalIntervals + 1) * 5; // 5분 단위로 간격을 계산
+
+            int randomOffset = RANDOM.nextInt(totalIntervals + 1) * 5;
             LocalTime randomTime = start.plusMinutes(randomOffset);
-            randomTimesSet.add(randomTime);  // Set에 추가 (중복 제거)
+            randomTimesSet.add(randomTime);
         }
 
-        // 시간 순서대로 정렬
         List<LocalTime> randomTimes = new ArrayList<>(randomTimesSet);
-        randomTimes.sort(Comparator.naturalOrder());  // 정렬
+        randomTimes.sort(Comparator.naturalOrder());
 
         return randomTimes;
     }
 
 
 
-    // 성인 여부와 장르를 기반으로 나이 등급을 결정하는 메서드
+    // 나이 등급을 결정하는 메서드
     private String getAgeRatingFromAdultAndGenres(boolean adult, List<String> genres) {
         // 성인 여부가 true이면 19세 미만 관람 불가
         if (adult) {
