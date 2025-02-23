@@ -2,24 +2,19 @@ package com.example.jzp.service;
 
 import com.example.jzp.model.Movie;
 import com.example.jzp.controller.MovieController;
-import com.example.jzp.model.TMDB;
 import com.example.jzp.repository.MovieRepository;
 import com.example.jzp.repository.TicketRepository;
-import com.example.jzp.repository.TMDBRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.jzp.model.Ticket;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
-import java.time.LocalTime;
+
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.time.format.DateTimeFormatter;
@@ -38,9 +33,6 @@ public class MovieService {
     @Autowired
     private TicketRepository ticketRepository;
 
-    @Autowired
-    private TMDBRepository tmdbRepository;
-
     private static final String[] THEATER_NAMES = {"1관", "2관", "3관", "4관"};
     private static final Random RANDOM = new Random();
 
@@ -55,8 +47,7 @@ public class MovieService {
     private static final String BASE_URL = "https://api.themoviedb.org/3/movie/popular";
 
     @Autowired
-    public MovieService(TMDBRepository tmdbRepository, MovieRepository movieRepository) {
-        this.tmdbRepository = tmdbRepository;
+    public MovieService( MovieRepository movieRepository) {
         this.movieRepository = movieRepository;
     }
 
@@ -111,9 +102,9 @@ public class MovieService {
         return genres;
     }
 
-@Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void saveMoviesFromTMDB() {
-        // 1. TMDB API에서 영화 데이터 가져오기
+        // TMDB API에서 영화 데이터 가져오기
         Map<Integer, String> genreMap = getGenreMap();
         String url = "https://api.themoviedb.org/3/movie/popular?api_key=" + API_KEY + "&language=ko-KR&page=1";
         RestTemplate restTemplate = new RestTemplate();
@@ -125,6 +116,8 @@ public class MovieService {
             JsonNode resultsNode = rootNode.path("results");
 
             int rating = 1;
+            LocalDate today = LocalDate.now();  // 오늘 날짜 기준
+
             for (JsonNode movieNode : resultsNode) {
                 Long tmdbMovieId = movieNode.path("id").asLong();
                 String title = movieNode.path("title").asText();
@@ -137,23 +130,73 @@ public class MovieService {
 
                 Integer ranking = rating++;
 
-                // TMDB 엔티티 생성
-                TMDB tmdb = new TMDB();
-                tmdb.setTmdbMovieId(tmdbMovieId);
-                tmdb.setTitle(title);
-                tmdb.setPosterPath(posterPath);
-                tmdb.setRanking(ranking);
-                tmdb.setAgeRating(ageRating);
-                tmdb.setGenres(genres);
+                // Movie 객체 생성
+                Movie movie = new Movie();
+                movie.setMovieId(UUID.randomUUID());
+                movie.setTmdbMovieId(tmdbMovieId);
+                movie.setMovieName(title);
+                movie.setMovieImage("https://image.tmdb.org/t/p/w500" + posterPath);
+                movie.setMovieType(String.join(", ", genres));
+                movie.setMovieGrade(ageRating);
+                movie.setMovieRating(ranking);
 
-                // TMDB DB에 저장
-                tmdbRepository.save(tmdb);
+                // 영화에 대한 시간 생성 (08:20 ~ 23:55) 및 좌석 정보 추가
+                for (int i = 0; i < 5; i++) {  // 오늘부터 4일 뒤까지 5일 분량 저장
+                    // 랜덤 날짜 계산 (오늘부터 +4일 사이)
+                    LocalDate movieDate = today.plusDays(RANDOM.nextInt(5));  // 오늘부터 +4일 사이 랜덤 날짜
+
+                    // 각 영화마다 랜덤한 상영 시간 생성
+                    List<LocalTime> randomTimes = generateRandomTimes();  // 영화마다 랜덤 시간 생성
+
+                    // 랜덤 시간 배열에서 하나씩 영화에 할당
+                    movie.setMovieTime(randomTimes.get(i % randomTimes.size()));  // 4개의 랜덤 시간 중 하나
+
+                    // 영화 정보 저장
+                    movie.setMovieSeatRemain(72);  // 영화의 좌석 수
+                    movie.setMovieTheater(THEATER_NAMES[RANDOM.nextInt(THEATER_NAMES.length)]);  // 랜덤 영화관
+
+                    // TMDB movieId로 이미 존재하는 영화가 있는지 확인
+                    if (movieRepository.findByTmdbMovieId(tmdbMovieId) == null) {
+                        // Movie DB에 저장
+                        movieRepository.save(movie);
+                    }
+                }
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    // 랜덤 시간 생성 (08:20 ~ 23:55 사이)
+    private List<LocalTime> generateRandomTimes() {
+        LocalTime start = LocalTime.parse("08:20", DateTimeFormatter.ofPattern("HH:mm"));
+        LocalTime end = LocalTime.parse("23:55", DateTimeFormatter.ofPattern("HH:mm"));
+
+        // 5분 단위로 시간 간격을 계산
+        int startMinutes = start.getHour() * 60 + start.getMinute();
+        int endMinutes = end.getHour() * 60 + end.getMinute();
+
+        // 5분 단위로 나눈 값
+        int totalMinutes = endMinutes - startMinutes;
+        int totalIntervals = totalMinutes / 5;
+
+        // 랜덤 시간 4개 생성 (List 사용으로 유동성 확보)
+        Set<LocalTime> randomTimesSet = new HashSet<>();  // 중복을 방지하기 위해 Set 사용
+        while (randomTimesSet.size() < 4) {
+            // 5분 단위로 랜덤한 오프셋 선택
+            int randomOffset = RANDOM.nextInt(totalIntervals + 1) * 5; // 5분 단위로 간격을 계산
+            LocalTime randomTime = start.plusMinutes(randomOffset);
+            randomTimesSet.add(randomTime);  // Set에 추가 (중복 제거)
+        }
+
+        // 시간 순서대로 정렬
+        List<LocalTime> randomTimes = new ArrayList<>(randomTimesSet);
+        randomTimes.sort(Comparator.naturalOrder());  // 정렬
+
+        return randomTimes;
+    }
+
 
 
     // 성인 여부와 장르를 기반으로 나이 등급을 결정하는 메서드
@@ -177,67 +220,7 @@ public class MovieService {
         return "전체이용가";
     }
 
-/*    @Transactional(isolation = Isolation.READ_COMMITTED)
-    public void saveMovie(Long tmdbId) {
-        try {
-            System.out.println("트랜잭션 시작");
 
-            // TMDB ID로 영화 정보를 조회
-            TMDB tmdb = tmdbRepository.findById(tmdbId)
-                    .orElseThrow(() -> new RuntimeException("해당 TMDB ID의 영화가 존재하지 않습니다: " + tmdbId));
-
-            // 기존에 같은 tmdbMovieId로 저장된 영화가 있는지 체크
-            // 만약 날짜/시간/상영관별로 복수 등록이 가능하다면, 조건을 추가해야 합니다.
-            Optional<Movie> existingMovie = movieRepository.findByTmdbMovieId(tmdb.getTmdbMovieId());
-            if (existingMovie.isPresent()) {
-                // 이미 존재하면 새로 만들지 않고 바로 종료
-                System.out.println("이미 동일 tmdbMovieId를 가진 영화가 존재합니다: " + tmdb.getTmdbMovieId());
-                return;
-            }
-
-            // 랜덤 시간 하나 생성
-            LocalTime randomTime = generateRandomTime();
-
-            // 하나의 영화 생성
-            Movie movie = new Movie();
-            movie.setMovieId(UUID.randomUUID());
-            movie.setTmdbMovieId(tmdb.getTmdbMovieId());  // TMDB Movie ID 사용
-            movie.setMovieName(tmdb.getTitle());          // TMDB 제목 사용
-            movie.setMovieCalendar(java.sql.Date.valueOf(LocalDate.now()));  // 오늘 날짜로 설정
-            movie.setMovieTime(randomTime);               // 랜덤 시간 사용
-            movie.setMovieImage("https://image.tmdb.org/t/p/w500" + tmdb.getPosterPath());
-            movie.setMovieType(tmdb.getGenres());
-            movie.setMovieGrade(tmdb.getAgeRating());
-            movie.setMovieRating(tmdb.getRanking());
-            movie.setMovieSeatRemain(72);
-            movie.setMovieTheater(THEATER_NAMES[RANDOM.nextInt(THEATER_NAMES.length)]);
-
-            try {
-                movieRepository.save(movie);
-                System.out.println("영화 저장 완료");
-            } catch (ObjectOptimisticLockingFailureException ole) {
-                // 예외가 발생할 경우, 해당 예외를 무시하거나 로그를 찍도록 처리할 수 있습니다.
-                // 여기서는 예시로 로그만 출력
-                System.out.println("영화 저장 중 예외 발생(낙관적 Locking): " + ole.getMessage());
-            }
-        } catch (Exception e) {
-            System.out.println("영화 저장 중 오류 발생: " + e.getMessage());
-            throw new RuntimeException("영화 저장 중 오류 발생: " + e.getMessage());
-        }
-    }
-
-    private LocalTime generateRandomTime() {
-        LocalTime start = LocalTime.of(8, 20);
-        LocalTime end = LocalTime.of(23, 55);
-        int startMinutes = start.toSecondOfDay() / 60;
-        int endMinutes = end.toSecondOfDay() / 60;
-        int totalIntervals = (endMinutes - startMinutes) / 5;
-
-        int randomOffset = RANDOM.nextInt(totalIntervals + 1) * 5;
-        return start.plusMinutes(randomOffset);
-    }
-
-*/
     // 날짜별 영화 조회
     public List<MovieController.MovieResponse> getMoviesByDate(Date movieCalendar) {
         List<Movie> movies = movieRepository.findByMovieCalendar(movieCalendar);

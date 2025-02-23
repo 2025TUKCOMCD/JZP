@@ -17,9 +17,8 @@ import java.util.UUID;
 @Repository
 public interface MovieRepository extends JpaRepository<Movie, UUID> {
     List<Movie> findByMovieCalendar(Date movieCalendar);
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT m FROM Movie m WHERE m.tmdbMovieId = :tmdbMovieId")
-    Optional<Movie> findByTmdbMovieId(@Param("tmdbMovieId") Long tmdbMovieId);
+    Movie findByTmdbMovieId(Long tmdbMovieId);
+
 }
 
 

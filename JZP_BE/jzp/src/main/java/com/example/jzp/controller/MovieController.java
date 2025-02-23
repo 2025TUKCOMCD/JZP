@@ -30,13 +30,6 @@ public class MovieController {
         return "Movies saved successfully!";
     }
 
-    /* @GetMapping("/save")
-    public String saveMovie(@RequestParam("tmdbId") Long tmdbId) {
-        movieService.saveMovie(tmdbId);  // 영화 저장 서비스 호출
-        return "Movie saved successfully for TMDB ID: " + tmdbId;
-    }
-*/
-
     // 영화 그룹별 요청
     @PostMapping("/showmovie/{group}")
     public ResponseEntity<?> showMovieByGroup(@PathVariable("group") String group,
