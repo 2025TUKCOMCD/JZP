@@ -334,8 +334,13 @@ public class MovieService {
             return false;
         }
 
+        // currentReservedSeats가 null일 수 있으므로 빈 문자열로 초기화
         String currentReservedSeats = movie.getMovieSeat();
+        if (currentReservedSeats == null) {
+            currentReservedSeats = ""; // null이면 빈 문자열로 처리
+        }
         List<String> reservedSeatsList = new ArrayList<>(Arrays.asList(currentReservedSeats.split(",")));
+
         String[] requestedSeats = movieSeat.split(",");
         for (String seat : requestedSeats) {
             if (reservedSeatsList.contains(seat)) {
