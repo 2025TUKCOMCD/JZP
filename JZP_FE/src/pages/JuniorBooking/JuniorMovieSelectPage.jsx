@@ -26,9 +26,9 @@ function JuniorMovieSelectPage() {
 
     try {
       const requestBody = {
-        movieId: movie.movieId, // UUID (정상)
-        movieTime: time.movieTime, // "09:45~11:45" 형식 (확인 필요)
-        movieTheater: time.movieTheater, // 문자열 (정상)
+        movieId: time.movieId,
+        movieTime: time.movieTime,
+        movieTheater: time.movieTheater,
       };
 
       console.log(
@@ -53,13 +53,7 @@ function JuniorMovieSelectPage() {
     }
   };
 
-  // ✅ 좌석 선택 화면으로 이동
   const handleJuniorSeatSelect = async () => {
-    if (!selectedMovie || !selectedTime) {
-      alert("🎬 영화를 선택하고 시간도 선택해주세요!");
-      return;
-    }
-
     try {
       const requestBody = {
         movieId: selectedMovie.movieId,

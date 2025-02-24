@@ -15,17 +15,45 @@ function SeniorMovieSelectPage() {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [movies, setMovies] = useState([]);
-  const [selectedDate, setSelectedDate] = useState("2025-02-18");
+  const [selectedDate, setSelectedDate] = useState("2025-02-24");
   const navigate = useNavigate();
 
   const handleSeniorMain = () => navigate("/seniorMain");
 
-  const handleSeniorSeatSelect = async () => {
-    if (!selectedMovie || !selectedTime) {
-      alert("🎬 영화를 선택하고 시간도 선택해주세요!");
-      return;
-    }
+  const handleSelectTime = async (time, movie) => {
+    setSelectedMovie(movie);
+    setSelectedTime(time);
 
+    try {
+      const requestBody = {
+        movieId: time.movieId,
+        movieTime: time.movieTime,
+        movieTheater: time.movieTheater,
+      };
+
+      console.log(
+        "📤 영화 시간 저장 요청 데이터:",
+        JSON.stringify(requestBody, null, 2),
+      );
+
+      const response = await fetch(`${API_BASE_URL}/api/movie/time`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
+      });
+
+      const result = await response.json();
+      console.log("✅ 영화 시간 저장 응답:", result);
+
+      if (result.status !== "success") {
+        console.warn("🚨 영화 시간 저장 실패:", result);
+      }
+    } catch (error) {
+      console.error("🚨 영화 시간 저장 중 오류 발생:", error);
+    }
+  };
+
+  const handleSeniorSeatSelect = async () => {
     try {
       const requestBody = {
         movieId: selectedTime.movieId,
@@ -35,10 +63,9 @@ function SeniorMovieSelectPage() {
       };
 
       console.log("📤 영화 데이터 저장:", requestBody);
-
       localStorage.setItem("selectedMovie", JSON.stringify(requestBody));
 
-      navigate("/juniorSeat");
+      navigate("/seniorSeat");
     } catch (error) {
       console.error("🚨 영화 데이터 저장 실패:", error);
     }
@@ -117,10 +144,7 @@ function SeniorMovieSelectPage() {
                       movie.times.map((time) => (
                         <button
                           key={time.movieId}
-                          onClick={() => {
-                            setSelectedMovie(movie);
-                            setSelectedTime(time);
-                          }}
+                          onClick={() => handleSelectTime(time, movie)}
                           className={`border w-32 h-[66px] flex flex-col justify-center items-center ${
                             selectedTime?.movieId === time.movieId
                               ? "border-black bg-white text-black"
