@@ -17,7 +17,7 @@ public class Ticket {
     private Movie movie;
     @Column(nullable = false)
     private String movieTheater;
-    private String movieTime;
+    private LocalTime movieTime;
     private String movieSeat;
     private int customerDisabled;
     private int customerYouth;
@@ -48,11 +48,11 @@ public class Ticket {
         this.movie = movie;
     }
 
-    public String getMovieTime() {
+    public LocalTime getMovieTime() {
         return movieTime;
     }
 
-    public void setMovieTime(String movieTime) {
+    public void setMovieTime(LocalTime movieTime) {
         this.movieTime = movieTime;
     }
 

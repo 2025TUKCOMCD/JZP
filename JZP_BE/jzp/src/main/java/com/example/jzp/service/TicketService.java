@@ -70,7 +70,7 @@ public class TicketService {
     }
 
     // 영화 시간 저장
-    public boolean updateMovieTime(UUID movieId, String movieTime, String movieTheater) {
+    public boolean updateMovieTime(UUID movieId, LocalTime movieTime, String movieTheater) {
         Optional<Movie> movieOptional = movieRepository.findById(movieId);
         if (movieOptional.isEmpty()) {
             return false;
