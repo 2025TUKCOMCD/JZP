@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/header.jsx";
-import StepBar from "../../components/MovieStepBar.jsx";
+import StepBar from "../../components/movieStepBar.jsx";
 import DateSelectBar from "../../components/dateSelectBar2.jsx";
 import age12Image from "../../assets/images/12.png";
 import age15Image from "../../assets/images/15.png";
