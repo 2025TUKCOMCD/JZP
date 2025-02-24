@@ -17,7 +17,8 @@ import java.util.UUID;
 @Repository
 public interface MovieRepository extends JpaRepository<Movie, UUID> {
     List<Movie> findByMovieCalendar(Date movieCalendar);
-    Movie findByTmdbMovieId(Long tmdbMovieId);
+    Optional<Movie> findByTmdbMovieId(Long tmdbMovieId);
+
 
 }
 

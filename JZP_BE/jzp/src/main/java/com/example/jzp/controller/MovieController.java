@@ -30,25 +30,52 @@ public class MovieController {
         return "Movies saved successfully!";
     }
 
-    // 영화 그룹별 요청
+
     @PostMapping("/showmovie/{group}")
     public ResponseEntity<?> showMovieByGroup(@PathVariable("group") String group,
                                               @RequestBody MovieCalendarRequest request) {
         // 영화 리스트를 요청된 날짜로 가져옴
         List<MovieResponse> movies = movieService.getMoviesByDate(request.getMovieCalendar());
 
+        // tmdbmovie_id로 그룹화
+        Map<Long, MovieResponse> movieMap = new HashMap<>();
+        for (MovieResponse movie : movies) {
+            Long tmdbMovieId = movie.getTmdbMovieId();  // tmdbMovieId는 Long 타입
+
+            if (!movieMap.containsKey(tmdbMovieId)) {
+                // tmdbmovie_id가 처음 나타나면 새로 생성하여 그룹화
+                movieMap.put(tmdbMovieId, movie);
+            }
+
+            // 기존에 그룹화된 영화에 상영 시간 정보 추가
+            MovieResponse response = movieMap.get(tmdbMovieId);
+            MovieScheduleResponse scheduleResponse = new MovieScheduleResponse();
+            scheduleResponse.setMovieTime(movie.getMovieTime());
+            scheduleResponse.setMovieSeatRemain(movie.getMovieSeatRemain());
+            scheduleResponse.setMovieTheater(movie.getMovieTheater());  // movieTheater가 정의되어 있어야 함
+
+            // movieTime, movieSeatRemain, movieTheater가 유효한 값인지 확인
+            if (scheduleResponse.getMovieTime() != null && scheduleResponse.getMovieSeatRemain() > 0 && scheduleResponse.getMovieTheater() != null) {
+                response.getTimes().add(scheduleResponse); // 유효한 값일 경우만 times 리스트에 추가
+            }
+        }
+
+        // 영화 그룹화 후 리스트로 변환
+        List<MovieResponse> groupedMovies = new ArrayList<>(movieMap.values());
+
         // 사용자 그룹에 맞는 우선순위 처리
         if ("youth".equals(group)) {
-            movies = prioritizeForYouth(movies); // 청소년 우선순위 정렬
+            groupedMovies = prioritizeForYouth(groupedMovies); // 청소년 우선순위 정렬
         } else if ("old".equals(group)) {
-            movies = prioritizeForOld(movies); // 노인 우선순위 정렬
+            groupedMovies = prioritizeForOld(groupedMovies); // 노인 우선순위 정렬
         }
 
         return ResponseEntity.ok(Map.of(
                 "movieCalendar", request.getMovieCalendar(),
-                "movies", movies
+                "movies", groupedMovies
         ));
     }
+
 
     // 청소년 우선순위로 영화 정렬
     private List<MovieResponse> prioritizeForYouth(List<MovieResponse> movies) {
@@ -67,7 +94,6 @@ public class MovieController {
                 .collect(Collectors.toList());
     }
 
-    // DTO: 영화 날짜 요청
     public static class MovieCalendarRequest {
         @JsonFormat(pattern = "yyyy-MM-dd")
         private Date movieCalendar;
@@ -81,55 +107,10 @@ public class MovieController {
         }
     }
 
-    // 영화 시간 저장
-    @PostMapping("/time")
-    public ResponseEntity<?> updateMovieTime(@RequestBody MovieTimeRequest request) {
-        boolean success = movieService.updateMovieTime(request.getMovieId(), request.getMovieTime(), request.getMovieTheater());
-
-        if (!success) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "status", "failed",
-                    "message", "영화 정보를 찾을 수 없습니다."
-            ));
-        }
-
-        return ResponseEntity.ok(Map.of("status", "success"));
-    }
-
-    public static class MovieTimeRequest {
-        private UUID movieId;
-        private String movieTime;
-        private String movieTheater;
-
-        // Getters and Setters
-        public UUID getMovieId() {
-            return movieId;
-        }
-
-        public void setMovieId(UUID movieId) {
-            this.movieId = movieId;
-        }
-
-        public String getMovieTime() {
-            return movieTime;
-        }
-
-        public void setMovieTime(String movieTime) {
-            this.movieTime = movieTime;
-        }
-
-        public String getMovieTheater() {
-            return movieTheater;
-        }
-
-        public void setMovieTheater(String movieTheater) {
-            this.movieTheater = movieTheater;
-        }
-    }
 
     // DTO: 영화 응답 데이터
     public static class MovieResponse {
-        private UUID movieId;
+        private Long tmdbMovieId;  // tmdbmovie_id 필드 추가
         private String movieImage;
         private String movieName;
         private String movieType;
@@ -138,14 +119,16 @@ public class MovieController {
         private int movieSeatRemain;
         private String movieTheater;
         private String movieGrade;
+        private List<MovieScheduleResponse> times = new ArrayList<>();
 
         // Getters and Setters
-        public UUID getMovieId() {
-            return movieId;
+
+        public Long getTmdbMovieId() {
+            return tmdbMovieId;
         }
 
-        public void setMovieId(UUID movieId) {
-            this.movieId = movieId;
+        public void setTmdbMovieId(Long tmdbMovieId) {
+            this.tmdbMovieId = tmdbMovieId;
         }
 
         public String getMovieImage() {
@@ -202,6 +185,100 @@ public class MovieController {
 
         public void setMovieGrade(String movieGrade) {
             this.movieGrade = movieGrade;
+        }
+
+        public List<MovieScheduleResponse> getTimes() {
+            return times;
+        }
+
+        public void setTimes(List<MovieScheduleResponse> times) {
+            this.times = times;
+        }
+
+        public String getMovieTheater() {
+            return movieTheater;
+        }
+
+        public void setMovieTheater(String movieTheater) {
+            this.movieTheater = movieTheater;
+        }
+    }
+
+    // 상영 시간 정보 DTO
+    public static class MovieScheduleResponse {
+        private UUID movieId;
+        private String movieTime;
+        private int movieSeatRemain;
+        private String movieTheater;
+
+        public UUID getMovieId() {
+            return movieId;
+        }
+
+        public void setMovieId(UUID movieId) {  // UUID 타입에 맞는 setter 추가
+            this.movieId = movieId;
+        }
+
+        public String getMovieTime() {
+            return movieTime;
+        }
+
+        public void setMovieTime(String movieTime) {
+            this.movieTime = movieTime;
+        }
+
+        public int getMovieSeatRemain() {
+            return movieSeatRemain;
+        }
+
+        public void setMovieSeatRemain(int movieSeatRemain) {
+            this.movieSeatRemain = movieSeatRemain;
+        }
+
+        public String getMovieTheater() {
+            return movieTheater;
+        }
+
+        public void setMovieTheater(String movieTheater) {
+            this.movieTheater = movieTheater;
+        }
+    }
+
+    // 영화 시간 저장
+    @PostMapping("/time")
+    public ResponseEntity<?> updateMovieTime(@RequestBody MovieTimeRequest request) {
+        boolean success = movieService.updateMovieTime(request.getMovieId(), request.getMovieTime(), request.getMovieTheater());
+
+        if (!success) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "status", "failed",
+                    "message", "영화 정보를 찾을 수 없습니다."
+            ));
+        }
+
+        return ResponseEntity.ok(Map.of("status", "success"));
+    }
+
+    public static class MovieTimeRequest {
+        private UUID movieId;
+        private String movieTime;
+        private String movieTheater;
+
+        // Getters and Setters
+        public UUID getMovieId() {
+            return movieId;
+        }
+
+        public void setMovieId(UUID movieId) {
+            this.movieId = movieId;
+        }
+
+        public String getMovieTime() {
+            return movieTime;
+        }
+
+        public void setMovieTime(String movieTime) {
+            this.movieTime = movieTime;
         }
 
         public String getMovieTheater() {

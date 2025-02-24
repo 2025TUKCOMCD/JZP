@@ -14,11 +14,8 @@ public class Movie {
     private UUID movieId;
     private String movieName;
     private Long tmdbMovieId;
-
-
     @Temporal(TemporalType.DATE)
     private Date movieCalendar;
-
     private String movieTime;
     private String movieTheater;
     private String movieImage;
@@ -121,5 +118,7 @@ public class Movie {
     public void setMovieSeat(String movieSeat) {
         this.movieSeat = movieSeat;
     }
+
+
 
 }

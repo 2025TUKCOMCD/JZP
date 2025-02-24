@@ -103,6 +103,7 @@ public class MovieService {
         return genres;
     }
 
+
     @Transactional(rollbackFor = Exception.class)
     public void saveMoviesFromTMDB() {
         Map<Integer, String> genreMap = getGenreMap();
@@ -124,7 +125,14 @@ public class MovieService {
                 String posterPath = movieNode.path("poster_path").asText();
                 List<String> genres = extractGenres(movieNode, genreMap);
                 boolean adult = movieNode.path("adult").asBoolean();
-                int runtimeMinutes = movieNode.path("runtime").asInt(120);
+
+                // TMDB에서 해당 영화의 런타임 값을 가져오기 위한 세부 API 호출
+                String movieDetailsUrl = "https://api.themoviedb.org/3/movie/" + tmdbMovieId + "?api_key=" + API_KEY + "&language=ko-KR";
+                String movieDetailsResponse = restTemplate.getForObject(movieDetailsUrl, String.class);
+                JsonNode movieDetailsNode = objectMapper.readTree(movieDetailsResponse);
+
+                // 런타임 값 가져오기 (없으면 기본값 120으로 설정)
+                int runtimeMinutes = movieDetailsNode.path("runtime").asInt(120);
 
                 String ageRating = MovieGrade.getAgeRating(adult, genres).getCode();
                 List<LocalTime> randomTimes = generateRandomTimes();
@@ -148,7 +156,6 @@ public class MovieService {
                         movie.setMovieTheater(THEATER_NAMES[RANDOM.nextInt(THEATER_NAMES.length)]);
                         movie.setMovieRating(ranking);
                         movieRepository.save(movie);
-
                     }
                 }
             }
@@ -156,6 +163,7 @@ public class MovieService {
             e.printStackTrace();
         }
     }
+
 
     public enum MovieGrade {
         ALL("전체 이용가", "ALL"),
@@ -223,46 +231,49 @@ public class MovieService {
     }
 
 
-
-    // 나이 등급을 결정하는 메서드
-    private String getAgeRatingFromAdultAndGenres(boolean adult, List<String> genres) {
-        // 성인 여부가 true이면 19세 미만 관람 불가
-        if (adult) {
-            return "19세 미만 관람 불가";
-        }
-
-        // 15세 이상 나이 등급을 결정할 장르들
-        List<String> ageRestrictedGenres15 = List.of("로맨스", "스릴러", "공포", "범죄", "미스터리", "전쟁");
-
-        // 15세 이상 장르가 있으면 15세 이상으로 설정
-        for (String genre : genres) {
-            if (ageRestrictedGenres15.contains(genre)) {
-                return "15세 이상";
-            }
-        }
-
-        // 해당 장르가 없으면 전체이용가로 설정
-        return "전체이용가";
-    }
-
-
-    // 날짜별 영화 조회
     public List<MovieController.MovieResponse> getMoviesByDate(Date movieCalendar) {
+        // movieCalendar에 해당하는 영화를 가져옴
         List<Movie> movies = movieRepository.findByMovieCalendar(movieCalendar);
-        return movies.stream().map(movie -> {
-            MovieController.MovieResponse response = new MovieController.MovieResponse();
-            response.setMovieId(movie.getMovieId());
-            response.setMovieImage(movie.getMovieImage());
-            response.setMovieName(movie.getMovieName());
-            response.setMovieType(movie.getMovieType());
-            response.setMovieRating(movie.getMovieRating());
-            response.setMovieGrade(movie.getMovieGrade());
-            response.setMovieTime(movie.getMovieTime());
-            response.setMovieSeatRemain(movie.getMovieSeatRemain());
-            response.setMovieTheater(movie.getMovieTheater());
-            return response;
-        }).collect(Collectors.toList());
+
+        // tmdbmovie_id로 그룹화하기 위한 맵
+        Map<Long, MovieController.MovieResponse> movieMap = new HashMap<>();
+
+        // 영화 데이터를 순회하면서
+        for (Movie movie : movies) {
+            Long tmdbMovieId = movie.getTmdbMovieId(); // tmdbmovie_id로 그룹화
+
+            // 해당 tmdbMovieId로 이미 생성된 MovieResponse가 없으면 새로 생성
+            MovieController.MovieResponse response = movieMap.get(tmdbMovieId);
+            if (response == null) {
+                response = new MovieController.MovieResponse();
+                response.setTmdbMovieId(tmdbMovieId); // tmdbmovie_id 설정
+                response.setMovieImage(movie.getMovieImage());
+                response.setMovieName(movie.getMovieName());
+                response.setMovieType(movie.getMovieType());
+                response.setMovieRating(movie.getMovieRating());
+                response.setMovieGrade(movie.getMovieGrade());
+                response.setTimes(new ArrayList<>()); // times 리스트 초기화
+                movieMap.put(tmdbMovieId, response); // tmdbmovie_id로 그룹화
+            }
+
+            // 해당 영화에 대한 상영 시간 정보를 추가
+            MovieController.MovieScheduleResponse scheduleResponse = new MovieController.MovieScheduleResponse();
+            scheduleResponse.setMovieTime(movie.getMovieTime());
+            scheduleResponse.setMovieSeatRemain(movie.getMovieSeatRemain());
+            scheduleResponse.setMovieTheater(movie.getMovieTheater());
+
+            // 각 상영 시간에 고유한 movieId를 설정
+            scheduleResponse.setMovieId(movie.getMovieId()); // 각 영화 고유의 movieId 설정
+
+            // times 리스트에 상영 시간을 추가
+            response.getTimes().add(scheduleResponse);
+        }
+
+        // 그룹화된 영화들을 반환
+        return new ArrayList<>(movieMap.values());
     }
+
+
 
     // 영화 시간과 극장 정보 업데이트
         public boolean updateMovieTime(UUID movieId, String movieTime, String movieTheater) {
@@ -323,8 +334,13 @@ public class MovieService {
             return false;
         }
 
+        // currentReservedSeats가 null일 수 있으므로 빈 문자열로 초기화
         String currentReservedSeats = movie.getMovieSeat();
+        if (currentReservedSeats == null) {
+            currentReservedSeats = ""; // null이면 빈 문자열로 처리
+        }
         List<String> reservedSeatsList = new ArrayList<>(Arrays.asList(currentReservedSeats.split(",")));
+
         String[] requestedSeats = movieSeat.split(",");
         for (String seat : requestedSeats) {
             if (reservedSeatsList.contains(seat)) {
@@ -387,7 +403,7 @@ public class MovieService {
         // 결제 내역 조회
         List<Ticket> tickets = ticketRepository.findAll(); // 조건에 맞는 티켓 조회 가능
 
-        // 응답을 위한 데이터 맵 생성
+        // 응답을 위한 데이터 맵 생성SS
         Map<String, Object> response = new HashMap<>();
 
         // 총 결제 금액 초기화
