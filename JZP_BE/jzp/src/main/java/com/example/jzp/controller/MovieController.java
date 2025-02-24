@@ -31,6 +31,7 @@ public class MovieController {
     }
 
     // 영화 그룹별 요청
+// 영화 그룹별 요청
     @PostMapping("/showmovie/{group}")
     public ResponseEntity<?> showMovieByGroup(@PathVariable("group") String group,
                                               @RequestBody MovieCalendarRequest request) {
@@ -49,6 +50,7 @@ public class MovieController {
                 "movies", movies
         ));
     }
+
 
     // 청소년 우선순위로 영화 정렬
     private List<MovieResponse> prioritizeForYouth(List<MovieResponse> movies) {
@@ -81,51 +83,6 @@ public class MovieController {
         }
     }
 
-    // 영화 시간 저장
-    @PostMapping("/time")
-    public ResponseEntity<?> updateMovieTime(@RequestBody MovieTimeRequest request) {
-        boolean success = movieService.updateMovieTime(request.getMovieId(), request.getMovieTime(), request.getMovieTheater());
-
-        if (!success) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "status", "failed",
-                    "message", "영화 정보를 찾을 수 없습니다."
-            ));
-        }
-
-        return ResponseEntity.ok(Map.of("status", "success"));
-    }
-
-    public static class MovieTimeRequest {
-        private UUID movieId;
-        private String movieTime;
-        private String movieTheater;
-
-        // Getters and Setters
-        public UUID getMovieId() {
-            return movieId;
-        }
-
-        public void setMovieId(UUID movieId) {
-            this.movieId = movieId;
-        }
-
-        public String getMovieTime() {
-            return movieTime;
-        }
-
-        public void setMovieTime(String movieTime) {
-            this.movieTime = movieTime;
-        }
-
-        public String getMovieTheater() {
-            return movieTheater;
-        }
-
-        public void setMovieTheater(String movieTheater) {
-            this.movieTheater = movieTheater;
-        }
-    }
 
     // DTO: 영화 응답 데이터
     public static class MovieResponse {
@@ -138,6 +95,7 @@ public class MovieController {
         private int movieSeatRemain;
         private String movieTheater;
         private String movieGrade;
+        private List<MovieScheduleResponse> times;
 
         // Getters and Setters
         public UUID getMovieId() {
@@ -202,6 +160,93 @@ public class MovieController {
 
         public void setMovieGrade(String movieGrade) {
             this.movieGrade = movieGrade;
+        }
+
+        public String getMovieTheater() {
+            return movieTheater;
+        }
+
+        public void setMovieTheater(String movieTheater) {
+            this.movieTheater = movieTheater;
+        }
+
+        public List<MovieScheduleResponse> getTimes() {
+            return times;
+        }
+
+        public void setTimes(List<MovieScheduleResponse> times) {
+            this.times = times;
+        }
+
+    }
+
+    public static class MovieScheduleResponse {
+        private String movieTime;
+        private int movieSeatRemain;
+        private String movieTheater;
+
+        // Getters and Setters
+        public String getMovieTime() {
+            return movieTime;
+        }
+
+        public void setMovieTime(String movieTime) {
+            this.movieTime = movieTime;
+        }
+
+        public int getMovieSeatRemain() {
+            return movieSeatRemain;
+        }
+
+        public void setMovieSeatRemain(int movieSeatRemain) {
+            this.movieSeatRemain = movieSeatRemain;
+        }
+
+        public String getMovieTheater() {
+            return movieTheater;
+        }
+
+        public void setMovieTheater(String movieTheater) {
+            this.movieTheater = movieTheater;
+        }
+    }
+
+
+    // 영화 시간 저장
+    @PostMapping("/time")
+    public ResponseEntity<?> updateMovieTime(@RequestBody MovieTimeRequest request) {
+        boolean success = movieService.updateMovieTime(request.getMovieId(), request.getMovieTime(), request.getMovieTheater());
+
+        if (!success) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "status", "failed",
+                    "message", "영화 정보를 찾을 수 없습니다."
+            ));
+        }
+
+        return ResponseEntity.ok(Map.of("status", "success"));
+    }
+
+    public static class MovieTimeRequest {
+        private UUID movieId;
+        private String movieTime;
+        private String movieTheater;
+
+        // Getters and Setters
+        public UUID getMovieId() {
+            return movieId;
+        }
+
+        public void setMovieId(UUID movieId) {
+            this.movieId = movieId;
+        }
+
+        public String getMovieTime() {
+            return movieTime;
+        }
+
+        public void setMovieTime(String movieTime) {
+            this.movieTime = movieTime;
         }
 
         public String getMovieTheater() {

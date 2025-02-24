@@ -103,6 +103,8 @@ public class MovieService {
         return genres;
     }
 
+
+    @Transactional(rollbackFor = Exception.class)
     public void saveMoviesFromTMDB() {
         Map<Integer, String> genreMap = getGenreMap();
         String url = "https://api.themoviedb.org/3/movie/popular?api_key=" + API_KEY + "&language=ko-KR&page=1";
@@ -137,51 +139,31 @@ public class MovieService {
 
                 Integer ranking = rating++;
 
-                // 동일한 tmdbMovieId를 가진 영화가 존재하는지 확인
-                Optional<Movie> existingMovieOptional = movieRepository.findByTmdbMovieId(tmdbMovieId);
-                Movie movie;
-
-                if (existingMovieOptional.isPresent()) {
-                    movie = existingMovieOptional.get();
-                } else {
-                    movie = new Movie();
-                    movie.setMovieId(UUID.randomUUID());
-                    movie.setTmdbMovieId(tmdbMovieId);
-                    movie.setMovieName(title);
-                    movie.setMovieImage("https://image.tmdb.org/t/p/w500" + posterPath);
-                    movie.setMovieType(String.join(", ", genres));
-                    movie.setMovieGrade(ageRating);
-                    movie.setMovieSeatRemain(72);
-                    movie.setMovieTheater(THEATER_NAMES[RANDOM.nextInt(THEATER_NAMES.length)]);
-                    movie.setMovieRating(ranking);
+                for (int i = 0; i < 5; i++) {
+                    LocalDate movieDate = today.plusDays(i);
+                    for (LocalTime time : randomTimes) {
+                        String movieTimeFormatted = MovieGrade.formatMovieTime(time, runtimeMinutes);
+                        Movie movie = new Movie();
+                        movie.setMovieId(UUID.randomUUID());
+                        movie.setTmdbMovieId(tmdbMovieId);
+                        movie.setMovieName(title);
+                        movie.setMovieImage("https://image.tmdb.org/t/p/w500" + posterPath);
+                        movie.setMovieType(String.join(", ", genres));
+                        movie.setMovieGrade(ageRating);
+                        movie.setMovieTime(movieTimeFormatted); // String 값을 저장하도록 설정
+                        movie.setMovieCalendar(java.sql.Date.valueOf(movieDate));
+                        movie.setMovieSeatRemain(72);
+                        movie.setMovieTheater(THEATER_NAMES[RANDOM.nextInt(THEATER_NAMES.length)]);
+                        movie.setMovieRating(ranking);
+                        movieRepository.save(movie);
+                    }
                 }
-
-                // 랜덤으로 2~5개의 시간대 추가
-                List<String> movieTimes = new ArrayList<>();
-                int numberOfTimes = RANDOM.nextInt(4) + 2; // 2~5개의 시간대 생성
-                for (int i = 0; i < numberOfTimes; i++) {
-                    LocalDate randomDate = today.plusDays(RANDOM.nextInt(5)); // 0일부터 4일 사이의 랜덤 날짜
-                    // randomTimes에서 랜덤하게 하나의 시간 선택
-                    LocalTime randomTime = randomTimes.get(RANDOM.nextInt(randomTimes.size()));
-                    String movieTimeFormatted = MovieGrade.formatMovieTime(randomTime, runtimeMinutes);
-                    movieTimes.add(movieTimeFormatted);
-                }
-
-                // movieTime을 콤마로 구분하여 하나의 문자열로 설정
-                String movieTimeString = String.join(", ", movieTimes);
-                movie.setMovieTime(movieTimeString);
-
-                // 랜덤한 날짜 설정
-                LocalDate randomMovieDate = today.plusDays(RANDOM.nextInt(5)); // 랜덤으로 당일 날짜부터 4일 내의 날짜를 설정
-                movie.setMovieCalendar(java.sql.Date.valueOf(randomMovieDate));
-
-                movieRepository.save(movie); // 영화 정보 저장
-
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
     public enum MovieGrade {
         ALL("전체 이용가", "ALL"),
@@ -250,23 +232,45 @@ public class MovieService {
 
 
 
-    // 날짜별 영화 조회
     public List<MovieController.MovieResponse> getMoviesByDate(Date movieCalendar) {
+        // movieCalendar에 해당하는 영화를 가져옴
         List<Movie> movies = movieRepository.findByMovieCalendar(movieCalendar);
-        return movies.stream().map(movie -> {
-            MovieController.MovieResponse response = new MovieController.MovieResponse();
-            response.setMovieId(movie.getMovieId());
-            response.setMovieImage(movie.getMovieImage());
-            response.setMovieName(movie.getMovieName());
-            response.setMovieType(movie.getMovieType());
-            response.setMovieRating(movie.getMovieRating());
-            response.setMovieGrade(movie.getMovieGrade());
-            response.setMovieTime(movie.getMovieTime());
-            response.setMovieSeatRemain(movie.getMovieSeatRemain());
-            response.setMovieTheater(movie.getMovieTheater());
-            return response;
-        }).collect(Collectors.toList());
+
+        // movieId로 그룹화하기 위한 맵
+        Map<UUID, MovieController.MovieResponse> movieMap = new HashMap<>();
+
+        // 영화 데이터를 순회하면서
+        for (Movie movie : movies) {
+            UUID movieId = movie.getMovieId();
+
+            // 해당 movieId로 이미 생성된 MovieResponse가 없으면 새로 생성
+            MovieController.MovieResponse response = movieMap.get(movieId);
+            if (response == null) {
+                response = new MovieController.MovieResponse();
+                response.setMovieId(movieId);
+                response.setMovieImage(movie.getMovieImage());
+                response.setMovieName(movie.getMovieName());
+                response.setMovieType(movie.getMovieType());
+                response.setMovieRating(movie.getMovieRating());
+                response.setMovieGrade(movie.getMovieGrade());
+                response.setTimes(new ArrayList<>()); // times 리스트 초기화
+                movieMap.put(movieId, response); // movieId로 그룹화
+            }
+
+            // 해당 영화에 대한 상영 시간 정보를 추가
+            MovieController.MovieScheduleResponse scheduleResponse = new MovieController.MovieScheduleResponse();
+            scheduleResponse.setMovieTime(movie.getMovieTime());
+            scheduleResponse.setMovieSeatRemain(movie.getMovieSeatRemain());
+            scheduleResponse.setMovieTheater(movie.getMovieTheater());
+
+            // times 리스트에 상영 시간을 추가
+            response.getTimes().add(scheduleResponse);
+        }
+
+        // 그룹화된 영화들을 반환
+        return new ArrayList<>(movieMap.values());
     }
+
 
     // 영화 시간과 극장 정보 업데이트
         public boolean updateMovieTime(UUID movieId, String movieTime, String movieTheater) {
