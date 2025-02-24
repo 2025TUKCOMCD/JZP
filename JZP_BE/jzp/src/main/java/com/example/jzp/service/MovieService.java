@@ -322,33 +322,31 @@ public class MovieService {
         }
     }
 
-    @Transactional
     public boolean setMovieSeat(UUID movieId, String movieSeat, String movieTheater, String movieName, String movieTime) {
         Optional<Movie> movieOptional = movieRepository.findById(movieId);
         if (movieOptional.isEmpty()) {
-            return false;
+            return false; // 영화 정보가 없으면 실패
         }
         Movie movie = movieOptional.get();
 
-        // 영화 이름 및 시간 검증
+        // movieTime을 String으로 비교
         if (!movie.getMovieName().equals(movieName) || !movie.getMovieTime().equals(movieTime)) {
             return false;
         }
 
-        // 현재 예약된 좌석 목록 가져오기
-        List<String> reservedSeatsList = new ArrayList<>();
-        if (movie.getMovieSeat() != null && !movie.getMovieSeat().isEmpty()) {
-            reservedSeatsList.addAll(Arrays.asList(movie.getMovieSeat().split(",")));
+        // currentReservedSeats가 null일 수 있으므로 빈 문자열로 초기화
+        String currentReservedSeats = movie.getMovieSeat();
+        if (currentReservedSeats == null) {
+            currentReservedSeats = ""; // null이면 빈 문자열로 처리
         }
+        List<String> reservedSeatsList = new ArrayList<>(Arrays.asList(currentReservedSeats.split(",")));
 
-        // 요청된 좌석 배열 생성
         String[] requestedSeats = movieSeat.split(",");
-
-        // 좌석 중복 검사
         for (String seat : requestedSeats) {
-            if (reservedSeatsList.contains(seat.trim())) {
+            if (reservedSeatsList.contains(seat)) {
                 return false; // 이미 예약된 좌석이면 실패
             }
+            reservedSeatsList.add(seat); // 새로운 좌석 추가
         }
 
         int reservedCount = requestedSeats.length;
@@ -357,25 +355,25 @@ public class MovieService {
             return false; // 좌석 부족
         }
 
-        // 좌석 추가
-        reservedSeatsList.addAll(Arrays.asList(requestedSeats));
-        reservedSeatsList.removeIf(String::isEmpty);  // 빈 값 제거
-
-        // 영화 좌석 정보 업데이트
         movie.setMovieSeatRemain(remainingSeats - reservedCount);
+        // 리스트를 결합하기 전에 불필요한 공백 및 빈 요소 제거
+        reservedSeatsList.removeIf(String::isEmpty);  // 빈 문자열이 있으면 제거
+        // 결합된 좌석 정보 업데이트
         movie.setMovieSeat(String.join(",", reservedSeatsList));
-        movieRepository.save(movie);
+        movieRepository.save(movie); // DB에 반영
 
-        // 최근 티켓 조회 후 좌석 정보 업데이트
+        // 최근 티켓을 찾아서 좌석을 업데이트
         Optional<Ticket> latestTicketOptional = ticketRepository.findTopByMovieOrderByCreatedAtDesc(movie);
-        latestTicketOptional.ifPresent(ticket -> {
-            ticket.setMovieSeat(movieSeat);
-            ticket.setMovieTheater(movieTheater);
-            ticketRepository.save(ticket);
-        });
+        if (latestTicketOptional.isPresent()) {
+            Ticket latestTicket = latestTicketOptional.get();
+            latestTicket.setMovieSeat(movieSeat); // 입력된 좌석 정보로 업데이트
+            latestTicket.setMovieTheater(movieTheater); // 상영관 정보 업데이트
+            ticketRepository.save(latestTicket); // 변경된 티켓 저장
+        }
 
         return true;
     }
+
 
     public String getUpdatedMovieSeat(UUID movieId) {
         Optional<Movie> movieOptional = movieRepository.findById(movieId);
@@ -398,6 +396,7 @@ public class MovieService {
         // TicketService의 saveCustomerTicket 호출
         return ticketService.saveCustomerTicket(movieId, disabled, youth, adult, old);
     }
+
 
 
     // 결제 내역 조회

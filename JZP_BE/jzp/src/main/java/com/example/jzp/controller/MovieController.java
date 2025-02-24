@@ -292,9 +292,8 @@ public class MovieController {
 
     @PostMapping("/seat")
     public ResponseEntity<?> setMovieSeat(@RequestBody MovieSeatRequest request) {
-        if (request.getMovieId() == null || request.getMovieSeat() == null ||
-                request.getMovieName() == null || request.getMovieTime() == null ||
-                request.getMovieTheater() == null) {
+        // 필수 항목 체크
+        if (request.getMovieId() == null || request.getMovieSeat() == null || request.getMovieName() == null || request.getMovieTime() == null) {
             return ResponseEntity.badRequest().body(Map.of(
                     "success", false,
                     "message", "필수 항목이 누락되었습니다"
@@ -304,10 +303,10 @@ public class MovieController {
         UUID movieId = request.getMovieId();
         String movieSeat = request.getMovieSeat();
         String movieTheater = request.getMovieTheater();
-        String movieName = request.getMovieName();
-        String movieTime = request.getMovieTime();
+        String movieName = request.getMovieName();  // 영화 이름
+        String movieTime = request.getMovieTime();  // 영화 시간
 
-        boolean success = movieService.setMovieSeat(movieId, movieSeat, movieTheater, movieName, movieTime);
+        boolean success = movieService.setMovieSeat(movieId, movieSeat, movieTheater, movieName, movieTime); // Pass all the required parameters
 
         if (!success) {
             return ResponseEntity.badRequest().body(Map.of(
@@ -318,13 +317,13 @@ public class MovieController {
 
         // 예약 후 최신 좌석 정보 조회
         int remainingSeats = movieService.getMovieSeatRemain(movieId);
-        String updatedSeats = movieService.getUpdatedMovieSeat(movieId);
+        String updatedSeats = movieService.getUpdatedMovieSeat(movieId);  // Get updated movie seat info
 
         return ResponseEntity.ok(Map.of(
                 "success", true,
                 "movieId", movieId,
-                "movieSeatRemain", remainingSeats,
-                "movieSeat", updatedSeats  // 최신 좌석 정보 반환
+                "movieSeat", updatedSeats,  // 추가된 부분: 예약된 좌석 정보 포함
+                "movieSeatRemain", remainingSeats
         ));
     }
 
