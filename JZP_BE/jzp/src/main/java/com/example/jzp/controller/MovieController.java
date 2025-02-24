@@ -98,7 +98,7 @@ public class MovieController {
 
     public static class MovieTimeRequest {
         private UUID movieId;
-        private LocalTime movieTime;
+        private String movieTime;
         private String movieTheater;
 
         // Getters and Setters
@@ -110,11 +110,11 @@ public class MovieController {
             this.movieId = movieId;
         }
 
-        public LocalTime getMovieTime() {
+        public String getMovieTime() {
             return movieTime;
         }
 
-        public void setMovieTime(LocalTime movieTime) {
+        public void setMovieTime(String movieTime) {
             this.movieTime = movieTime;
         }
 
@@ -134,7 +134,7 @@ public class MovieController {
         private String movieName;
         private String movieType;
         private int movieRating;
-        private LocalTime movieTime;
+        private String movieTime;
         private int movieSeatRemain;
         private String movieTheater;
         private String movieGrade;
@@ -180,11 +180,11 @@ public class MovieController {
             this.movieRating = movieRating;
         }
 
-        public LocalTime getMovieTime() {
+        public String getMovieTime() {
             return movieTime;
         }
 
-        public void setMovieTime(LocalTime movieTime) {
+        public void setMovieTime(String movieTime) {
             this.movieTime = movieTime;
         }
 
@@ -413,14 +413,14 @@ public class MovieController {
         private String movieName;
         private String movieType;
         private int movieRating;
-        private LocalTime movieTime;
+        private String movieTime;
         private String movieTheater;
         private String movieGrade;
         private String movieSeat;
         private int movieSeatRemain;
 
         public MovieTimeResponse(UUID movieId, String movieImage, String movieName,
-                                 String movieType, int movieRating, LocalTime movieTime,
+                                 String movieType, int movieRating, String movieTime,
                                  String movieTheater, String movieGrade,String movieSeat, int movieSeatRemain) {
             this.movieId = movieId;
             this.movieImage = movieImage;
@@ -475,11 +475,11 @@ public class MovieController {
             this.movieRating = movieRating;
         }
 
-        public LocalTime getMovieTime() {
+        public String getMovieTime() {
             return movieTime;
         }
 
-        public void setMovieTime(LocalTime movieTime) {
+        public void setMovieTime(String movieTime) {
             this.movieTime = movieTime;
         }
 
@@ -518,7 +518,7 @@ public class MovieController {
     @GetMapping("/movietime")
     public List<MovieTimeResponse> getMoviesByTime(
             @RequestParam(name = "movieCalendar") @DateTimeFormat(pattern = "yyyy-MM-dd") Date movieCalendar,
-            @RequestParam(name = "movieTime") @DateTimeFormat(pattern = "HH:mm:ss") LocalTime movieTime) {
+            @RequestParam(name = "movieTime") String movieTime) {
 
         List<Movie> movies = movieService.getMoviesByTime(movieCalendar, movieTime);
 

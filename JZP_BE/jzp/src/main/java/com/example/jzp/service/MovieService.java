@@ -6,6 +6,7 @@ import com.example.jzp.repository.MovieRepository;
 import com.example.jzp.repository.TicketRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ public class MovieService {
         this.movieRepository = movieRepository;
     }
 
-    public List<Movie> getMoviesByTime(Date movieCalendar, LocalTime movieTime) {
+    public List<Movie> getMoviesByTime(Date movieCalendar, String movieTime) {
         // movieCalendar와 movieTime을 기반으로 티켓을 찾음
         List<Ticket> tickets = ticketRepository.findByMovieMovieCalendarAndMovieMovieTime(movieCalendar, movieTime);
 
@@ -104,7 +105,6 @@ public class MovieService {
 
     @Transactional(rollbackFor = Exception.class)
     public void saveMoviesFromTMDB() {
-        // TMDB API에서 영화 데이터 가져오기
         Map<Integer, String> genreMap = getGenreMap();
         String url = "https://api.themoviedb.org/3/movie/popular?api_key=" + API_KEY + "&language=ko-KR&page=1";
         RestTemplate restTemplate = new RestTemplate();
@@ -114,56 +114,85 @@ public class MovieService {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(response);
             JsonNode resultsNode = rootNode.path("results");
+            LocalDate today = LocalDate.now();
 
             int rating = 1;
-            LocalDate today = LocalDate.now();  // 오늘 날짜 기준
 
-            // 각 TMDB 영화 데이터 처리
             for (JsonNode movieNode : resultsNode) {
                 Long tmdbMovieId = movieNode.path("id").asLong();
                 String title = movieNode.path("title").asText();
                 String posterPath = movieNode.path("poster_path").asText();
                 List<String> genres = extractGenres(movieNode, genreMap);
                 boolean adult = movieNode.path("adult").asBoolean();
+                int runtimeMinutes = movieNode.path("runtime").asInt(120);
 
-                // 성인 여부와 장르를 기반으로 나이 등급을 결정
-                String ageRating = getAgeRatingFromAdultAndGenres(adult, genres);
+                String ageRating = MovieGrade.getAgeRating(adult, genres).getCode();
+                List<LocalTime> randomTimes = generateRandomTimes();
 
                 Integer ranking = rating++;
 
-                // 랜덤 시간 생성
-                List<LocalTime> randomTimes = generateRandomTimes();  // 영화마다 랜덤 시간 생성
-
-
                 for (int i = 0; i < 5; i++) {
                     LocalDate movieDate = today.plusDays(i);
-
-                    // 각 상영 시간마다 새로운 Movie 객체 생성
                     for (LocalTime time : randomTimes) {
-                        Movie movie = new Movie();  // 상영 시간마다 새로운 Movie 객체 생성
-                        movie.setMovieId(UUID.randomUUID());  // 고유한 movie_id 생성
-                        movie.setTmdbMovieId(tmdbMovieId);  // tmdbMovieId는 중복 가능
+                        String movieTimeFormatted = MovieGrade.formatMovieTime(time, runtimeMinutes);
+                        Movie movie = new Movie();
+                        movie.setMovieId(UUID.randomUUID());
+                        movie.setTmdbMovieId(tmdbMovieId);
                         movie.setMovieName(title);
                         movie.setMovieImage("https://image.tmdb.org/t/p/w500" + posterPath);
                         movie.setMovieType(String.join(", ", genres));
                         movie.setMovieGrade(ageRating);
+                        movie.setMovieTime(movieTimeFormatted); // String 값을 저장하도록 설정
+                        movie.setMovieCalendar(java.sql.Date.valueOf(movieDate));
+                        movie.setMovieSeatRemain(72);
+                        movie.setMovieTheater(THEATER_NAMES[RANDOM.nextInt(THEATER_NAMES.length)]);
                         movie.setMovieRating(ranking);
-                        movie.setMovieTime(time);  // 랜덤 시간 할당
-                        movie.setMovieCalendar(java.sql.Date.valueOf(movieDate));  // 영화 상영일 설정
-                        movie.setMovieSeatRemain(72);  // 영화의 좌석 수
-                        movie.setMovieTheater(THEATER_NAMES[RANDOM.nextInt(THEATER_NAMES.length)]);  // 랜덤 영화관
-
-                        // Movie DB에 저장
                         movieRepository.save(movie);
+
                     }
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    public enum MovieGrade {
+        ALL("전체 이용가", "ALL"),
+        AGE_15("15세 이상", "15"),
+        AGE_19("19세 이상", "19");
+
+        private final String description;
+        private final String code;
+
+        MovieGrade(String description, String code) {
+            this.description = description;
+            this.code = code;
+        }
+
+        public String getCode() {
+            return this.code;
+        }
+
+
+        public static MovieGrade getAgeRating(boolean adult, List<String> genres) {
+            if (adult) {
+                return AGE_19;
+            }
+            List<String> ageRestrictedGenres15 = List.of("로맨스", "스릴러", "공포", "범죄", "미스터리", "전쟁");
+            for (String genre : genres) {
+                if (ageRestrictedGenres15.contains(genre)) {
+                    return AGE_15;
+                }
+            }
+            return ALL;
+        }
+
+        public static String formatMovieTime(LocalTime startTime, int runtimeMinutes) {
+            LocalTime endTime = startTime.plusMinutes(runtimeMinutes);
+            return startTime.toString() + "~" + endTime.toString();
+        }
+    }
 
 
     private List<LocalTime> generateRandomTimes() {
@@ -228,7 +257,7 @@ public class MovieService {
             response.setMovieType(movie.getMovieType());
             response.setMovieRating(movie.getMovieRating());
             response.setMovieGrade(movie.getMovieGrade());
-            response.setMovieTime(movie.getMovieTime());  // LocalTime 사용
+            response.setMovieTime(movie.getMovieTime());
             response.setMovieSeatRemain(movie.getMovieSeatRemain());
             response.setMovieTheater(movie.getMovieTheater());
             return response;
@@ -236,7 +265,7 @@ public class MovieService {
     }
 
     // 영화 시간과 극장 정보 업데이트
-        public boolean updateMovieTime(UUID movieId, LocalTime movieTime, String movieTheater) {
+        public boolean updateMovieTime(UUID movieId, String movieTime, String movieTheater) {
             // 영화 ID로 Movie 객체를 조회
             Optional<Movie> movieOptional = movieRepository.findById(movieId);
             if (movieOptional.isEmpty()) {
@@ -263,7 +292,7 @@ public class MovieService {
             return true;
         }
 
-    private Ticket createNewTicket(Movie movie, LocalTime movieTime, String movieTheater) {
+    private Ticket createNewTicket(Movie movie, String movieTime, String movieTheater) {
         Ticket ticket = new Ticket();
         ticket.setMovie(movie);
         ticket.setMovieTime(movieTime);
@@ -287,17 +316,15 @@ public class MovieService {
         if (movieOptional.isEmpty()) {
             return false; // 영화 정보가 없으면 실패
         }
-
         Movie movie = movieOptional.get();
 
-        LocalTime requestedTime = LocalTime.parse(movieTime);
-        if (!movie.getMovieName().equals(movieName) || !movie.getMovieTime().equals(requestedTime)) {
+        // movieTime을 String으로 비교
+        if (!movie.getMovieName().equals(movieName) || !movie.getMovieTime().equals(movieTime)) {
             return false;
         }
 
         String currentReservedSeats = movie.getMovieSeat();
         List<String> reservedSeatsList = new ArrayList<>(Arrays.asList(currentReservedSeats.split(",")));
-
         String[] requestedSeats = movieSeat.split(",");
         for (String seat : requestedSeats) {
             if (reservedSeatsList.contains(seat)) {
@@ -308,16 +335,13 @@ public class MovieService {
 
         int reservedCount = requestedSeats.length;
         int remainingSeats = movie.getMovieSeatRemain();
-
         if (remainingSeats < reservedCount) {
             return false; // 좌석 부족
         }
 
         movie.setMovieSeatRemain(remainingSeats - reservedCount);
-
         // 리스트를 결합하기 전에 불필요한 공백 및 빈 요소 제거
         reservedSeatsList.removeIf(String::isEmpty);  // 빈 문자열이 있으면 제거
-
         // 결합된 좌석 정보 업데이트
         movie.setMovieSeat(String.join(",", reservedSeatsList));
         movieRepository.save(movie); // DB에 반영
@@ -333,10 +357,6 @@ public class MovieService {
 
         return true;
     }
-
-
-
-
 
 
     public String getUpdatedMovieSeat(UUID movieId) {

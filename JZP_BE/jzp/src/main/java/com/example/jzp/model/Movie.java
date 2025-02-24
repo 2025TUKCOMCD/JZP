@@ -19,8 +19,7 @@ public class Movie {
     @Temporal(TemporalType.DATE)
     private Date movieCalendar;
 
-    @JsonFormat(pattern = "HH:mm:ss")
-    private LocalTime movieTime;
+    private String movieTime;
     private String movieTheater;
     private String movieImage;
     private String movieType;
@@ -61,11 +60,11 @@ public class Movie {
         this.movieCalendar = movieCalendar;
     }
 
-    public LocalTime getMovieTime() {
+    public String getMovieTime() {
         return movieTime;
     }
 
-    public void setMovieTime(LocalTime movieTime) {
+    public void setMovieTime(String movieTime) {
         this.movieTime = movieTime;
     }
 
