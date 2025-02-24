@@ -4,12 +4,24 @@ import com.example.jzp.model.Movie;
 import com.example.jzp.controller.MovieController;
 import com.example.jzp.repository.MovieRepository;
 import com.example.jzp.repository.TicketRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.jzp.model.Ticket;
+import org.springframework.web.client.RestTemplate;
+
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 
 @Service
@@ -22,6 +34,9 @@ public class MovieService {
     @Autowired
     private TicketRepository ticketRepository;
 
+    private static final String[] THEATER_NAMES = {"1관", "2관", "3관", "4관"};
+    private static final Random RANDOM = new Random();
+
     @Autowired
     private TicketService ticketService; // TicketService 사용
 
@@ -29,12 +44,15 @@ public class MovieService {
     private static final int ADULT_TICKET_PRICE = 15000;  // 성인 가격
     private static final int OLD_TICKET_PRICE = 8000;    // 노인 가격
     private static final int DISABLED_TICKET_PRICE = 5000; // 장애인 가격
+    private final String API_KEY = "23da313eaaed21538b2ebab1161a0981";
+    private static final String BASE_URL = "https://api.themoviedb.org/3/movie/popular";
 
-    public MovieService(TicketRepository ticketRepository) {
-        this.ticketRepository = ticketRepository;
+    @Autowired
+    public MovieService( MovieRepository movieRepository) {
+        this.movieRepository = movieRepository;
     }
 
-    public List<Movie> getMoviesByTime(Date movieCalendar, LocalTime movieTime) {
+    public List<Movie> getMoviesByTime(Date movieCalendar, String movieTime) {
         // movieCalendar와 movieTime을 기반으로 티켓을 찾음
         List<Ticket> tickets = ticketRepository.findByMovieMovieCalendarAndMovieMovieTime(movieCalendar, movieTime);
 
@@ -42,6 +60,189 @@ public class MovieService {
                 .map(Ticket::getMovie)  // Ticket에서 Movie를 추출
                 .distinct()  // 중복된 영화가 있을 경우 제거
                 .collect(Collectors.toList());
+    }
+
+    // 장르 목록을 가져와서 Map에 저장
+    public Map<Integer, String> getGenreMap() {
+        String url = "https://api.themoviedb.org/3/genre/movie/list?api_key=" + API_KEY + "&language=ko-KR";
+        RestTemplate restTemplate = new RestTemplate();
+        String response = restTemplate.getForObject(url, String.class);
+
+        Map<Integer, String> genreMap = new HashMap<>();
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(response);
+            JsonNode genresNode = rootNode.path("genres");
+
+            for (JsonNode genreNode : genresNode) {
+                int id = genreNode.path("id").asInt();
+                String name = genreNode.path("name").asText();
+                genreMap.put(id, name);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return genreMap;
+    }
+
+    // 영화 정보에서 장르 이름을 추출하는 메서드
+    public List<String> extractGenres(JsonNode movieNode, Map<Integer, String> genreMap) {
+        List<String> genres = new ArrayList<>();
+        JsonNode genresNode = movieNode.path("genre_ids");
+
+        for (JsonNode genreNode : genresNode) {
+            int genreId = genreNode.asInt();  // 장르 ID
+            String genreName = genreMap.get(genreId);  // 장르 이름 변환
+            if (genreName != null) {
+                genres.add(genreName);  // 리스트에 추가
+            }
+        }
+
+        return genres;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void saveMoviesFromTMDB() {
+        Map<Integer, String> genreMap = getGenreMap();
+        String url = "https://api.themoviedb.org/3/movie/popular?api_key=" + API_KEY + "&language=ko-KR&page=1";
+        RestTemplate restTemplate = new RestTemplate();
+        String response = restTemplate.getForObject(url, String.class);
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(response);
+            JsonNode resultsNode = rootNode.path("results");
+            LocalDate today = LocalDate.now();
+
+            int rating = 1;
+
+            for (JsonNode movieNode : resultsNode) {
+                Long tmdbMovieId = movieNode.path("id").asLong();
+                String title = movieNode.path("title").asText();
+                String posterPath = movieNode.path("poster_path").asText();
+                List<String> genres = extractGenres(movieNode, genreMap);
+                boolean adult = movieNode.path("adult").asBoolean();
+                int runtimeMinutes = movieNode.path("runtime").asInt(120);
+
+                String ageRating = MovieGrade.getAgeRating(adult, genres).getCode();
+                List<LocalTime> randomTimes = generateRandomTimes();
+
+                Integer ranking = rating++;
+
+                for (int i = 0; i < 5; i++) {
+                    LocalDate movieDate = today.plusDays(i);
+                    for (LocalTime time : randomTimes) {
+                        String movieTimeFormatted = MovieGrade.formatMovieTime(time, runtimeMinutes);
+                        Movie movie = new Movie();
+                        movie.setMovieId(UUID.randomUUID());
+                        movie.setTmdbMovieId(tmdbMovieId);
+                        movie.setMovieName(title);
+                        movie.setMovieImage("https://image.tmdb.org/t/p/w500" + posterPath);
+                        movie.setMovieType(String.join(", ", genres));
+                        movie.setMovieGrade(ageRating);
+                        movie.setMovieTime(movieTimeFormatted); // String 값을 저장하도록 설정
+                        movie.setMovieCalendar(java.sql.Date.valueOf(movieDate));
+                        movie.setMovieSeatRemain(72);
+                        movie.setMovieTheater(THEATER_NAMES[RANDOM.nextInt(THEATER_NAMES.length)]);
+                        movie.setMovieRating(ranking);
+                        movieRepository.save(movie);
+
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public enum MovieGrade {
+        ALL("전체 이용가", "ALL"),
+        AGE_15("15세 이상", "15"),
+        AGE_19("19세 이상", "19");
+
+        private final String description;
+        private final String code;
+
+        MovieGrade(String description, String code) {
+            this.description = description;
+            this.code = code;
+        }
+
+        public String getCode() {
+            return this.code;
+        }
+
+
+        public static MovieGrade getAgeRating(boolean adult, List<String> genres) {
+            if (adult) {
+                return AGE_19;
+            }
+            List<String> ageRestrictedGenres15 = List.of("로맨스", "스릴러", "공포", "범죄", "미스터리", "전쟁");
+            for (String genre : genres) {
+                if (ageRestrictedGenres15.contains(genre)) {
+                    return AGE_15;
+                }
+            }
+            return ALL;
+        }
+
+        public static String formatMovieTime(LocalTime startTime, int runtimeMinutes) {
+            LocalTime endTime = startTime.plusMinutes(runtimeMinutes);
+            return startTime.toString() + "~" + endTime.toString();
+        }
+    }
+
+
+    private List<LocalTime> generateRandomTimes() {
+        LocalTime start = LocalTime.parse("08:20", DateTimeFormatter.ofPattern("HH:mm"));
+        LocalTime end = LocalTime.parse("23:55", DateTimeFormatter.ofPattern("HH:mm"));
+
+
+        int startMinutes = start.getHour() * 60 + start.getMinute();
+        int endMinutes = end.getHour() * 60 + end.getMinute();
+
+
+        int totalMinutes = endMinutes - startMinutes;
+        int totalIntervals = totalMinutes / 5;
+
+
+        Set<LocalTime> randomTimesSet = new HashSet<>();
+        while (randomTimesSet.size() < 4) {
+
+            int randomOffset = RANDOM.nextInt(totalIntervals + 1) * 5;
+            LocalTime randomTime = start.plusMinutes(randomOffset);
+            randomTimesSet.add(randomTime);
+        }
+
+        List<LocalTime> randomTimes = new ArrayList<>(randomTimesSet);
+        randomTimes.sort(Comparator.naturalOrder());
+
+        return randomTimes;
+    }
+
+
+
+    // 나이 등급을 결정하는 메서드
+    private String getAgeRatingFromAdultAndGenres(boolean adult, List<String> genres) {
+        // 성인 여부가 true이면 19세 미만 관람 불가
+        if (adult) {
+            return "19세 미만 관람 불가";
+        }
+
+        // 15세 이상 나이 등급을 결정할 장르들
+        List<String> ageRestrictedGenres15 = List.of("로맨스", "스릴러", "공포", "범죄", "미스터리", "전쟁");
+
+        // 15세 이상 장르가 있으면 15세 이상으로 설정
+        for (String genre : genres) {
+            if (ageRestrictedGenres15.contains(genre)) {
+                return "15세 이상";
+            }
+        }
+
+        // 해당 장르가 없으면 전체이용가로 설정
+        return "전체이용가";
     }
 
 
@@ -56,7 +257,7 @@ public class MovieService {
             response.setMovieType(movie.getMovieType());
             response.setMovieRating(movie.getMovieRating());
             response.setMovieGrade(movie.getMovieGrade());
-            response.setMovieTime(movie.getMovieTime());  // LocalTime 사용
+            response.setMovieTime(movie.getMovieTime());
             response.setMovieSeatRemain(movie.getMovieSeatRemain());
             response.setMovieTheater(movie.getMovieTheater());
             return response;
@@ -64,7 +265,7 @@ public class MovieService {
     }
 
     // 영화 시간과 극장 정보 업데이트
-        public boolean updateMovieTime(UUID movieId, LocalTime movieTime, String movieTheater) {
+        public boolean updateMovieTime(UUID movieId, String movieTime, String movieTheater) {
             // 영화 ID로 Movie 객체를 조회
             Optional<Movie> movieOptional = movieRepository.findById(movieId);
             if (movieOptional.isEmpty()) {
@@ -91,7 +292,7 @@ public class MovieService {
             return true;
         }
 
-    private Ticket createNewTicket(Movie movie, LocalTime movieTime, String movieTheater) {
+    private Ticket createNewTicket(Movie movie, String movieTime, String movieTheater) {
         Ticket ticket = new Ticket();
         ticket.setMovie(movie);
         ticket.setMovieTime(movieTime);
@@ -115,17 +316,15 @@ public class MovieService {
         if (movieOptional.isEmpty()) {
             return false; // 영화 정보가 없으면 실패
         }
-
         Movie movie = movieOptional.get();
 
-        LocalTime requestedTime = LocalTime.parse(movieTime);
-        if (!movie.getMovieName().equals(movieName) || !movie.getMovieTime().equals(requestedTime)) {
+        // movieTime을 String으로 비교
+        if (!movie.getMovieName().equals(movieName) || !movie.getMovieTime().equals(movieTime)) {
             return false;
         }
 
         String currentReservedSeats = movie.getMovieSeat();
         List<String> reservedSeatsList = new ArrayList<>(Arrays.asList(currentReservedSeats.split(",")));
-
         String[] requestedSeats = movieSeat.split(",");
         for (String seat : requestedSeats) {
             if (reservedSeatsList.contains(seat)) {
@@ -136,16 +335,13 @@ public class MovieService {
 
         int reservedCount = requestedSeats.length;
         int remainingSeats = movie.getMovieSeatRemain();
-
         if (remainingSeats < reservedCount) {
             return false; // 좌석 부족
         }
 
         movie.setMovieSeatRemain(remainingSeats - reservedCount);
-
         // 리스트를 결합하기 전에 불필요한 공백 및 빈 요소 제거
         reservedSeatsList.removeIf(String::isEmpty);  // 빈 문자열이 있으면 제거
-
         // 결합된 좌석 정보 업데이트
         movie.setMovieSeat(String.join(",", reservedSeatsList));
         movieRepository.save(movie); // DB에 반영
@@ -161,10 +357,6 @@ public class MovieService {
 
         return true;
     }
-
-
-
-
 
 
     public String getUpdatedMovieSeat(UUID movieId) {
@@ -300,4 +492,5 @@ public class MovieService {
 
         return response;
     }
+
 }
