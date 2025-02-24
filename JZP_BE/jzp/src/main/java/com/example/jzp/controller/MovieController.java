@@ -292,7 +292,9 @@ public class MovieController {
 
     @PostMapping("/seat")
     public ResponseEntity<?> setMovieSeat(@RequestBody MovieSeatRequest request) {
-        if (request.getMovieId() == null || request.getMovieSeat() == null || request.getMovieName() == null || request.getMovieTime() == null) {
+        if (request.getMovieId() == null || request.getMovieSeat() == null ||
+                request.getMovieName() == null || request.getMovieTime() == null ||
+                request.getMovieTheater() == null) {
             return ResponseEntity.badRequest().body(Map.of(
                     "success", false,
                     "message", "필수 항목이 누락되었습니다"
@@ -302,10 +304,10 @@ public class MovieController {
         UUID movieId = request.getMovieId();
         String movieSeat = request.getMovieSeat();
         String movieTheater = request.getMovieTheater();
-        String movieName = request.getMovieName();  // 영화 이름
-        String movieTime = request.getMovieTime();  // 영화 시간
+        String movieName = request.getMovieName();
+        String movieTime = request.getMovieTime();
 
-        boolean success = movieService.setMovieSeat(movieId, movieSeat, movieTheater, movieName, movieTime); // Pass all the required parameters
+        boolean success = movieService.setMovieSeat(movieId, movieSeat, movieTheater, movieName, movieTime);
 
         if (!success) {
             return ResponseEntity.badRequest().body(Map.of(
@@ -316,16 +318,15 @@ public class MovieController {
 
         // 예약 후 최신 좌석 정보 조회
         int remainingSeats = movieService.getMovieSeatRemain(movieId);
-        String updatedSeats = movieService.getUpdatedMovieSeat(movieId);  // Get updated movie seat info
+        String updatedSeats = movieService.getUpdatedMovieSeat(movieId);
 
         return ResponseEntity.ok(Map.of(
                 "success", true,
                 "movieId", movieId,
                 "movieSeatRemain", remainingSeats,
-                "movieSeat", movieSeat
+                "movieSeat", updatedSeats  // 최신 좌석 정보 반환
         ));
     }
-
 
     // DTO: 영화 좌석 저장 요청
     public static class MovieSeatRequest {
