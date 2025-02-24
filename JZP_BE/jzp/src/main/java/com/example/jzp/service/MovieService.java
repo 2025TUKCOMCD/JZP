@@ -276,32 +276,32 @@ public class MovieService {
 
 
     // 영화 시간과 극장 정보 업데이트
-        public boolean updateMovieTime(UUID movieId, String movieTime, String movieTheater) {
-            // 영화 ID로 Movie 객체를 조회
-            Optional<Movie> movieOptional = movieRepository.findById(movieId);
-            if (movieOptional.isEmpty()) {
-                return false;  // 영화 정보가 없으면 false 반환
-            }
-
-            Movie movie = movieOptional.get();
-
-            // 해당 영화와 관련된 모든 티켓 조회
-            List<Ticket> tickets = ticketRepository.findByMovie(movie);
-            if (tickets.isEmpty()) {
-                // 티켓이 없다면 새로 생성
-                Ticket newTicket = createNewTicket(movie, movieTime, movieTheater);
-                ticketRepository.save(newTicket);  // 새 티켓 저장
-            } else {
-                // 기존 티켓은 업데이트하지 않음 (필요한 경우 업데이트 가능)
-                for (Ticket ticket : tickets) {
-                    ticket.setMovieTime(movieTime);
-                    ticket.setMovieTheater(movieTheater);
-                    ticketRepository.save(ticket);  // 각 티켓 저장
-                }
-            }
-
-            return true;
+    public boolean updateMovieTime(UUID movieId, String movieTime, String movieTheater) {
+        // 영화 ID로 Movie 객체를 조회
+        Optional<Movie> movieOptional = movieRepository.findById(movieId);
+        if (movieOptional.isEmpty()) {
+            return false;  // 영화 정보가 없으면 false 반환
         }
+
+        Movie movie = movieOptional.get();
+
+        // 해당 영화와 관련된 모든 티켓 조회
+        List<Ticket> tickets = ticketRepository.findByMovie(movie);
+        if (tickets.isEmpty()) {
+            // 티켓이 없다면 새로 생성
+            Ticket newTicket = createNewTicket(movie, movieTime, movieTheater);
+            ticketRepository.save(newTicket);  // 새 티켓 저장
+        } else {
+            // 기존 티켓은 업데이트하지 않음 (필요한 경우 업데이트 가능)
+            for (Ticket ticket : tickets) {
+                ticket.setMovieTime(movieTime);
+                ticket.setMovieTheater(movieTheater);
+                ticketRepository.save(ticket);  // 각 티켓 저장
+            }
+        }
+
+        return true;
+    }
 
     private Ticket createNewTicket(Movie movie, String movieTime, String movieTheater) {
         Ticket ticket = new Ticket();
@@ -334,13 +334,8 @@ public class MovieService {
             return false;
         }
 
-        // currentReservedSeats가 null일 수 있으므로 빈 문자열로 초기화
         String currentReservedSeats = movie.getMovieSeat();
-        if (currentReservedSeats == null) {
-            currentReservedSeats = ""; // null이면 빈 문자열로 처리
-        }
         List<String> reservedSeatsList = new ArrayList<>(Arrays.asList(currentReservedSeats.split(",")));
-
         String[] requestedSeats = movieSeat.split(",");
         for (String seat : requestedSeats) {
             if (reservedSeatsList.contains(seat)) {
@@ -403,7 +398,7 @@ public class MovieService {
         // 결제 내역 조회
         List<Ticket> tickets = ticketRepository.findAll(); // 조건에 맞는 티켓 조회 가능
 
-        // 응답을 위한 데이터 맵 생성SS
+        // 응답을 위한 데이터 맵 생성
         Map<String, Object> response = new HashMap<>();
 
         // 총 결제 금액 초기화
@@ -428,6 +423,7 @@ public class MovieService {
             movieInfo.put("movieSeatRemain", movie.getMovieSeatRemain());
             movieInfo.put("movieTheater", movie.getMovieTheater());
             movieInfo.put("movieGrade", movie.getMovieGrade());
+            movieInfo.put("movieSeat", ticket.getMovieSeat());  // Add movieSeat to the response
 
             movieHistory.put("movie", movieInfo);
 
@@ -491,6 +487,7 @@ public class MovieService {
         movieInfo.put("movieSeatRemain", movie.getMovieSeatRemain());
         movieInfo.put("movieTheater", movie.getMovieTheater());
         movieInfo.put("movieGrade", movie.getMovieGrade());
+        movieInfo.put("movieSeat", ticket.getMovieSeat());  // Add movieSeat to the response
 
         response.put("movie", movieInfo);
 

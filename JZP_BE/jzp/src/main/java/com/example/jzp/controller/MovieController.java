@@ -321,10 +321,10 @@ public class MovieController {
         return ResponseEntity.ok(Map.of(
                 "success", true,
                 "movieId", movieId,
-                "movieSeatRemain", remainingSeats
+                "movieSeatRemain", remainingSeats,
+                "movieSeat", movieSeat
         ));
     }
-
 
 
     // DTO: 영화 좌석 저장 요청
@@ -615,14 +615,14 @@ public class MovieController {
                 .collect(Collectors.toList());
     }
 
-        // 결제 내역 확인
-        @GetMapping("/payment/history")
-        public ResponseEntity<Map<String, Object>> showPayment() {
-            // MovieService에서 결제 내역과 총 금액 처리
-            Map<String, Object> paymentHistory = movieService.getPaymentHistory();
+    // 결제 내역 확인
+    @GetMapping("/payment/history")
+    public ResponseEntity<Map<String, Object>> showPayment() {
+        // MovieService에서 결제 내역과 총 금액 처리
+        Map<String, Object> paymentHistory = movieService.getPaymentHistory();
 
-            return ResponseEntity.ok(paymentHistory);
-        }
+        return ResponseEntity.ok(paymentHistory);
+    }
 
 
 }
