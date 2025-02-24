@@ -292,6 +292,7 @@ public class MovieController {
 
     @PostMapping("/seat")
     public ResponseEntity<?> setMovieSeat(@RequestBody MovieSeatRequest request) {
+        // 필수 항목 체크
         if (request.getMovieId() == null || request.getMovieSeat() == null || request.getMovieName() == null || request.getMovieTime() == null) {
             return ResponseEntity.badRequest().body(Map.of(
                     "success", false,
@@ -321,11 +322,10 @@ public class MovieController {
         return ResponseEntity.ok(Map.of(
                 "success", true,
                 "movieId", movieId,
+                "movieSeat", updatedSeats,  // 추가된 부분: 예약된 좌석 정보 포함
                 "movieSeatRemain", remainingSeats
         ));
     }
-
-
 
     // DTO: 영화 좌석 저장 요청
     public static class MovieSeatRequest {
@@ -615,14 +615,14 @@ public class MovieController {
                 .collect(Collectors.toList());
     }
 
-        // 결제 내역 확인
-        @GetMapping("/payment/history")
-        public ResponseEntity<Map<String, Object>> showPayment() {
-            // MovieService에서 결제 내역과 총 금액 처리
-            Map<String, Object> paymentHistory = movieService.getPaymentHistory();
+    // 결제 내역 확인
+    @GetMapping("/payment/history")
+    public ResponseEntity<Map<String, Object>> showPayment() {
+        // MovieService에서 결제 내역과 총 금액 처리
+        Map<String, Object> paymentHistory = movieService.getPaymentHistory();
 
-            return ResponseEntity.ok(paymentHistory);
-        }
+        return ResponseEntity.ok(paymentHistory);
+    }
 
 
 }
