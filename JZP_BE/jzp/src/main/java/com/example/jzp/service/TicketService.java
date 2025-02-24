@@ -56,7 +56,6 @@ public class TicketService {
         List<Movie> movies = movieRepository.findByMovieCalendar(movieCalendar);
         return movies.stream().map(movie -> {
             MovieController.MovieResponse response = new MovieController.MovieResponse();
-            response.setMovieId(movie.getMovieId());
             response.setMovieImage(movie.getMovieImage());
             response.setMovieName(movie.getMovieName());
             response.setMovieType(movie.getMovieType());

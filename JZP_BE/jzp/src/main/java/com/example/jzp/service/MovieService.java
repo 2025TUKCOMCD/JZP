@@ -231,30 +231,29 @@ public class MovieService {
     }
 
 
-
     public List<MovieController.MovieResponse> getMoviesByDate(Date movieCalendar) {
         // movieCalendar에 해당하는 영화를 가져옴
         List<Movie> movies = movieRepository.findByMovieCalendar(movieCalendar);
 
-        // movieId로 그룹화하기 위한 맵
-        Map<UUID, MovieController.MovieResponse> movieMap = new HashMap<>();
+        // tmdbmovie_id로 그룹화하기 위한 맵
+        Map<Long, MovieController.MovieResponse> movieMap = new HashMap<>();
 
         // 영화 데이터를 순회하면서
         for (Movie movie : movies) {
-            UUID movieId = movie.getMovieId();
+            Long tmdbMovieId = movie.getTmdbMovieId(); // tmdbmovie_id로 그룹화
 
-            // 해당 movieId로 이미 생성된 MovieResponse가 없으면 새로 생성
-            MovieController.MovieResponse response = movieMap.get(movieId);
+            // 해당 tmdbMovieId로 이미 생성된 MovieResponse가 없으면 새로 생성
+            MovieController.MovieResponse response = movieMap.get(tmdbMovieId);
             if (response == null) {
                 response = new MovieController.MovieResponse();
-                response.setMovieId(movieId);
+                response.setTmdbMovieId(tmdbMovieId); // tmdbmovie_id 설정
                 response.setMovieImage(movie.getMovieImage());
                 response.setMovieName(movie.getMovieName());
                 response.setMovieType(movie.getMovieType());
                 response.setMovieRating(movie.getMovieRating());
                 response.setMovieGrade(movie.getMovieGrade());
                 response.setTimes(new ArrayList<>()); // times 리스트 초기화
-                movieMap.put(movieId, response); // movieId로 그룹화
+                movieMap.put(tmdbMovieId, response); // tmdbmovie_id로 그룹화
             }
 
             // 해당 영화에 대한 상영 시간 정보를 추가
@@ -263,6 +262,9 @@ public class MovieService {
             scheduleResponse.setMovieSeatRemain(movie.getMovieSeatRemain());
             scheduleResponse.setMovieTheater(movie.getMovieTheater());
 
+            // 각 상영 시간에 고유한 movieId를 설정
+            scheduleResponse.setMovieId(movie.getMovieId()); // 각 영화 고유의 movieId 설정
+
             // times 리스트에 상영 시간을 추가
             response.getTimes().add(scheduleResponse);
         }
@@ -270,6 +272,7 @@ public class MovieService {
         // 그룹화된 영화들을 반환
         return new ArrayList<>(movieMap.values());
     }
+
 
 
     // 영화 시간과 극장 정보 업데이트
