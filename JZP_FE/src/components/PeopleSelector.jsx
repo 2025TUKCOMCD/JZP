@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import minusIcon from "../assets/icons/minusIcon.svg";
 import plusIcon from "../assets/icons/plusIcon.svg";
 
 // eslint-disable-next-line react/prop-types
-function PeopleSelector({ onUpdateTotalSeats }) {
+function PeopleSelector({ onUpdateTotalSeats, onSave }) {
   const [adultCount, setAdultCount] = useState(0);
   const [teenCount, setTeenCount] = useState(0);
   const [seniorCount, setSeniorCount] = useState(0);
@@ -13,27 +13,44 @@ function PeopleSelector({ onUpdateTotalSeats }) {
   const maxSeats = 8; // 최대 선택 가능 인원
   const totalSeats = adultCount + teenCount + seniorCount + disabledCount;
 
+  useEffect(() => {
+    if (totalSeats > 0) {
+      onUpdateTotalSeats(totalSeats);
+    }
+  }, [adultCount, teenCount, seniorCount, disabledCount, onUpdateTotalSeats]);
+
+  useEffect(() => {
+    if (totalSeats > 0) {
+      onSave(adultCount, teenCount, seniorCount, disabledCount);
+    }
+  }, [adultCount, teenCount, seniorCount, disabledCount, onSave]);
+
   const handleIncrement = (type) => {
     if (totalSeats < maxSeats) {
-      if (type === "adult") setAdultCount(adultCount + 1);
-      if (type === "teen") setTeenCount(teenCount + 1);
-      if (type === "senior") setSeniorCount(seniorCount + 1);
-      if (type === "disabled") setDisabledCount(disabledCount + 1);
-
       setLastSelectedCategory(type);
-      onUpdateTotalSeats(totalSeats + 1);
+
+      if (type === "adult") setAdultCount((prev) => prev + 1);
+      if (type === "teen") setTeenCount((prev) => prev + 1);
+      if (type === "senior") setSeniorCount((prev) => prev + 1);
+      if (type === "disabled") setDisabledCount((prev) => prev + 1);
+
+      onUpdateTotalSeats((prev) => prev + 1);
     }
   };
 
   const handleDecrement = (type) => {
-    if (type === "adult" && adultCount > 0) setAdultCount(adultCount - 1);
-    if (type === "teen" && teenCount > 0) setTeenCount(teenCount - 1);
-    if (type === "senior" && seniorCount > 0) setSeniorCount(seniorCount - 1);
-    if (type === "disabled" && disabledCount > 0)
-      setDisabledCount(disabledCount - 1);
+    if (totalSeats > 0) {
+      setLastSelectedCategory(type);
 
-    setLastSelectedCategory(type);
-    onUpdateTotalSeats(totalSeats - 1);
+      if (type === "adult" && adultCount > 0) setAdultCount((prev) => prev - 1);
+      if (type === "teen" && teenCount > 0) setTeenCount((prev) => prev - 1);
+      if (type === "senior" && seniorCount > 0)
+        setSeniorCount((prev) => prev - 1);
+      if (type === "disabled" && disabledCount > 0)
+        setDisabledCount((prev) => prev - 1);
+
+      onUpdateTotalSeats((prev) => prev - 1);
+    }
   };
 
   const getNoticeMessage = () => {
