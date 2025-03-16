@@ -72,9 +72,49 @@ function SeniorSeatSelectPage() {
     fetchMovieDetails();
   }, [movieCalendar, movieTime, navigate]);
 
-  const handleConfirmPeople = (seats) => {
-    setTotalSeats(seats);
+  const handleSaveCustomerCount = async (adult, teen, senior, disabled) => {
+    if (!movieDetails || !movieDetails.movieId) {
+      console.error("🚨 영화 정보가 없습니다. movieDetails:", movieDetails);
+      return;
+    }
+
+    const requestBody = {
+      movieId: movieDetails.movieId,
+      movieCustomerDisabled: disabled,
+      movieCustomerYouth: teen,
+      movieCustomerAdult: adult,
+      movieCustomerOld: senior,
+    };
+
+    console.log("📡 인원 저장 요청 데이터:", requestBody); // ✅ 요청 데이터 확인
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/movie/customer`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
+      });
+
+      const result = await response.json();
+      console.log("📩 API 응답:", result); // ✅ API 응답 확인용
+
+      if (result.success) {
+        // ✅ 변경: "status" 대신 "success" 확인
+        console.log("✅ 인원 저장 성공:", result);
+      } else {
+        console.error("🚨 인원 저장 실패:", result.message || "서버 응답 없음");
+      }
+    } catch (error) {
+      console.error("🚨 API 요청 실패:", error);
+    }
+  };
+
+  const handleConfirmPeople = (adult, teen, senior, disabled) => {
+    setTotalSeats(adult + teen + senior + disabled);
     setIsPeopleModalOpen(false);
+
+    // ✅ 인원 수 서버에 저장
+    handleSaveCustomerCount(adult, teen, senior, disabled);
   };
 
   const closeModal = () => {

@@ -44,7 +44,7 @@ function PeopleSelector2({ onUpdateTotalSeats, onConfirm }) {
       setErrorMessage("인원 수를 선택해주세요");
     } else {
       setErrorMessage("");
-      onConfirm(totalSeats);
+      onConfirm(adultCount, teenCount, seniorCount, disabledCount);
     }
   };
 
