@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/header.jsx";
-import StepBar from "../../components/MovieStepBar.jsx";
+import StepBar from "../../components/movieStepBar.jsx";
 import movieImage from "../../assets/images/movie2.png";
 import HomeIcon from "../../assets/icons/homeIcon.svg";
 import Pay from "../../components/Pay2.jsx";
