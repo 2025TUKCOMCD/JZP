@@ -15,7 +15,7 @@ function SeniorMovieSelectPage() {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [movies, setMovies] = useState([]);
-  const [selectedDate, setSelectedDate] = useState("2025-02-24");
+  const [selectedDate, setSelectedDate] = useState("2025-03-16");
   const navigate = useNavigate();
 
   const handleSeniorMain = () => navigate("/seniorMain");
