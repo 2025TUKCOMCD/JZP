@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/header.jsx";
-import StepBar from "../../components/MovieStepBar.jsx";
+import StepBar from "../../components/movieStepBar.jsx";
 import DateSelectBar from "../../components/dateSelectBar2.jsx";
 import age12Image from "../../assets/images/12.png";
 import age15Image from "../../assets/images/15.png";
@@ -12,39 +12,62 @@ import homeIcon from "../../assets/icons/homeIcon.svg";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function SeniorMovieSelectPage() {
-  const [selectedButton, setSelectedButton] = useState(null);
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(null);
   const [movies, setMovies] = useState([]);
-  const [selectedDate, setSelectedDate] = useState("2025-02-18");
+  const [selectedDate, setSelectedDate] = useState("2025-03-16");
   const navigate = useNavigate();
 
   const handleSeniorMain = () => navigate("/seniorMain");
 
-  const handleSeniorSeatSelect = async () => {
-    if (!selectedMovie) return;
+  const handleSelectTime = async (time, movie) => {
+    setSelectedMovie(movie);
+    setSelectedTime(time);
 
     try {
+      const requestBody = {
+        movieId: time.movieId,
+        movieTime: time.movieTime,
+        movieTheater: time.movieTheater,
+      };
+
+      console.log(
+        "📤 영화 시간 저장 요청 데이터:",
+        JSON.stringify(requestBody, null, 2),
+      );
+
       const response = await fetch(`${API_BASE_URL}/api/movie/time`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          movieId: selectedMovie.movieId,
-          movieTime: selectedMovie.movieTime,
-          movieTheater: selectedMovie.movieTheater,
-        }),
+        body: JSON.stringify(requestBody),
       });
 
       const result = await response.json();
-      console.log("🎟️ 좌석 선택 응답:", result);
+      console.log("✅ 영화 시간 저장 응답:", result);
 
-      if (result.status === "success") {
-        navigate("/seniorSeat");
-      } else {
-        alert(`좌석 선택 실패: ${result.message || "알 수 없는 오류"}`);
+      if (result.status !== "success") {
+        console.warn("🚨 영화 시간 저장 실패:", result);
       }
     } catch (error) {
-      console.error("🚨 좌석 선택 요청 실패:", error);
-      alert("좌석 선택 요청 중 오류가 발생했습니다.");
+      console.error("🚨 영화 시간 저장 중 오류 발생:", error);
+    }
+  };
+
+  const handleSeniorSeatSelect = async () => {
+    try {
+      const requestBody = {
+        movieId: selectedTime.movieId,
+        movieCalendar: selectedDate,
+        movieTime: selectedTime.movieTime,
+        movieTheater: selectedTime.movieTheater,
+      };
+
+      console.log("📤 영화 데이터 저장:", requestBody);
+      localStorage.setItem("selectedMovie", JSON.stringify(requestBody));
+
+      navigate("/seniorSeat");
+    } catch (error) {
+      console.error("🚨 영화 데이터 저장 실패:", error);
     }
   };
 
@@ -52,14 +75,11 @@ function SeniorMovieSelectPage() {
     try {
       console.log("📅 선택한 날짜:", selectedDate);
 
-      const response = await fetch(
-        `${API_BASE_URL}/api/movie/showmovie/youth`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ movieCalendar: selectedDate }),
-        },
-      );
+      const response = await fetch(`${API_BASE_URL}/api/movie/showmovie/old`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ movieCalendar: selectedDate }),
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -85,13 +105,11 @@ function SeniorMovieSelectPage() {
       <StepBar prefix="senior" />
       <DateSelectBar onDateChange={setSelectedDate} />
       <div className="h-[1px] bg-gray-700 my-4"></div>
-
-      {/* 영화 리스트 */}
-      <div className="flex-1 overflow-y-auto px-4 pb-16">
+      <div className="flex-1 overflow-y-scroll scrollbar-hidden px-4 pb-16">
         {movies.length > 0 ? (
           movies.map((movie, index) => (
-            <div key={movie.movieId}>
-              <div className="flex mb-6">
+            <div key={movie.tmdbMovieId} className="mb-6">
+              <div className="flex">
                 <img
                   src={movie.movieImage}
                   alt={movie.movieName}
@@ -122,30 +140,35 @@ function SeniorMovieSelectPage() {
                     </p>
                   </div>
                   <div className="grid grid-cols-2 gap-2 mt-2">
-                    <button
-                      onClick={() => {
-                        setSelectedButton(movie.movieId);
-                        setSelectedMovie(movie);
-                      }}
-                      className={`border w-36 h-[66px] flex flex-col justify-center items-center ${
-                        selectedButton === movie.movieId
-                          ? "border-black bg-white text-black"
-                          : "border-gray-500 text-white"
-                      }`}
-                    >
-                      <div className="text-lg font-bold leading-tight">
-                        {movie.movieTime}
-                      </div>
-                      <div className="flex justify-between w-full text-[14px] mt-1 px-4">
-                        <span>{movie.movieSeatRemain}석 남음</span>
-                        <span>{movie.movieTheater}</span>
-                      </div>
-                    </button>
+                    {movie.times && movie.times.length > 0 ? (
+                      movie.times.map((time) => (
+                        <button
+                          key={time.movieId}
+                          onClick={() => handleSelectTime(time, movie)}
+                          className={`border w-32 h-[66px] flex flex-col justify-center items-center ${
+                            selectedTime?.movieId === time.movieId
+                              ? "border-black bg-white text-black"
+                              : "border-gray-500 text-white"
+                          }`}
+                        >
+                          <div className="text-lg font-bold leading-tight">
+                            {time.movieTime}
+                          </div>
+                          <div className="flex justify-between w-full text-[14px] mt-1 px-4">
+                            <span>{time.movieSeatRemain}석 남음</span>
+                            <span>{time.movieTheater}</span>
+                          </div>
+                        </button>
+                      ))
+                    ) : (
+                      <p className="text-gray-400 text-sm">
+                        🎬 상영 시간이 없습니다.
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
 
-              {/* 마지막 영화 이후에는 디바이더를 추가하지 않음 */}
               {index !== movies.length - 1 && (
                 <div className="h-[1px] bg-gray-700 my-4"></div>
               )}
