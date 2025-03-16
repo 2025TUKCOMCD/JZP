@@ -1,11 +1,23 @@
 /* eslint-disable react/prop-types */
 import { useEffect } from "react";
 
-function SeatSelector2({ totalSeats, selectedSeats, setSelectedSeats }) {
+function SeatSelector2({
+  totalSeats,
+  selectedSeats,
+  setSelectedSeats,
+  onSeatClickWithoutPeople,
+  reservedSeats = [], // 예매된 좌석 리스트
+  availableSeatsCount = 0,
+}) {
   const rows = ["A", "B", "C", "D", "E", "F"];
   const cols = 12;
 
   const handleSeatClick = (row, col) => {
+    if (totalSeats === 0) {
+      onSeatClickWithoutPeople();
+      return;
+    }
+
     const seat = `${row}${col}`;
     if (selectedSeats.includes(seat)) {
       setSelectedSeats(selectedSeats.filter((s) => s !== seat));
@@ -23,8 +35,9 @@ function SeatSelector2({ totalSeats, selectedSeats, setSelectedSeats }) {
   const getSeatStatus = (row, col) => {
     const seat = `${row}${col}`;
     if (selectedSeats.includes(seat)) return "selected";
-    if (["D4", "D5", "F6", "F7"].includes(seat)) return "reserved"; // 예매 불가 좌석 샘플
-    return "available";
+    if (reservedSeats.includes(seat)) return "reserved";
+    if (availableSeatsCount > 0) return "available";
+    return "disabled";
   };
 
   return (
