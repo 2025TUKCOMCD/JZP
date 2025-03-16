@@ -22,10 +22,31 @@ function JuniorPayPage() {
           throw new Error("데이터를 불러오는 데 실패했습니다.");
         }
         const data = await response.json();
-        setMovieData(data.movieHistory[0]);
-        setTotalPrice(data.totalPrice);
+
+        console.log("📩 API 응답 데이터:", data); // 🔍 응답 데이터 확인
+
+        if (data.movieHistory) {
+          if (
+            Array.isArray(data.movieHistory) &&
+            data.movieHistory.length > 0
+          ) {
+            setMovieData(data.movieHistory[0]); // 배열일 경우 첫 번째 요소 저장
+          } else if (typeof data.movieHistory === "object") {
+            setMovieData(data.movieHistory); // 객체일 경우 그대로 저장
+          } else {
+            console.warn("🚨 영화 결제 정보가 없습니다.");
+          }
+        } else {
+          console.warn("🚨 movieHistory 데이터가 없습니다.");
+        }
+
+        if (typeof data.totalPrice === "number") {
+          setTotalPrice(data.totalPrice);
+        } else {
+          console.warn("🚨 총 결제 금액이 올바르지 않습니다.");
+        }
       } catch (error) {
-        console.error("API 요청 오류:", error);
+        console.error("🚨 API 요청 오류:", error);
       }
     };
 
@@ -108,7 +129,18 @@ function JuniorPayPage() {
                     {[
                       {
                         label: "관람인원",
-                        value: `성인 ${movieData.movieCustomer.movieCustomerAdult}명, 청소년 ${movieData.movieCustomer.movieCustomerYouth}명`,
+                        value: Object.entries(movieData.movieCustomer)
+                          .filter(([, count]) => count > 0) // 1명 이상인 항목만 필터링
+                          .map(([key, count]) => {
+                            const labelMap = {
+                              movieCustomerAdult: "성인",
+                              movieCustomerYouth: "청소년",
+                              movieCustomerOld: "경로",
+                              movieCustomerDisabled: "장애인",
+                            };
+                            return `${labelMap[key]} ${count}명`;
+                          })
+                          .join(", "),
                       },
                       { label: "선택좌석", value: movieData.movie.movieSeat },
                     ].map((item, index) => (
