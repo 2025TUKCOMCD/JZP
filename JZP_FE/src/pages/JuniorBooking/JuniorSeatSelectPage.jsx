@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/header.jsx";
-import StepBar from "../../components/MovieStepBar.jsx";
+import StepBar from "../../components/movieStepBar.jsx";
 import PeopleSelector from "../../components/PeopleSelector.jsx";
 import SeatSelector from "../../components/SeatSelector.jsx";
 import Modal from "../../components/Modal.jsx";
