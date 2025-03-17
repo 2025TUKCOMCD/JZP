@@ -1,12 +1,45 @@
-import "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import HomeAdd from "../assets/images/homeAdd.png";
 import Header from "../components/header.jsx";
 import ticketIcon from "../assets/icons/ticketIcon.svg";
 import ticketPrintIcon from "../assets/icons/ticketPrintIcon.svg";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 function SeniorMainPage() {
   const navigate = useNavigate();
+  const [bannerImage, setBannerImage] = useState("");
+
+  const fetchBannerImage = async () => {
+    try {
+      const url = `${API_BASE_URL}/api/movie/banner`;
+      console.log("📡 요청 URL:", url);
+
+      const response = await fetch(url, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.movieImage) {
+        setBannerImage(data.movieImage);
+      } else {
+        console.warn("⚠️ API 응답이 비어 있습니다.");
+      }
+
+      console.log("🖼️ 불러온 배너 이미지:", data.movieImage);
+    } catch (error) {
+      console.error("🚨 배너 이미지 불러오기 실패:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchBannerImage();
+  }, []);
 
   const handleSeniorMovieSelect = () => {
     navigate("/seniorMovie");
@@ -58,7 +91,15 @@ function SeniorMainPage() {
       </div>
 
       <div className="flex justify-center mt-10">
-        <img src={HomeAdd} alt="광고 이미지" className="w-full max-w-[589px]" />
+        {bannerImage ? (
+          <img
+            src={bannerImage}
+            alt="광고 이미지"
+            className="w-full max-w-[589px]"
+          />
+        ) : (
+          <p>배너 이미지를 불러오는 중...</p>
+        )}{" "}
       </div>
 
       {/* 하단 JZP 로고 */}

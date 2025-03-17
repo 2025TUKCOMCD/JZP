@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/header.jsx";
-import StepBar from "../../components/MovieStepBar.jsx";
+import StepBar from "../../components/movieStepBar.jsx";
 import movieImage from "../../assets/images/movie2.png";
 import HomeIcon from "../../assets/icons/homeIcon.svg";
 import Pay from "../../components/Pay2.jsx";
@@ -132,7 +132,7 @@ function SeniorPayPage() {
       {/* Footer 컴포넌트 */}
       <footer className="fixed bottom-0 w-[450px] bg-gray-800 flex mx-auto">
         <button
-          className="flex-1 bg-white text-black text-xl font-bold h-16 flex items-center justify-center leading-none gap-2"
+          className="flex-1 bg-white text-black text-xl font-bold h-20 flex items-center justify-center leading-none gap-2"
           onClick={handleSeniorMain}
         >
           <img src={HomeIcon} alt="홈 아이콘" className="w-8 h-8" />홈
@@ -140,7 +140,7 @@ function SeniorPayPage() {
 
         {/* 결제하기 버튼 */}
         <button
-          className="flex-1 bg-buttonGray text-white text-xl font-bold h-16 flex items-center justify-center leading-none"
+          className="flex-1 bg-buttonGray text-white text-xl font-bold h-20 flex items-center justify-center leading-none"
           onClick={handleSeniorSeat}
         >
           좌석 다시 선택하기
