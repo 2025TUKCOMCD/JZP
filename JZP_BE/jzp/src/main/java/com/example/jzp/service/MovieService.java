@@ -414,6 +414,7 @@ public class MovieService {
         // 영화 정보 설정
         Movie movie = ticket.getMovie();
         Map<String, Object> movieInfo = new HashMap<>();
+        movieInfo.put("movieCalendar", movie.getMovieCalendar());
         movieInfo.put("movieId", movie.getMovieId());
         movieInfo.put("movieImage", movie.getMovieImage());
         movieInfo.put("movieName", movie.getMovieName());
@@ -475,6 +476,7 @@ public class MovieService {
 
         // 영화 정보
         Map<String, Object> movieInfo = new HashMap<>();
+        movieInfo.put("movieCalendar", movie.getMovieCalendar());
         movieInfo.put("movieId", movie.getMovieId());
         movieInfo.put("movieImage", movie.getMovieImage());
         movieInfo.put("movieName", movie.getMovieName());
@@ -484,7 +486,7 @@ public class MovieService {
         movieInfo.put("movieSeatRemain", movie.getMovieSeatRemain());
         movieInfo.put("movieTheater", movie.getMovieTheater());
         movieInfo.put("movieGrade", movie.getMovieGrade());
-        movieInfo.put("movieSeat", ticket.getMovieSeat());  // Add movieSeat to the response
+        movieInfo.put("movieSeat", ticket.getMovieSeat());
 
         response.put("movie", movieInfo);
 
