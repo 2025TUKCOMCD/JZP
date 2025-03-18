@@ -56,7 +56,6 @@ public class TicketService {
         List<Movie> movies = movieRepository.findByMovieCalendar(movieCalendar);
         return movies.stream().map(movie -> {
             MovieController.MovieResponse response = new MovieController.MovieResponse();
-            response.setMovieId(movie.getMovieId());
             response.setMovieImage(movie.getMovieImage());
             response.setMovieName(movie.getMovieName());
             response.setMovieType(movie.getMovieType());
@@ -70,7 +69,7 @@ public class TicketService {
     }
 
     // 영화 시간 저장
-    public boolean updateMovieTime(UUID movieId, LocalTime movieTime, String movieTheater) {
+    public boolean updateMovieTime(UUID movieId, String movieTime, String movieTheater) {
         Optional<Movie> movieOptional = movieRepository.findById(movieId);
         if (movieOptional.isEmpty()) {
             return false;

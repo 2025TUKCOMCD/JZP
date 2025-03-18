@@ -17,7 +17,6 @@ import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
 
-
 import java.time.LocalTime;
 import java.util.stream.Collectors;
 import java.util.*;
@@ -60,7 +59,7 @@ public class MovieController {
 
         String subject = "[영화_예매알림]";
         String messageText = String.format(
-                        "\n\n영화명: %s\n" +
+                "\n\n영화명: %s\n" +
                         "예매번호: %s\n" +
                         "좌석: %s\n" +
                         "상영일시: %s\n\n" +
@@ -75,10 +74,10 @@ public class MovieController {
         String senderPhoneNumber = "01050619483";
 
         Message message = new Message();
-            message.setFrom(senderPhoneNumber);
-            message.setTo(phoneNumber);  // 수신 번호 설정
-            message.setText(messageText);  // 설정한 메시지 내용
-            message.setSubject(subject);
+        message.setFrom(senderPhoneNumber);
+        message.setTo(phoneNumber);  // 수신 번호 설정
+        message.setText(messageText);  // 설정한 메시지 내용
+        message.setSubject(subject);
 
         try {
             // 메시지 전송
@@ -159,7 +158,7 @@ public class MovieController {
 
     public static class MovieTimeRequest {
         private UUID movieId;
-        private LocalTime movieTime;
+        private String movieTime;
         private String movieTheater;
 
         // Getters and Setters
@@ -171,11 +170,11 @@ public class MovieController {
             this.movieId = movieId;
         }
 
-        public LocalTime getMovieTime() {
+        public String getMovieTime() {
             return movieTime;
         }
 
-        public void setMovieTime(LocalTime movieTime) {
+        public void setMovieTime(String movieTime) {
             this.movieTime = movieTime;
         }
 
@@ -195,7 +194,7 @@ public class MovieController {
         private String movieName;
         private String movieType;
         private int movieRating;
-        private LocalTime movieTime;
+        private String  movieTime;
         private int movieSeatRemain;
         private String movieTheater;
         private String movieGrade;
@@ -241,11 +240,11 @@ public class MovieController {
             this.movieRating = movieRating;
         }
 
-        public LocalTime getMovieTime() {
+        public String  getMovieTime() {
             return movieTime;
         }
 
-        public void setMovieTime(LocalTime movieTime) {
+        public void setMovieTime(String  movieTime) {
             this.movieTime = movieTime;
         }
 
@@ -474,14 +473,14 @@ public class MovieController {
         private String movieName;
         private String movieType;
         private int movieRating;
-        private LocalTime movieTime;
+        private String movieTime;
         private String movieTheater;
         private String movieGrade;
         private String movieSeat;
         private int movieSeatRemain;
 
         public MovieTimeResponse(UUID movieId, String movieImage, String movieName,
-                                 String movieType, int movieRating, LocalTime movieTime,
+                                 String movieType, int movieRating, String movieTime,
                                  String movieTheater, String movieGrade,String movieSeat, int movieSeatRemain) {
             this.movieId = movieId;
             this.movieImage = movieImage;
@@ -536,11 +535,11 @@ public class MovieController {
             this.movieRating = movieRating;
         }
 
-        public LocalTime getMovieTime() {
+        public String getMovieTime() {
             return movieTime;
         }
 
-        public void setMovieTime(LocalTime movieTime) {
+        public void setMovieTime(String movieTime) {
             this.movieTime = movieTime;
         }
 
@@ -579,7 +578,7 @@ public class MovieController {
     @GetMapping("/movietime")
     public List<MovieTimeResponse> getMoviesByTime(
             @RequestParam(name = "movieCalendar") @DateTimeFormat(pattern = "yyyy-MM-dd") Date movieCalendar,
-            @RequestParam(name = "movieTime") @DateTimeFormat(pattern = "HH:mm:ss") LocalTime movieTime) {
+            @RequestParam(name = "movieTime") @DateTimeFormat(pattern = "HH:mm:ss") String movieTime) {
 
         List<Movie> movies = movieService.getMoviesByTime(movieCalendar, movieTime);
 

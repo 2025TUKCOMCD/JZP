@@ -2,15 +2,14 @@ import { useState } from "react";
 import DayBefore from "../assets/icons/theDayBefore.svg";
 import DayAfter from "../assets/icons/theDayAfter.svg";
 
-const DateSelectBar = () => {
-  const today = new Date(); // 오늘 날짜
+// eslint-disable-next-line react/prop-types
+const DateSelectBar = ({ onDateChange }) => {
+  const today = new Date();
   const [selectedDate, setSelectedDate] = useState(today);
 
+  // 날짜 포맷 변경 함수 (yyyy-MM-dd)
   const formatDate = (date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return { year, month, day };
+    return date.toISOString().split("T")[0];
   };
 
   const generateDates = () => {
@@ -25,23 +24,12 @@ const DateSelectBar = () => {
   };
 
   const dates = generateDates();
-  const lastDate = dates[dates.length - 2].date; // 19일 날짜
-  const firstDate = dates[0].date; // 15일 날짜
+  const lastDate = dates[dates.length - 2].date; // 마지막 날짜
+  const firstDate = dates[0].date; // 첫 날짜
 
-  const handleLeftClick = () => {
-    setSelectedDate((prevDate) => {
-      const newDate = new Date(prevDate);
-      newDate.setDate(prevDate.getDate() - 1);
-      return newDate;
-    });
-  };
-
-  const handleRightClick = () => {
-    setSelectedDate((prevDate) => {
-      const newDate = new Date(prevDate);
-      newDate.setDate(prevDate.getDate() + 1);
-      return newDate;
-    });
+  const handleDateChange = (newDate) => {
+    setSelectedDate(newDate);
+    onDateChange(formatDate(newDate)); // 부모 컴포넌트에 변경된 날짜 전달
   };
 
   return (
@@ -51,7 +39,11 @@ const DateSelectBar = () => {
         className={`flex items-center justify-center w-12 h-12 ${
           selectedDate <= firstDate ? "opacity-50 cursor-not-allowed" : ""
         }`}
-        onClick={selectedDate > firstDate ? handleLeftClick : undefined}
+        onClick={() =>
+          handleDateChange(
+            new Date(selectedDate.setDate(selectedDate.getDate() - 1)),
+          )
+        }
         disabled={selectedDate <= firstDate}
       >
         <img src={DayBefore} alt="Previous Day" className="w-12 h-12" />
@@ -62,14 +54,17 @@ const DateSelectBar = () => {
         {dates.map((item, index) => (
           <div
             key={index}
-            className={`flex flex-col items-center justify-center p-2 rounded-[10px] ${
+            className={`flex flex-col items-center justify-center p-2 rounded-[10px] cursor-pointer ${
               selectedDate.toDateString() === item.date.toDateString()
                 ? "bg-red-700"
                 : "bg-[#444855]"
             }`}
+            onClick={() => handleDateChange(item.date)} // 날짜 선택 시 변경
           >
-            <div className="text-[10px]">{`${item.formatted.year}.${item.formatted.month}`}</div>
-            <div className="text-sm font-bold">{item.formatted.day}</div>
+            <div className="text-[10px]">{`${item.formatted.split("-")[0]}.${item.formatted.split("-")[1]}`}</div>
+            <div className="text-sm font-bold">
+              {item.formatted.split("-")[2]}
+            </div>
             <div className="text-[10px]">
               {today.toDateString() === item.date.toDateString()
                 ? "오늘"
@@ -86,7 +81,11 @@ const DateSelectBar = () => {
         className={`flex items-center justify-center w-12 h-12 ${
           selectedDate >= lastDate ? "opacity-50 cursor-not-allowed" : ""
         }`}
-        onClick={selectedDate < lastDate ? handleRightClick : undefined}
+        onClick={() =>
+          handleDateChange(
+            new Date(selectedDate.setDate(selectedDate.getDate() + 1)),
+          )
+        }
         disabled={selectedDate >= lastDate}
       >
         <img src={DayAfter} alt="Next Day" className="w-12 h-12" />

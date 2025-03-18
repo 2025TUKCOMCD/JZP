@@ -34,7 +34,7 @@ public class MovieService {
         this.ticketRepository = ticketRepository;
     }
 
-    public List<Movie> getMoviesByTime(Date movieCalendar, LocalTime movieTime) {
+    public List<Movie> getMoviesByTime(Date movieCalendar, String movieTime) {
         // movieCalendar와 movieTime을 기반으로 티켓을 찾음
         List<Ticket> tickets = ticketRepository.findByMovieMovieCalendarAndMovieMovieTime(movieCalendar, movieTime);
 
@@ -56,7 +56,7 @@ public class MovieService {
             response.setMovieType(movie.getMovieType());
             response.setMovieRating(movie.getMovieRating());
             response.setMovieGrade(movie.getMovieGrade());
-            response.setMovieTime(movie.getMovieTime());  // LocalTime 사용
+            response.setMovieTime(movie.getMovieTime());
             response.setMovieSeatRemain(movie.getMovieSeatRemain());
             response.setMovieTheater(movie.getMovieTheater());
             return response;
@@ -64,7 +64,7 @@ public class MovieService {
     }
 
     // 영화 시간과 극장 정보 업데이트
-        public boolean updateMovieTime(UUID movieId, LocalTime movieTime, String movieTheater) {
+        public boolean updateMovieTime(UUID movieId, String movieTime, String movieTheater) {
             // 영화 ID로 Movie 객체를 조회
             Optional<Movie> movieOptional = movieRepository.findById(movieId);
             if (movieOptional.isEmpty()) {
@@ -91,7 +91,7 @@ public class MovieService {
             return true;
         }
 
-    private Ticket createNewTicket(Movie movie, LocalTime movieTime, String movieTheater) {
+    private Ticket createNewTicket(Movie movie, String movieTime, String movieTheater) {
         Ticket ticket = new Ticket();
         ticket.setMovie(movie);
         ticket.setMovieTime(movieTime);
@@ -300,7 +300,6 @@ public class MovieService {
 
         return response;
     }
-
     public Movie getMovieById(UUID movieId) {
         Optional<Movie> movieOptional = movieRepository.findById(movieId);  // movieId로 영화 조회
         if (movieOptional.isPresent()) {
