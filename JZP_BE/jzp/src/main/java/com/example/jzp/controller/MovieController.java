@@ -43,8 +43,8 @@ public class MovieController {
         this.ticketService = ticketService;
     }
 
-    @GetMapping("/send-ticket/{ticketId}")
-    public String sendTicketInfo(@PathVariable("ticketId") UUID ticketId) {
+    @GetMapping("/sendticket")
+    public String sendTicketInfo(@RequestParam("ticketId") UUID ticketId) {
         Ticket ticket = ticketService.getTicketById(ticketId);
 
         if (ticket == null) {
@@ -52,7 +52,6 @@ public class MovieController {
         }
 
         Movie movie = ticket.getMovie();
-
         if (movie == null) {
             return "해당 영화 정보를 찾을 수 없습니다.";
         }
@@ -75,8 +74,8 @@ public class MovieController {
 
         Message message = new Message();
         message.setFrom(senderPhoneNumber);
-        message.setTo(phoneNumber);  // 수신 번호 설정
-        message.setText(messageText);  // 설정한 메시지 내용
+        message.setTo(phoneNumber);
+        message.setText(messageText);
         message.setSubject(subject);
 
         try {
