@@ -26,6 +26,7 @@ function App() {
   return (
     <BrowserRouter>
       <div className="w-full h-screen grid grid-cols-[1fr_450px_1fr]">
+        {/* <div className="w-full h-screen grid grid-cols-[1fr_450px_1fr] md:grid-cols-[1fr_600px_1fr] lg:grid-cols-[1fr_800px_1fr]"> */}
         <div className="h-full"></div>
         <div className="shadow-xl h-full">
           <Routes>
