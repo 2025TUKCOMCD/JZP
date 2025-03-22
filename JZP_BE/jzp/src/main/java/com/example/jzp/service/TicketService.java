@@ -135,6 +135,10 @@ public class TicketService {
         return ticketRepository.save(ticket);
     }
 
+    public Ticket getLatestTicket() {
+        return ticketRepository.findTopByOrderByTicketIdDesc();
+    }
+
 
 
 }

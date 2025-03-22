@@ -117,6 +117,74 @@ public class MovieController {
         }
     }
 
+    @PostMapping("/sendTicketNum")
+    public String sendTicketNumber(@RequestBody SendTicketNum sendTicketNum) {
+        // 가장 최근에 저장된 티켓을 조회
+        Ticket ticket = ticketService.getLatestTicket();
+
+        if (ticket == null) {
+            return "최근 예매된 티켓이 존재하지 않습니다.";
+        }
+
+        // 폰번호만 업데이트
+        ticket.setPhoneNumber(sendTicketNum.getPhoneNumber());
+        ticketService.saveTicket(ticket);  // 예매 정보 저장
+
+        // 영화 정보 가져오기
+        Movie movie = ticket.getMovie();
+        if (movie == null) {
+            return "해당 영화 정보를 찾을 수 없습니다.";
+        }
+
+        // 메시지 내용 구성
+        String subject = "[영화_예매알림]";
+        String messageText = String.format(
+                "\n\n영화명: %s\n" +
+                        "예매번호: %s\n" +
+                        "좌석: %s\n" +
+                        "상영일시: %s\n\n" +
+                        "영화 상영시작 10분전에 입장해주세요.",
+                movie.getMovieName(),
+                ticket.getTicketId(),
+                ticket.getMovieSeat(),
+                movie.getMovieTime()
+        );
+
+        // 보내는 전화번호 (실제 서비스에 맞게 설정)
+        String senderPhoneNumber = "01050619483";
+
+        // 메시지 전송 객체 생성
+        Message message = new Message();
+        message.setFrom(senderPhoneNumber);
+        message.setTo(sendTicketNum.getPhoneNumber());
+        message.setText(messageText);
+        message.setSubject(subject);
+
+        try {
+            // 메시지 전송
+            SingleMessageSentResponse response = messageService.sendOne(new SingleMessageSendingRequest(message));
+            System.out.println(response);
+            return "예매 정보 전송 성공!";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "예매 정보 전송 실패: " + e.getMessage();
+        }
+    }
+
+    public static class SendTicketNum {
+        private String phoneNumber;
+
+        // Getter와 Setter
+        public String getPhoneNumber() {
+            return phoneNumber;
+        }
+
+        public void setPhoneNumber(String phoneNumber) {
+            this.phoneNumber = phoneNumber;
+        }
+    }
+
+
 
     // 영화 그룹별 요청
     @PostMapping("/showmovie/{group}")
