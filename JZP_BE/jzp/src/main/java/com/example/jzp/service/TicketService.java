@@ -131,12 +131,8 @@ public class TicketService {
         return ticket.orElse(null);
     }
 
-    public Movie getMovieByTicketId(UUID ticketId) {
-        Optional<Ticket> ticketOptional = ticketRepository.findById(ticketId);
-        if (ticketOptional.isPresent()) {
-            Ticket ticket = ticketOptional.get();
-            return ticket.getMovie(); }
-        return null;
+    public Ticket saveTicket(Ticket ticket) {
+        return ticketRepository.save(ticket);
     }
 
 

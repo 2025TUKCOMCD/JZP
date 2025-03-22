@@ -43,8 +43,11 @@ public class MovieController {
         this.ticketService = ticketService;
     }
 
-    @GetMapping("/sendticket")
-    public String sendTicketInfo(@RequestParam("ticketId") UUID ticketId) {
+    @PostMapping("/sendticket")
+    public String sendTicketInfo(@RequestBody SendTicketRequest sendTicketRequest) {
+        UUID ticketId = sendTicketRequest.getTicketId();
+        String phoneNumber = sendTicketRequest.getPhoneNumber();
+
         Ticket ticket = ticketService.getTicketById(ticketId);
 
         if (ticket == null) {
@@ -55,6 +58,10 @@ public class MovieController {
         if (movie == null) {
             return "해당 영화 정보를 찾을 수 없습니다.";
         }
+
+        // 전화번호 저장
+        ticket.setPhoneNumber(phoneNumber);
+        ticketService.saveTicket(ticket);
 
         String subject = "[영화_예매알림]";
         String messageText = String.format(
@@ -69,7 +76,6 @@ public class MovieController {
                 movie.getMovieTime()
         );
 
-        String phoneNumber = ticket.getPhoneNumber();
         String senderPhoneNumber = "01050619483";
 
         Message message = new Message();
@@ -88,6 +94,29 @@ public class MovieController {
             return "예매 정보 전송 실패: " + e.getMessage();
         }
     }
+
+    public static class SendTicketRequest {
+        private UUID ticketId;
+        private String phoneNumber;
+
+        // Getter와 Setter
+        public UUID getTicketId() {
+            return ticketId;
+        }
+
+        public void setTicketId(UUID ticketId) {
+            this.ticketId = ticketId;
+        }
+
+        public String getPhoneNumber() {
+            return phoneNumber;
+        }
+
+        public void setPhoneNumber(String phoneNumber) {
+            this.phoneNumber = phoneNumber;
+        }
+    }
+
 
     // 영화 그룹별 요청
     @PostMapping("/showmovie/{group}")
