@@ -2,6 +2,8 @@ package com.example.jzp.controller;
 
 import com.example.jzp.model.Movie;
 import com.example.jzp.model.Ticket;
+import com.example.jzp.model.User;
+
 import com.example.jzp.service.MovieService;
 import com.example.jzp.service.TicketService;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -16,6 +18,8 @@ import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+
 
 import java.time.LocalTime;
 import java.util.stream.Collectors;
@@ -42,6 +46,24 @@ public class MovieController {
         this.messageService = NurigoApp.INSTANCE.initialize(apiKey, apiSecret, "https://api.coolsms.co.kr");
         this.ticketService = ticketService;
     }
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+
+    @PostMapping("/agegroup")
+    public ResponseEntity<String> receiveAgeGroup(@RequestBody User user) {
+        String ageGroup = user.getAgeGroup();
+
+        if (ageGroup == null || (!ageGroup.equals("아이") && !ageGroup.equals("어른") && !ageGroup.equals("노인"))) {
+            return ResponseEntity.badRequest().body("Invalid age group.");
+        }
+
+        // 나이대 정보를 WebSocket을 통해 프론트엔드로 전송
+        messagingTemplate.convertAndSend("/jzp/agegroup", ageGroup);
+
+        return ResponseEntity.ok("나이 전송 성공");
+    }
+
     @PostMapping("/Reservation")
     public Map<String, Object> Reservation(@RequestBody ReservationRequest ReservationRequest) {
         UUID ticketId = ReservationRequest.getTicketId();
