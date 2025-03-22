@@ -42,60 +42,58 @@ public class MovieController {
         this.messageService = NurigoApp.INSTANCE.initialize(apiKey, apiSecret, "https://api.coolsms.co.kr");
         this.ticketService = ticketService;
     }
+    @PostMapping("/Reservation")
+    public Map<String, Object> Reservation(@RequestBody ReservationRequest ReservationRequest) {
+        UUID ticketId = ReservationRequest.getTicketId();
 
-    @PostMapping("/sendticket")
-    public String sendTicketInfo(@RequestBody SendTicketRequest sendTicketRequest) {
-        UUID ticketId = sendTicketRequest.getTicketId();
-        String phoneNumber = sendTicketRequest.getPhoneNumber();
-
+        // 티켓 조회
         Ticket ticket = ticketService.getTicketById(ticketId);
 
         if (ticket == null) {
-            return "티켓이 존재하지 않습니다.";
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("message", "티켓이 존재하지 않습니다.");
+            return errorResponse;
         }
 
+        // 영화 정보 가져오기
         Movie movie = ticket.getMovie();
         if (movie == null) {
-            return "해당 영화 정보를 찾을 수 없습니다.";
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("message", "해당 영화 정보를 찾을 수 없습니다.");
+            return errorResponse;
         }
 
-        // 전화번호 저장
+        // 폰번호 저장
+        String phoneNumber = ReservationRequest.getPhoneNumber();
         ticket.setPhoneNumber(phoneNumber);
         ticketService.saveTicket(ticket);
 
-        String subject = "[영화_예매알림]";
-        String messageText = String.format(
-                "\n\n영화명: %s\n" +
-                        "예매번호: %s\n" +
-                        "좌석: %s\n" +
-                        "상영일시: %s\n\n" +
-                        "영화 상영시작 10분전에 입장해주세요.",
-                movie.getMovieName(),
-                ticket.getTicketId(),
-                ticket.getMovieSeat(),
-                movie.getMovieTime()
-        );
+        // 예매 정보 반환
+        Map<String, Object> response = new HashMap<>();
 
-        String senderPhoneNumber = "01050619483";
+        // 영화 정보만 포함
+        Map<String, Object> movieInfo = new HashMap<>();
+        movieInfo.put("movieName", movie.getMovieName());
+        movieInfo.put("movieCalendar", movie.getMovieCalendar());
+        movieInfo.put("movieTime", movie.getMovieTime());
+        movieInfo.put("movieTheater", movie.getMovieTheater());
+        movieInfo.put("movieImage", movie.getMovieImage());
+        movieInfo.put("movieGrade", movie.getMovieGrade());
+        movieInfo.put("movieSeat", ticket.getMovieSeat()); // 티켓의 좌석 정보
 
-        Message message = new Message();
-        message.setFrom(senderPhoneNumber);
-        message.setTo(phoneNumber);
-        message.setText(messageText);
-        message.setSubject(subject);
+        response.put("movie", movieInfo);
 
-        try {
-            // 메시지 전송
-            SingleMessageSentResponse response = messageService.sendOne(new SingleMessageSendingRequest(message));
-            System.out.println(response);
-            return "예매 정보 전송 성공!";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "예매 정보 전송 실패: " + e.getMessage();
-        }
+        // 티켓 정보
+        Map<String, Object> ticketInfo = new HashMap<>();
+        ticketInfo.put("ticketId", ticket.getTicketId());
+        ticketInfo.put("createdAt", ticket.getCreatedAt());
+
+        response.put("ticket", ticketInfo);
+
+        return response;
     }
 
-    public static class SendTicketRequest {
+    public static class ReservationRequest {
         private UUID ticketId;
         private String phoneNumber;
 
@@ -116,6 +114,7 @@ public class MovieController {
             this.phoneNumber = phoneNumber;
         }
     }
+
 
     @PostMapping("/sendTicketNum")
     public String sendTicketNumber(@RequestBody SendTicketNum sendTicketNum) {
@@ -184,6 +183,67 @@ public class MovieController {
         }
     }
 
+    @GetMapping("/sendTicket")
+    public String sendTicket(@RequestParam("ticketId") UUID ticketId) {
+        // 티켓 조회
+        Ticket ticket = ticketService.getTicketById(ticketId);
+
+        if (ticket == null) {
+            return "티켓이 존재하지 않습니다.";
+        }
+
+        // 영화 정보 가져오기
+        Movie movie = ticket.getMovie();
+        if (movie == null) {
+            return "해당 영화 정보를 찾을 수 없습니다.";
+        }
+
+        // 티켓에 저장된 전화번호 가져오기
+        String phoneNumber = ticket.getPhoneNumber(); // 티켓 객체에서 phoneNumber 가져오기
+        if (phoneNumber == null || phoneNumber.isEmpty()) {
+            return "전화번호가 등록되어 있지 않습니다.";
+        }
+
+        // 메시지 내용 구성
+        String subject = "[영화_예매알림]";
+        String messageText = String.format(
+                "\n\n영화명: %s\n" +
+                        "예매번호: %s\n" +
+                        "좌석: %s\n" +
+                        "상영일시: %s\n" +
+                        "영화관: %s\n" +
+                        "영화등급: %s\n" +
+                        "영화이미지: %s\n\n" +
+                        "영화 상영시작 10분 전에 입장해주세요.",
+                movie.getMovieName(),
+                ticket.getTicketId(),
+                ticket.getMovieSeat(),
+                movie.getMovieTime(),
+                movie.getMovieTheater(),
+                movie.getMovieGrade(),
+                movie.getMovieImage()
+        );
+
+        // 보내는 전화번호 (실제 서비스에 맞게 설정)
+        String senderPhoneNumber = "01050619483"; // 보내는 전화번호 (실제 서비스에 맞게 설정)
+
+        // 메시지 전송 객체 생성
+        Message message = new Message();
+        message.setFrom(senderPhoneNumber);
+        message.setTo(phoneNumber);
+        message.setText(messageText);
+        message.setSubject(subject);
+
+        try {
+            // 메시지 전송
+            SingleMessageSentResponse response = messageService.sendOne(new SingleMessageSendingRequest(message));
+            System.out.println(response);
+            return "예매 정보 전송 성공!";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "예매 정보 전송 실패: " + e.getMessage();
+        }
+    }
 
 
     // 영화 그룹별 요청
