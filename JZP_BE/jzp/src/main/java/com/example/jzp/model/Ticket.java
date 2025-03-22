@@ -23,6 +23,7 @@ public class Ticket {
     private int customerYouth;
     private int customerAdult;
     private int customerOld;
+    private String phoneNumber;
 
     private Date createdAt;
 
@@ -105,5 +106,13 @@ public class Ticket {
     }
     public Date getCreatedAt() {
         return createdAt;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }
