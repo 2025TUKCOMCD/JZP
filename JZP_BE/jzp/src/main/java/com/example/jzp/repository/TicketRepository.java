@@ -13,6 +13,7 @@ import java.util.Date;
 public interface TicketRepository extends JpaRepository<Ticket, UUID> {
     Optional<Ticket> findTopByMovieOrderByCreatedAtDesc(Movie movie);
     List<Ticket> findByMovie(Movie movie);
+    Ticket findTopByOrderByCreatedAtDesc();
     List<Ticket> findByMovieMovieCalendarAndMovieMovieTime(Date movieCalendar, String movieTime);
 
 }
