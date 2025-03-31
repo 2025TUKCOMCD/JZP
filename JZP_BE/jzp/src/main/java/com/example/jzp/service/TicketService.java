@@ -126,6 +126,19 @@ public class TicketService {
         return false;
     }
 
+    public Ticket getTicketById(UUID ticketId) {
+        Optional<Ticket> ticket = ticketRepository.findById(ticketId);
+        return ticket.orElse(null);
+    }
+
+    public Ticket saveTicket(Ticket ticket) {
+        return ticketRepository.save(ticket);
+    }
+
+    public Ticket getLatestTicket() {
+        return ticketRepository.findTopByOrderByTicketIdDesc();
+    }
+
 
 
 }
