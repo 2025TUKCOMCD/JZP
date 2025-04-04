@@ -162,11 +162,6 @@ public class MovieService {
         return true;
     }
 
-
-
-
-
-
     public String getUpdatedMovieSeat(UUID movieId) {
         Optional<Movie> movieOptional = movieRepository.findById(movieId);
         if (movieOptional.isPresent()) {
@@ -260,7 +255,7 @@ public class MovieService {
         return response;
     }
 
-    public Map<String, Object> getTicketDetails(UUID ticketId) {
+    public Map<String, Object> getTicketDetails(Long ticketId) {
         Optional<Ticket> ticketOptional = ticketRepository.findById(ticketId);
 
         if (ticketOptional.isEmpty()) {

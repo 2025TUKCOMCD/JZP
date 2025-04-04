@@ -8,6 +8,7 @@ import com.example.jzp.service.MovieService;
 import com.example.jzp.service.TicketService;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,7 +20,7 @@ import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-
+import java.util.concurrent.ConcurrentHashMap;
 
 import java.time.LocalTime;
 import java.util.stream.Collectors;
@@ -50,6 +51,8 @@ public class MovieController {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
+    private final Map<String, String> ageGroupStorage = new ConcurrentHashMap<>();
+
     @PostMapping("/agegroup")
     public ResponseEntity<String> receiveAgeGroup(@RequestBody User user) {
         String ageGroup = user.getAgeGroup();
@@ -58,15 +61,25 @@ public class MovieController {
             return ResponseEntity.badRequest().body("Invalid age group.");
         }
 
-        // 나이대 정보를 WebSocket을 통해 프론트엔드로 전송
-        messagingTemplate.convertAndSend("/jzp/agegroup", ageGroup);
+        // 사용자 ID를 키로 나이대 정보를 저장 (예제에서는 간단히 "user" 사용)
+        ageGroupStorage.put("user", ageGroup);
 
         return ResponseEntity.ok("나이 전송 성공");
     }
 
+    @GetMapping("/user")
+    public ResponseEntity<String> getAgeGroup() {
+        String ageGroup = ageGroupStorage.get("user");
+
+        if (ageGroup == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("나이대를 찾을 수 없습니다.");
+        }
+
+        return ResponseEntity.ok(ageGroup);
+    }
     @PostMapping("/Reservation")
     public Map<String, Object> Reservation(@RequestBody ReservationRequest ReservationRequest) {
-        UUID ticketId = ReservationRequest.getTicketId();
+        Long ticketId = ReservationRequest.getTicketId();
 
         // 티켓 조회
         Ticket ticket = ticketService.getTicketById(ticketId);
@@ -116,15 +129,15 @@ public class MovieController {
     }
 
     public static class ReservationRequest {
-        private UUID ticketId;
+        private Long ticketId;
         private String phoneNumber;
 
         // Getter와 Setter
-        public UUID getTicketId() {
+        public Long getTicketId() {
             return ticketId;
         }
 
-        public void setTicketId(UUID ticketId) {
+        public void setTicketId(Long ticketId) {
             this.ticketId = ticketId;
         }
 
@@ -206,7 +219,7 @@ public class MovieController {
     }
 
     @GetMapping("/sendTicket")
-    public String sendTicket(@RequestParam("ticketId") UUID ticketId) {
+    public String sendTicket(@RequestParam("ticketId") Long ticketId) {
         // 티켓 조회
         Ticket ticket = ticketService.getTicketById(ticketId);
 
@@ -615,7 +628,7 @@ public class MovieController {
     }
 
     @GetMapping("/ticket")
-    public ResponseEntity<Map<String, Object>> getTicketDetails(@RequestParam("ticketId") UUID ticketId){
+    public ResponseEntity<Map<String, Object>> getTicketDetails(@RequestParam("ticketId") Long ticketId){
         Map<String, Object> ticketDetails = movieService.getTicketDetails(ticketId);
 
         if (ticketDetails != null) {
@@ -625,13 +638,13 @@ public class MovieController {
     }
 
     public static class TicketRequest {
-        private UUID ticketId;
+        private Long ticketId;
 
-        public UUID getTicketId() {
+        public Long getTicketId() {
             return ticketId;
         }
 
-        public void setTicketId(UUID ticketId) {
+        public void setTicketId(Long ticketId) {
             this.ticketId = ticketId;
         }
     }
