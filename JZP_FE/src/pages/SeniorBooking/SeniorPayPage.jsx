@@ -125,12 +125,14 @@ function SeniorPayPage() {
                         </p>
                       </div>
                     )}
-                    <p className="font-semibold text-[16px] text-textGray mt-1">
-                      선택좌석
-                    </p>
-                    <p className="text-[18px] font-medium mt-1">
-                      {movieData.movie.movieSeat}
-                    </p>
+                    <div className="flex justify-between text-sm">
+                      <p className="font-semibold text-[16px] text-textGray mt-1">
+                        선택좌석
+                      </p>
+                      <p className="text-[18px] font-medium mt-1 whitespace-nowrap">
+                        {movieData.movie.movieSeat}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
