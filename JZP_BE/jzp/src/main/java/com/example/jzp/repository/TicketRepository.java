@@ -15,5 +15,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     List<Ticket> findByMovie(Movie movie);
     List<Ticket> findByMovieMovieCalendarAndMovieMovieTime(Date movieCalendar, String movieTime);
     Ticket findTopByOrderByTicketIdDesc();
+    Optional<Ticket> findTopByOrderByCreatedAtDesc();
 
 }
