@@ -427,7 +427,12 @@ public class MovieService {
             movieInfo.put("movieSeatRemain", movie.getMovieSeatRemain());
             movieInfo.put("movieTheater", movie.getMovieTheater());
             movieInfo.put("movieGrade", movie.getMovieGrade());
-            movieInfo.put("movieSeat", ticket.getMovieSeat());
+            String movieSeatStr = movie.getMovieSeat();
+            List<String> movieSeatList = new ArrayList<>();
+            if (movieSeatStr != null && !movieSeatStr.isBlank()) {
+                movieSeatList = Arrays.asList(movieSeatStr.split(","));
+            }
+            movieInfo.put("movieSeat", movieSeatList);
             movieInfo.put("movieCalendar", movie.getMovieCalendar());
 
             movieHistory.put("movie", movieInfo);
@@ -499,7 +504,6 @@ public class MovieService {
             movieSeatList = Arrays.asList(movieSeatStr.split(","));
         }
         movieInfo.put("movieSeat", movieSeatList);
-
         response.put("movie", movieInfo);
 
         // 고객 정보
