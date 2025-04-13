@@ -42,6 +42,12 @@ function SeniorPayPage() {
   };
 
   const handlePayment = () => {
+    if (!movieData?.ticketId) {
+      alert("ticketId가 없습니다. 결제 정보를 다시 확인해주세요.");
+      return;
+    }
+
+    localStorage.setItem("ticketId", movieData.ticketId);
     navigate("/seniorBooking");
   };
 
