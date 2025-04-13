@@ -96,10 +96,10 @@ function SeniorPayPage() {
                       movieData.movieCustomer.movieCustomerOld > 0 ||
                       movieData.movieCustomer.movieCustomerDisabled > 0) && (
                       <div className="flex justify-between text-sm">
-                        <p className="font-semibold text-xs text-textGray mt-0.5">
+                        <p className="font-semibold text-[16px] text-textGray mt-1">
                           관람인원
                         </p>
-                        <p className="text-[14px] font-medium">
+                        <p className="text-[18px] font-medium mt-1">
                           {[
                             movieData.movieCustomer.movieCustomerAdult > 0
                               ? `성인 ${movieData.movieCustomer.movieCustomerAdult}명`
@@ -119,10 +119,10 @@ function SeniorPayPage() {
                         </p>
                       </div>
                     )}
-                    <p className="font-semibold text-xs text-textGray mt-0.5">
+                    <p className="font-semibold text-[16px] text-textGray mt-1">
                       선택좌석
                     </p>
-                    <p className="text-[14px] font-medium">
+                    <p className="text-[18px] font-medium mt-1">
                       {movieData.movie.movieSeat}
                     </p>
                   </div>
@@ -192,9 +192,9 @@ function SeniorPayPage() {
                 </div>
               </div>
             </div>
-            <div className="border-t border-gray-500 mt-2"></div>
+            <div className="border-t border-gray-500 mt-4"></div>
           </div>
-          <div className="flex justify-center mt-8">
+          <div className="flex justify-center mt-6">
             <button
               onClick={handlePayment}
               className="flex items-center bg-customYellow text-black px-6 py-6 rounded-lg font-semibold hover:opacity-90 transition duration-300"
