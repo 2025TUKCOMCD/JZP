@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import Header from "../../components/header.jsx";
 import StepBar from "../../components/MovieStepBar.jsx";
 import HomeIcon from "../../assets/icons/homeIcon.svg";
-import Pay from "../../components/Pay.jsx";
+import kakaopayIcon from "../../assets/images/kakaopay.png";
+import cardIcon from "../../assets/images/card.png";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -105,29 +106,51 @@ function JuniorPayPage() {
 
                   {/* 세 번째 그룹 */}
                   <div className="flex flex-col space-y-0.5">
-                    {[
-                      {
-                        label: "관람인원",
-                        value: `성인 ${movieData.movieCustomer.movieCustomerAdult}명, 청소년 ${movieData.movieCustomer.movieCustomerYouth}명`,
-                      },
-                      { label: "선택좌석", value: movieData.movie.movieSeat },
-                    ].map((item, index) => (
-                      <div key={index} className="flex justify-between text-sm">
+                    {/* 관람인원 - 하나라도 1 이상인 경우에만 표시 */}
+                    {(movieData.movieCustomer.movieCustomerAdult > 0 ||
+                      movieData.movieCustomer.movieCustomerYouth > 0 ||
+                      movieData.movieCustomer.movieCustomerOld > 0 ||
+                      movieData.movieCustomer.movieCustomerDisabled > 0) && (
+                      <div className="flex justify-between text-sm">
                         <p className="font-semibold text-xs text-textGray mt-0.5">
-                          {item.label}
+                          관람인원
                         </p>
-                        <p className="text-[14px] font-medium">{item.value}</p>
+                        <p className="text-[14px] font-medium">
+                          {[
+                            movieData.movieCustomer.movieCustomerAdult > 0
+                              ? `성인 ${movieData.movieCustomer.movieCustomerAdult}명`
+                              : null,
+                            movieData.movieCustomer.movieCustomerYouth > 0
+                              ? `청소년 ${movieData.movieCustomer.movieCustomerYouth}명`
+                              : null,
+                            movieData.movieCustomer.movieCustomerOld > 0
+                              ? `경로 ${movieData.movieCustomer.movieCustomerOld}명`
+                              : null,
+                            movieData.movieCustomer.movieCustomerDisabled > 0
+                              ? `장애인 ${movieData.movieCustomer.movieCustomerDisabled}명`
+                              : null,
+                          ]
+                            .filter(Boolean)
+                            .join(", ")}
+                        </p>
                       </div>
-                    ))}
+                    )}
+                    <div className="flex justify-between text-sm">
+                      <p className="font-semibold text-xs text-textGray mt-0.5">
+                        선택좌석
+                      </p>
+                      <p className="text-[14px] font-medium">
+                        {movieData.movie.movieSeat}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
           <div className="bg-darkGray text-white rounded-lg">
             {/* 상단 디바이더 */}
-            <div className="border-t border-gray-500 mt-4 mb-4"></div>
+            <div className="border-t border-gray-500 mt-6 mb-6"></div>
 
             {/* 내용 섹션 */}
             <div className="flex">
@@ -202,10 +225,40 @@ function JuniorPayPage() {
             </div>
 
             {/* 하단 디바이더 */}
-            <div className="border-t border-gray-500 mt-2"></div>
+            <div className="border-t border-gray-500 mt-4"></div>
           </div>
-
-          <Pay handleButtonClick={handlePayment} />
+          {/* Pay 버튼 */}
+          <div className="flex justify-center mt-8">
+            <button
+              onClick={handlePayment}
+              className="flex items-center bg-customYellow text-black px-6 py-5 rounded-lg font-semibold hover:opacity-90 transition duration-300"
+              style={{ width: "350px" }}
+            >
+              <img
+                src={kakaopayIcon}
+                alt="카카오페이 아이콘"
+                className="w-12 h-5 mr-6"
+              />
+              <span className="text-[12px] text-kakaoPayGray font-medium mr-auto">
+                마음놓고 금융하다
+              </span>
+              <span className="text-sm font-semibold">카카오페이</span>
+            </button>
+          </div>
+          <div className="flex justify-center mt-6">
+            <button
+              onClick={handlePayment}
+              className="flex items-center bg-white text-black px-6 py-5 rounded-lg font-semibold hover:opacity-90 transition duration-300"
+              style={{ width: "350px" }}
+            >
+              <img
+                src={cardIcon}
+                alt="카드아이콘"
+                className="w-5 h-5 ml-2 mr-24"
+              />
+              <span className="text-sm font-semibold">결제하기</span>
+            </button>
+          </div>{" "}
         </>
       ) : (
         <p className="text-center mt-4 text-gray-400">로딩 중...</p>
@@ -219,8 +272,6 @@ function JuniorPayPage() {
         >
           <img src={HomeIcon} alt="홈 아이콘" className="w-4 h-4" />홈
         </button>
-
-        {/* 결제하기 버튼 */}
         <button
           className="flex-1 bg-buttonGray text-white text-sm font-bold h-16 flex items-center justify-center leading-none"
           onClick={handleJuniorSeat}
