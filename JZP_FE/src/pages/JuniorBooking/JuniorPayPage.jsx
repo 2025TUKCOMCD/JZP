@@ -234,7 +234,7 @@ function JuniorPayPage() {
             <div className="border-t border-gray-500 mt-4"></div>
           </div>
           {/* Pay 버튼 */}
-          <div className="flex justify-center mt-5">
+          <div className="flex justify-center mt-8">
             <button
               onClick={handlePayment}
               className="flex items-center bg-customYellow text-black px-6 py-5 rounded-lg font-semibold hover:opacity-90 transition duration-300"
@@ -251,7 +251,7 @@ function JuniorPayPage() {
               <span className="text-sm font-semibold">카카오페이</span>
             </button>
           </div>
-          <div className="flex justify-center mt-4">
+          <div className="flex justify-center mt-8">
             <button
               onClick={handlePayment}
               className="flex items-center bg-white text-black px-6 py-5 rounded-lg font-semibold hover:opacity-90 transition duration-300"
