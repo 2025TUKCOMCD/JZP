@@ -5,8 +5,11 @@ import Header from "../../components/header.jsx";
 import StepBar from "../../components/MovieStepBar2.jsx";
 import Keypad from "../../components/KeyPad.jsx";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 function JuniorSendingPage() {
   const [phoneNumber, setPhoneNumber] = useState(["010", "", ""]);
+  const navigate = useNavigate();
 
   const handleKeyPress = (key) => {
     setPhoneNumber((prev) => {
@@ -40,10 +43,40 @@ function JuniorSendingPage() {
     setPhoneNumber(["010", "", ""]);
   };
 
-  const navigate = useNavigate();
-
   const handleJuniorMain = () => navigate("/juniorMain");
-  const handleJuniorConfirm = () => navigate("/juniorConfirm");
+
+  const handleJuniorConfirm = async () => {
+    const fullPhoneNumber = phoneNumber.join("");
+    const ticketId = localStorage.getItem("ticketId");
+
+    if (fullPhoneNumber.length !== 11 || !ticketId) {
+      console.warn("🚨 phone:", fullPhoneNumber, "ticketId:", ticketId);
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/movie/sendTicketNum`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ phoneNumber: fullPhoneNumber, ticketId }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("❌ 응답 오류:", response.status, errorText);
+        throw new Error("전송 실패");
+      }
+
+      const resultText = await response.text();
+      console.log("✅ 응답 텍스트:", resultText);
+
+      navigate("/juniorConfirm");
+    } catch (error) {
+      console.error("❌ 예외 발생:", error);
+    }
+  };
 
   return (
     <div className="bg-customBg h-screen text-white flex flex-col">
