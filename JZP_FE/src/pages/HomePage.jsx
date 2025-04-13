@@ -40,8 +40,34 @@ function HomePage() {
     fetchBannerImage();
   }, []);
 
-  const handleStartClick = () => {
-    navigate("/juniormain");
+  const handleStartClick = async () => {
+    try {
+      const url = `${API_BASE_URL}/api/movie/user`;
+      console.log("📡 나이 정보 요청:", url);
+
+      const response = await fetch(url, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      // 응답이 문자열이므로 .text() 사용
+      const age = await response.text();
+      console.log("👤 사용자 연령대:", age);
+
+      if (age === "아이" || age === "성인") {
+        navigate("/juniormain");
+      } else if (age === "노인") {
+        navigate("/seniormain");
+      } else {
+        console.warn("⚠️ 예상치 못한 사용자 정보:", age);
+      }
+    } catch (error) {
+      console.error("🚨 사용자 연령 정보 불러오기 실패:", error);
+    }
   };
 
   return (
