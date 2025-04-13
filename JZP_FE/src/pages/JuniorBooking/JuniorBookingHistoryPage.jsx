@@ -63,7 +63,7 @@ function JuniorBookingHistoryPage() {
                     className="w-30 h-60 object-cover"
                   />
                   <div className="flex flex-col justify-center flex-1 text-left">
-                    <h2 className="text-3xl font-extrabold text-black ml-4">
+                    <h2 className="text-xl font-extrabold text-black ml-2">
                       {bookingData.movie.movieName}
                     </h2>
                     <div className="mt-6 mb-1">
