@@ -47,7 +47,7 @@ function JuniorBookingHistoryPage() {
       <Header />
       <StepBar prefix="junior" />
 
-      <div className="flex-1 flex justify-center items-start pt-[35px]">
+      <div className="flex-1 flex justify-center items-start pt-[70px]">
         {bookingData ? (
           <div
             className="flip-container w-[370px] h-[520px] cursor-pointer"
