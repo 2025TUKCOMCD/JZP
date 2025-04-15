@@ -5,11 +5,14 @@ import Header from "../../components/header.jsx";
 import StepBar from "../../components/MovieStepBar3.jsx";
 import Keypad from "../../components/KeyPad2.jsx";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 function SeniorHistorySendingPage() {
   const [phoneNumber, setPhoneNumber] = useState(["010", "", ""]);
   const [reservationNumber, setReservationNumber] = useState(["", "", "", ""]);
   const [activeField, setActiveField] = useState("reservation");
   const [activeIndex, setActiveIndex] = useState(0);
+  const navigate = useNavigate();
 
   const handleKeyPress = (key) => {
     if (activeField === "reservation") {
@@ -87,10 +90,50 @@ function SeniorHistorySendingPage() {
     setActiveIndex(0);
   };
 
-  const navigate = useNavigate();
-
   const handleSeniorMain = () => navigate("/seniorMain");
-  const handleSeniorHistoryInfo = () => navigate("/seniorHistoryInfo");
+  const handleConfirm = async () => {
+    const fullPhone = phoneNumber.join("");
+    const ticketId = localStorage.getItem("ticketId");
+
+    if (!ticketId || fullPhone.length !== 11) {
+      console.log("휴대폰 번호 또는 예매번호가 잘못되었습니다.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/movie/Reservation`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          phoneNumber: fullPhone,
+          ticketId: ticketId,
+        }),
+      });
+
+      const text = await response.text();
+      console.log("📦 응답 원문:", text);
+
+      // 혹시 JSON이 아닐 수 있어서 예외 처리
+      let result;
+      try {
+        result = JSON.parse(text);
+      } catch (err) {
+        console.log("응답 형식이 잘못되었습니다.");
+        console.error("❌ JSON 파싱 실패:", err);
+        return;
+      }
+
+      console.log("✅ 예매 내역:", result);
+      // 필요하면 result를 다음 페이지로 넘기거나 저장 가능
+      console.log("예매 내역을 불러왔습니다.");
+      navigate("/seniorHistoryInfo");
+    } catch (err) {
+      console.error("❌ API 호출 실패:", err);
+      console.log("예매 내역 조회에 실패했습니다.");
+    }
+  };
 
   return (
     <div className="bg-customBg h-screen text-white flex flex-col">
@@ -166,7 +209,7 @@ function SeniorHistorySendingPage() {
         </button>
         <button
           className="flex-1 bg-red-600 text-white text-xl font-bold h-20 flex items-center justify-center leading-none"
-          onClick={handleSeniorHistoryInfo}
+          onClick={handleConfirm}
         >
           확인
         </button>

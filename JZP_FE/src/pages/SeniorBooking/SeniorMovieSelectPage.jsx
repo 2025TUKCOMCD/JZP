@@ -15,7 +15,16 @@ function SeniorMovieSelectPage() {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [movies, setMovies] = useState([]);
-  const [selectedDate, setSelectedDate] = useState("2025-03-16");
+  const getTodayDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  // 초기 상태
+  const [selectedDate, setSelectedDate] = useState(getTodayDate());
   const navigate = useNavigate();
 
   const handleSeniorMain = () => navigate("/seniorMain");
@@ -87,7 +96,19 @@ function SeniorMovieSelectPage() {
 
       const result = await response.json();
       console.log("🎬 영화 데이터 응답:", result);
-      setMovies(result.movies || []);
+
+      // 각 영화의 상영 시간을 정렬 (시간 빠른 순)
+      const sortedMovies = (result.movies || []).map((movie) => {
+        const sortedTimes = (movie.times || []).sort((a, b) => {
+          return a.movieTime.localeCompare(b.movieTime); // 문자열 시간 비교
+        });
+        return {
+          ...movie,
+          times: sortedTimes,
+        };
+      });
+
+      setMovies(sortedMovies);
     } catch (error) {
       console.error("🚨 영화 목록 가져오기 실패:", error);
     }
