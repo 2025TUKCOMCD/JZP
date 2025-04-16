@@ -1,5 +1,8 @@
 package com.example.jzp.model;
 
+import java.time.LocalTime;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import java.util.Date;
 import java.util.UUID;
@@ -8,24 +11,28 @@ import java.util.UUID;
 public class Movie {
 
     @Id
-    @GeneratedValue
     private UUID movieId;
-
     private String movieName;
-
+    private Long tmdbMovieId;
     @Temporal(TemporalType.DATE)
     private Date movieCalendar;
-
-    @Temporal(TemporalType.DATE)
-    private Date movieTime;
-
+    private String movieTime;
     private String movieTheater;
     private String movieImage;
     private String movieType;
-    private String movieRating;
+    private int movieRating;
+    private String movieGrade;
     private int movieSeatRemain;
+    @Column
+    private String movieSeat;
 
+    public Long getTmdbMovieId() {
+        return tmdbMovieId;
+    }
 
+    public void setTmdbMovieId(Long tmdbMovieId) {
+        this.tmdbMovieId = tmdbMovieId;
+    }
     public UUID getMovieId() {
         return movieId;
     }
@@ -50,11 +57,11 @@ public class Movie {
         this.movieCalendar = movieCalendar;
     }
 
-    public Date getMovieTime() {
+    public String getMovieTime() {
         return movieTime;
     }
 
-    public void setMovieTime(Date movieTime) {
+    public void setMovieTime(String movieTime) {
         this.movieTime = movieTime;
     }
 
@@ -82,12 +89,20 @@ public class Movie {
         this.movieType = movieType;
     }
 
-    public String getMovieRating() {
+    public int getMovieRating() {
         return movieRating;
     }
 
-    public void setMovieRating(String movieRating) {
+    public void setMovieRating(int movieRating) {
         this.movieRating = movieRating;
+    }
+
+    public String getMovieGrade() {
+        return movieGrade;
+    }
+
+    public void setMovieGrade(String movieGrade) {
+        this.movieGrade = movieGrade;
     }
 
     public int getMovieSeatRemain() {
@@ -97,4 +112,13 @@ public class Movie {
     public void setMovieSeatRemain(int movieSeatRemain) {
         this.movieSeatRemain = movieSeatRemain;
     }
+    public String getMovieSeat() {
+        return movieSeat;
+    }
+    public void setMovieSeat(String movieSeat) {
+        this.movieSeat = movieSeat;
+    }
+
+
+
 }

@@ -1,14 +1,73 @@
-import "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/header.jsx";
-import HomeAdd from "../assets/images/homeAdd.png";
 import TouchIcon from "../assets/icons/touchIcon.svg";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function HomePage() {
   const navigate = useNavigate();
+  const [bannerImage, setBannerImage] = useState("");
 
-  const handleStartClick = () => {
-    navigate("/juniormain");
+  const fetchBannerImage = async () => {
+    try {
+      const url = `${API_BASE_URL}/api/movie/banner`;
+      console.log("📡 요청 URL:", url);
+
+      const response = await fetch(url, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.movieImage) {
+        setBannerImage(data.movieImage);
+      } else {
+        console.warn("⚠️ API 응답이 비어 있습니다.");
+      }
+
+      console.log("🖼️ 불러온 배너 이미지:", data.movieImage);
+    } catch (error) {
+      console.error("🚨 배너 이미지 불러오기 실패:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchBannerImage();
+  }, []);
+
+  const handleStartClick = async () => {
+    try {
+      const url = `${API_BASE_URL}/api/movie/user`;
+      console.log("📡 나이 정보 요청:", url);
+
+      const response = await fetch(url, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      // 응답이 문자열이므로 .text() 사용
+      const age = await response.text();
+      console.log("👤 사용자 연령대:", age);
+
+      if (age === "아이" || age === "성인") {
+        navigate("/juniormain");
+      } else if (age === "노인") {
+        navigate("/seniormain");
+      } else {
+        console.warn("⚠️ 예상치 못한 사용자 정보:", age);
+      }
+    } catch (error) {
+      console.error("🚨 사용자 연령 정보 불러오기 실패:", error);
+    }
   };
 
   return (
@@ -16,7 +75,15 @@ function HomePage() {
       <Header />
 
       <div className="flex justify-center">
-        <img src={HomeAdd} alt="광고 이미지" className="w-full max-w-[589px]" />
+        {bannerImage ? (
+          <img
+            src={bannerImage}
+            alt="광고 이미지"
+            className="w-full max-w-[589px]"
+          />
+        ) : (
+          <p>배너 이미지를 불러오는 중...</p>
+        )}
       </div>
 
       <div className="flex flex-col items-center justify-center mt-16 text-center">

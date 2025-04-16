@@ -6,13 +6,15 @@ function SeatSelector({
   selectedSeats,
   setSelectedSeats,
   onSeatClickWithoutPeople,
+  reservedSeats = [], // 예매된 좌석 리스트
+  availableSeatsCount = 0, // 남은 좌석 수
 }) {
   const rows = ["A", "B", "C", "D", "E", "F"];
   const cols = 12;
 
   const handleSeatClick = (row, col) => {
     if (totalSeats === 0) {
-      onSeatClickWithoutPeople(); // 인원 수가 없으면 모달 호출
+      onSeatClickWithoutPeople();
       return;
     }
 
@@ -33,12 +35,13 @@ function SeatSelector({
   const getSeatStatus = (row, col) => {
     const seat = `${row}${col}`;
     if (selectedSeats.includes(seat)) return "selected";
-    if (["D4", "D5", "F6", "F7"].includes(seat)) return "reserved"; // 예매 불가 좌석 샘플
-    return "available";
+    if (reservedSeats.includes(seat)) return "reserved";
+    if (availableSeatsCount > 0) return "available";
+    return "disabled";
   };
 
   return (
-    <div className="mt-8">
+    <div className="mt-4">
       <div className="text-center">
         {/* SCREEN 텍스트 */}
         <div className="w-[80%] mx-auto bg-gray-500 mb-4 py-1">
@@ -51,7 +54,7 @@ function SeatSelector({
         <div className="flex flex-col gap-4">
           {rows.map((row) => (
             <div key={row} className="flex items-center justify-center gap-4">
-              {/* 왼쪽 영어 */}
+              {/* 왼쪽 열 이름 */}
               <span className="text-white font-bold">{row}</span>
 
               {/* 좌석 버튼 */}
@@ -63,11 +66,11 @@ function SeatSelector({
                     <button
                       key={`${row}${colIndex}`}
                       className={`w-6 h-6 text-xs flex items-center justify-center rounded-t-md ${
-                        status === "available"
-                          ? "bg-white text-black"
+                        status === "selected"
+                          ? "bg-red-500 text-white"
                           : status === "reserved"
                             ? "bg-gray-500 cursor-not-allowed"
-                            : "bg-red-500 text-white"
+                            : "bg-white text-black"
                       }`}
                       onClick={() => handleSeatClick(row, colIndex)}
                       disabled={status === "reserved"}
@@ -78,7 +81,7 @@ function SeatSelector({
                 })}
               </div>
 
-              {/* 오른쪽 영어 */}
+              {/* 오른쪽 열 이름 */}
               <span className="text-white font-bold">{row}</span>
             </div>
           ))}
@@ -92,11 +95,11 @@ function SeatSelector({
           </div>
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 bg-gray-500 rounded-t-md"></div>
-            <span className="text-white text-sm">예매완료</span>
+            <span className="text-white text-sm">예매 완료</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 bg-white border border-gray-500 rounded-t-md"></div>
-            <span className="text-white text-sm">예매가능</span>
+            <span className="text-white text-sm">예매 가능</span>
           </div>
         </div>
       </div>
