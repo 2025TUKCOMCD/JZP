@@ -69,3 +69,6 @@ def HaarCam():
 
     capture.release() # release memory
     cv2.destroyAllWindows() #destroy windows
+
+if __name__ = "__main__":
+    HaarCam()
