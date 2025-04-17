@@ -10,10 +10,11 @@ import java.util.UUID;
 import java.time.LocalTime;
 import java.util.Date;
 
-public interface TicketRepository extends JpaRepository<Ticket, UUID> {
+public interface TicketRepository extends JpaRepository<Ticket, Long> {
     Optional<Ticket> findTopByMovieOrderByCreatedAtDesc(Movie movie);
     List<Ticket> findByMovie(Movie movie);
     List<Ticket> findByMovieMovieCalendarAndMovieMovieTime(Date movieCalendar, String movieTime);
     Ticket findTopByOrderByTicketIdDesc();
+    Optional<Ticket> findTopByOrderByCreatedAtDesc();
 
 }

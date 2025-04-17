@@ -2,10 +2,13 @@ package com.example.jzp.controller;
 
 import com.example.jzp.model.Movie;
 import com.example.jzp.model.Ticket;
+import com.example.jzp.model.User;
+
 import com.example.jzp.service.MovieService;
 import com.example.jzp.service.TicketService;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -16,6 +19,8 @@ import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import java.util.concurrent.ConcurrentHashMap;
 
 import java.time.LocalTime;
 import java.util.stream.Collectors;
@@ -42,9 +47,39 @@ public class MovieController {
         this.messageService = NurigoApp.INSTANCE.initialize(apiKey, apiSecret, "https://api.coolsms.co.kr");
         this.ticketService = ticketService;
     }
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+
+    private final Map<String, String> ageGroupStorage = new ConcurrentHashMap<>();
+
+    @PostMapping("/agegroup")
+    public ResponseEntity<String> receiveAgeGroup(@RequestBody User user) {
+        String ageGroup = user.getAgeGroup();
+
+        if (ageGroup == null || (!ageGroup.equals("아이") && !ageGroup.equals("성인") && !ageGroup.equals("노인"))) {
+            return ResponseEntity.badRequest().body("나이대 그룹을 찾을 수 없습니다.");
+        }
+
+        // 사용자 ID를 키로 나이대 정보를 저장 (예제에서는 간단히 "user" 사용)
+        ageGroupStorage.put("user", ageGroup);
+
+        return ResponseEntity.ok("나이 전송 성공");
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<String> getAgeGroup() {
+        String ageGroup = ageGroupStorage.get("user");
+
+        if (ageGroup == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("나이대를 찾을 수 없습니다.");
+        }
+
+        return ResponseEntity.ok(ageGroup);
+    }
     @PostMapping("/Reservation")
     public Map<String, Object> Reservation(@RequestBody ReservationRequest ReservationRequest) {
-        UUID ticketId = ReservationRequest.getTicketId();
+        Long ticketId = ReservationRequest.getTicketId();
 
         // 티켓 조회
         Ticket ticket = ticketService.getTicketById(ticketId);
@@ -94,15 +129,15 @@ public class MovieController {
     }
 
     public static class ReservationRequest {
-        private UUID ticketId;
+        private Long ticketId;
         private String phoneNumber;
 
         // Getter와 Setter
-        public UUID getTicketId() {
+        public Long getTicketId() {
             return ticketId;
         }
 
-        public void setTicketId(UUID ticketId) {
+        public void setTicketId(Long ticketId) {
             this.ticketId = ticketId;
         }
 
@@ -184,7 +219,7 @@ public class MovieController {
     }
 
     @GetMapping("/sendTicket")
-    public String sendTicket(@RequestParam("ticketId") UUID ticketId) {
+    public String sendTicket(@RequestParam("ticketId") Long ticketId) {
         // 티켓 조회
         Ticket ticket = ticketService.getTicketById(ticketId);
 
@@ -246,25 +281,58 @@ public class MovieController {
     }
 
 
-    // 영화 그룹별 요청
+    @GetMapping("/save-tmdb")
+    public String saveMovies() {
+        movieService.saveMoviesFromTMDB(); // TMDB에서 영화 데이터를 가져오고 저장
+        return "Movies saved successfully!";
+    }
+
+
     @PostMapping("/showmovie/{group}")
     public ResponseEntity<?> showMovieByGroup(@PathVariable("group") String group,
                                               @RequestBody MovieCalendarRequest request) {
         // 영화 리스트를 요청된 날짜로 가져옴
         List<MovieResponse> movies = movieService.getMoviesByDate(request.getMovieCalendar());
 
+        // tmdbmovie_id로 그룹화
+        Map<Long, MovieResponse> movieMap = new HashMap<>();
+        for (MovieResponse movie : movies) {
+            Long tmdbMovieId = movie.getTmdbMovieId();  // tmdbMovieId는 Long 타입
+
+            if (!movieMap.containsKey(tmdbMovieId)) {
+                // tmdbmovie_id가 처음 나타나면 새로 생성하여 그룹화
+                movieMap.put(tmdbMovieId, movie);
+            }
+
+            // 기존에 그룹화된 영화에 상영 시간 정보 추가
+            MovieResponse response = movieMap.get(tmdbMovieId);
+            MovieScheduleResponse scheduleResponse = new MovieScheduleResponse();
+            scheduleResponse.setMovieTime(movie.getMovieTime());
+            scheduleResponse.setMovieSeatRemain(movie.getMovieSeatRemain());
+            scheduleResponse.setMovieTheater(movie.getMovieTheater());  // movieTheater가 정의되어 있어야 함
+
+            // movieTime, movieSeatRemain, movieTheater가 유효한 값인지 확인
+            if (scheduleResponse.getMovieTime() != null && scheduleResponse.getMovieSeatRemain() > 0 && scheduleResponse.getMovieTheater() != null) {
+                response.getTimes().add(scheduleResponse); // 유효한 값일 경우만 times 리스트에 추가
+            }
+        }
+
+        // 영화 그룹화 후 리스트로 변환
+        List<MovieResponse> groupedMovies = new ArrayList<>(movieMap.values());
+
         // 사용자 그룹에 맞는 우선순위 처리
         if ("youth".equals(group)) {
-            movies = prioritizeForYouth(movies); // 청소년 우선순위 정렬
+            groupedMovies = prioritizeForYouth(groupedMovies); // 청소년 우선순위 정렬
         } else if ("old".equals(group)) {
-            movies = prioritizeForOld(movies); // 노인 우선순위 정렬
+            groupedMovies = prioritizeForOld(groupedMovies); // 노인 우선순위 정렬
         }
 
         return ResponseEntity.ok(Map.of(
                 "movieCalendar", request.getMovieCalendar(),
-                "movies", movies
+                "movies", groupedMovies
         ));
     }
+
 
     // 청소년 우선순위로 영화 정렬
     private List<MovieResponse> prioritizeForYouth(List<MovieResponse> movies) {
@@ -346,6 +414,7 @@ public class MovieController {
     // DTO: 영화 응답 데이터
     public static class MovieResponse {
         private UUID movieId;
+        private Long tmdbMovieId;
         private String movieImage;
         private String movieName;
         private String movieType;
@@ -354,6 +423,7 @@ public class MovieController {
         private int movieSeatRemain;
         private String movieTheater;
         private String movieGrade;
+        private List<MovieScheduleResponse> times = new ArrayList<>();
 
         // Getters and Setters
         public UUID getMovieId() {
@@ -362,6 +432,13 @@ public class MovieController {
 
         public void setMovieId(UUID movieId) {
             this.movieId = movieId;
+        }
+
+        public Long getTmdbMovieId() {
+            return tmdbMovieId;
+        }
+        public void setTmdbMovieId(Long tmdbMovieId) {
+            this.tmdbMovieId = tmdbMovieId;
         }
 
         public String getMovieImage() {
@@ -420,6 +497,54 @@ public class MovieController {
             this.movieGrade = movieGrade;
         }
 
+        public List<MovieScheduleResponse> getTimes() {
+            return times;
+        }
+
+        public void setTimes(List<MovieScheduleResponse> times) {
+            this.times = times;
+        }
+
+        public String getMovieTheater() {
+            return movieTheater;
+        }
+
+        public void setMovieTheater(String movieTheater) {
+            this.movieTheater = movieTheater;
+        }
+    }
+
+    // 상영 시간 정보 DTO
+    public static class MovieScheduleResponse {
+        private UUID movieId;
+        private String movieTime;
+        private int movieSeatRemain;
+        private String movieTheater;
+
+        public UUID getMovieId() {
+            return movieId;
+        }
+
+        public void setMovieId(UUID movieId) {  // UUID 타입에 맞는 setter 추가
+            this.movieId = movieId;
+        }
+
+        public String getMovieTime() {
+            return movieTime;
+        }
+
+        public void setMovieTime(String movieTime) {
+            this.movieTime = movieTime;
+        }
+
+        public int getMovieSeatRemain() {
+            return movieSeatRemain;
+        }
+
+        public void setMovieSeatRemain(int movieSeatRemain) {
+            this.movieSeatRemain = movieSeatRemain;
+        }
+
         public String getMovieTheater() {
             return movieTheater;
         }
@@ -444,7 +569,7 @@ public class MovieController {
         String movieName = request.getMovieName();  // 영화 이름
         String movieTime = request.getMovieTime();  // 영화 시간
 
-        boolean success = movieService.setMovieSeat(movieId, movieSeat, movieTheater, movieName, movieTime); // Pass all the required parameters
+        boolean success = movieService.setMovieSeat(movieId, movieSeat, movieTheater, movieName, movieTime);
 
         if (!success) {
             return ResponseEntity.badRequest().body(Map.of(
@@ -455,7 +580,7 @@ public class MovieController {
 
         // 예약 후 최신 좌석 정보 조회
         int remainingSeats = movieService.getMovieSeatRemain(movieId);
-        String updatedSeats = movieService.getUpdatedMovieSeat(movieId);  // Get updated movie seat info
+        String updatedSeats = movieService.getUpdatedMovieSeat(movieId);
 
         return ResponseEntity.ok(Map.of(
                 "success", true,
@@ -593,7 +718,7 @@ public class MovieController {
     }
 
     @GetMapping("/ticket")
-    public ResponseEntity<Map<String, Object>> getTicketDetails(@RequestParam("ticketId") UUID ticketId){
+    public ResponseEntity<Map<String, Object>> getTicketDetails(@RequestParam("ticketId") Long ticketId){
         Map<String, Object> ticketDetails = movieService.getTicketDetails(ticketId);
 
         if (ticketDetails != null) {
@@ -603,13 +728,13 @@ public class MovieController {
     }
 
     public static class TicketRequest {
-        private UUID ticketId;
+        private Long ticketId;
 
-        public UUID getTicketId() {
+        public Long getTicketId() {
             return ticketId;
         }
 
-        public void setTicketId(UUID ticketId) {
+        public void setTicketId(Long ticketId) {
             this.ticketId = ticketId;
         }
     }

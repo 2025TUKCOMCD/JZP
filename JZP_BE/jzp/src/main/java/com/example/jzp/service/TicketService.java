@@ -8,7 +8,6 @@ import com.example.jzp.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,19 +22,15 @@ public class TicketService {
     private TicketRepository ticketRepository;
 
     // 티켓 예약 메서드
-    public UUID bookTicket(UUID movieId, String movieSeat,String movieTheater, int disabled, int youth, int adult, int old) {
-        // Movie 객체 조회
+    // 티켓 예약 메서드
+    public Long bookTicket(UUID movieId, String movieSeat, String movieTheater, int disabled, int youth, int adult, int old) {
         Optional<Movie> movieOptional = movieRepository.findById(movieId);
         if (movieOptional.isEmpty()) {
             return null;
         }
 
         Movie movie = movieOptional.get();
-
-        // 새 티켓 생성
         Ticket ticket = new Ticket();
-
-        // 티켓 정보 설정
         ticket.setMovie(movie);
         ticket.setMovieSeat(movieSeat);
         ticket.setMovieTheater(movieTheater);
@@ -44,10 +39,7 @@ public class TicketService {
         ticket.setCustomerAdult(adult);
         ticket.setCustomerOld(old);
 
-        // 티켓 저장
         ticketRepository.save(ticket);
-
-        // 생성된 티켓의 ID 반환
         return ticket.getTicketId();
     }
 
@@ -126,7 +118,7 @@ public class TicketService {
         return false;
     }
 
-    public Ticket getTicketById(UUID ticketId) {
+    public Ticket getTicketById(Long ticketId) {
         Optional<Ticket> ticket = ticketRepository.findById(ticketId);
         return ticket.orElse(null);
     }
@@ -138,7 +130,5 @@ public class TicketService {
     public Ticket getLatestTicket() {
         return ticketRepository.findTopByOrderByTicketIdDesc();
     }
-
-
 
 }
