@@ -58,7 +58,7 @@ public class MovieController {
         String ageGroup = user.getAgeGroup();
 
         if (ageGroup == null || (!ageGroup.equals("아이") && !ageGroup.equals("성인") && !ageGroup.equals("노인"))) {
-            return ResponseEntity.badRequest().body("Invalid age group.");
+            return ResponseEntity.badRequest().body("나이대 그룹을 찾을 수 없습니다.");
         }
 
         // 사용자 ID를 키로 나이대 정보를 저장 (예제에서는 간단히 "user" 사용)
