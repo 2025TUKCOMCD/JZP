@@ -1,22 +1,21 @@
 package com.example.jzp.model;
 
 import jakarta.persistence.*;
-
-import java.time.LocalTime;
 import java.util.Date;
-import java.util.UUID;
+import java.util.Random;
 
 @Entity
 public class Ticket {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID ticketId;
+    private Long ticketId; // 16자리 랜덤 숫자
 
     @ManyToOne
     @JoinColumn(name = "movie_id")
     private Movie movie;
+
     @Column(nullable = false)
     private String movieTheater;
+
     private String movieTime;
     private String movieSeat;
     private int customerDisabled;
@@ -30,14 +29,25 @@ public class Ticket {
     @PrePersist
     protected void onCreate() {
         this.createdAt = new Date();
+        if (this.ticketId == null) {
+            this.ticketId = generateRandom16DigitNumber();
+        }
     }
 
-    // Getter & Setter 추가
-    public UUID getTicketId() {
+    // 16자리 랜덤 숫자 생성
+    private Long generateRandom16DigitNumber() {
+        Random random = new Random();
+        long min = 1000000000000000L; // 16자리 최소값 (1000조)
+        long max = 9999999999999999L; // 16자리 최대값 (9999조)
+        return min + ((long) (random.nextDouble() * (max - min)));
+    }
+
+    // Getter & Setter
+    public Long getTicketId() {
         return ticketId;
     }
 
-    public void setTicketId(UUID ticketId) {
+    public void setTicketId(Long ticketId) {
         this.ticketId = ticketId;
     }
 
@@ -104,6 +114,7 @@ public class Ticket {
     public void setCustomerOld(int customerOld) {
         this.customerOld = customerOld;
     }
+
     public Date getCreatedAt() {
         return createdAt;
     }
