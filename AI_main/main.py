@@ -36,13 +36,13 @@ def main():
 
     t1 = threading.Thread(target=cam.HaarFilter, args=(frame_data,), daemon = True)
     t2 = threading.Thread(target=Analyzer.AgeAnalyze, args=(frame_data,age_data), daemon=True)
-    # t3 = threading.Thread(target=sender.post, args=(age_data,), daemon = True)
+    t3 = threading.Thread(target=sender.post, args=(age_data,), daemon = True)
 
     # test_thread = threading.Thread(target = showq.showq, args=(frame_data,), daemon = True)
 
     t1.start()
     t2.start()
-    # t3.start()
+    t3.start()
     # test_thread.start()
 
     # cam.HaarFilter()
