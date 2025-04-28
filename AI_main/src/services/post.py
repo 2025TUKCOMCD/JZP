@@ -1,9 +1,13 @@
 import json
 import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def post(s):
-    url = "" # need url token
-    
+    url = os.getenv("API_BASE_URL")
+
     try : 
         data = { "ageGroup": s }
         headers = { "Content-Type":"application/json" }
