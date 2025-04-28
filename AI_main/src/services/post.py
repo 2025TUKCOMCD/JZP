@@ -7,8 +7,10 @@ from dotenv import load_dotenv
 def post(q):
     load_dotenv()
     url = os.getenv("API_BASE_URL")
-
+    url_dir = "/api/movie/agegroup"
+    url = url+url_dir
     try :
+        while:
         if q.get()=="2-19":
             s="아이"
         elif q.get()=="20-60":
