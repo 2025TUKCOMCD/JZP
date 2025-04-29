@@ -136,7 +136,7 @@ function SeniorHistorySendingPage() {
   };
 
   return (
-    <div className="bg-customBg h-screen text-white flex flex-col relative mx-auto w-[480px] min-w-[480px] max-w-[480px]">
+    <div className="bg-customBg h-screen text-white flex flex-col relative mx-auto w-[560px] min-w-[560px] max-w-[560px]">
       <Header />
       <StepBar prefix="junior" />
 
@@ -200,7 +200,7 @@ function SeniorHistorySendingPage() {
         </div>
       </div>
 
-      <footer className="fixed bottom-0 w-[480px] bg-gray-800 flex">
+      <footer className="fixed bottom-0 w-[560px] bg-gray-800 flex">
         <button
           className="flex-1 bg-white text-black text-xl font-bold h-20 flex items-center justify-center leading-none gap-2"
           onClick={handleSeniorMain}
