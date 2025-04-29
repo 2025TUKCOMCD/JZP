@@ -50,7 +50,7 @@ function JuniorMainPage() {
   };
 
   return (
-    <div className="bg-customBg h-screen text-white flex flex-col">
+    <div className="bg-customBg h-screen text-white flex flex-col relative mx-auto w-[480px] min-w-[480px] max-w-[480px]">
       <Header />
 
       <div className="flex justify-center">
