@@ -217,7 +217,7 @@ function JuniorSeatSelectPage() {
               <img
                 src={movieDetails.movieImage}
                 alt="Movie Poster"
-                className="w-24 h-36 mr-4"
+                className="w-36 h-48 mr-4"
               />
               <div className="flex flex-col">
                 <div className="flex items-center">
@@ -232,17 +232,17 @@ function JuniorSeatSelectPage() {
                             : ageAllImage
                     }
                     alt={`${movieDetails.movieRating}세`}
-                    className="w-6 h-6 mr-2"
+                    className="w-8 h-8 mr-2"
                   />
-                  <h2 className="text-xl font-bold mt-1">
+                  <h2 className="text-2xl font-bold">
                     {movieDetails.movieName}
                   </h2>
                 </div>
-                <div className="text-[14px] ml-10">
+                <div className="text-[18px] ml-10">
                   <p>
                     {movieDetails.movieCalendar} {movieDetails.movieTime}
                   </p>
-                  <p className="mt-1 text-[10px]">
+                  <p className="mt-1 text-[14px]">
                     {movieDetails.movieTheater}
                   </p>
                 </div>

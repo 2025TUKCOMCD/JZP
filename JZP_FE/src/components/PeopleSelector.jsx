@@ -67,9 +67,9 @@ function PeopleSelector({ onUpdateTotalSeats, onSave }) {
   };
 
   return (
-    <div className="bg-white text-black p-4 flex flex-col">
-      {/* 인원수 조절 섹션 */}
-      <div className="flex justify-start items-center gap-2 text-[12px] mt-2">
+    <div className="bg-white text-black pl-4 pr-4 flex flex-col">
+      <div className="flex flex-wrap justify-center items-center gap-4 text-[12px]">
+        {" "}
         {[
           { label: "성인", count: adultCount, type: "adult" },
           { label: "청소년", count: teenCount, type: "teen" },
