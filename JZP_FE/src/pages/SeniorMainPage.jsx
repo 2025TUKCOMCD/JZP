@@ -50,7 +50,7 @@ function SeniorMainPage() {
   };
 
   return (
-    <div className="bg-customBg h-screen text-white flex flex-col relative mx-auto w-[480px] min-w-[480px] max-w-[480px]">
+    <div className="bg-customBg h-screen text-white flex flex-col relative mx-auto w-[600px] min-w-[600px] max-w-[600px]">
       <Header />
 
       <div className="flex flex-col items-center justify-center mt-12 text-center">
@@ -70,7 +70,7 @@ function SeniorMainPage() {
             alt="예매 내역 출력"
             className="w-32 h-32 mt-6"
           />
-          <span className="text-center text-3xl leading-none h-[36px] flex items-center justify-center">
+          <span className="text-center text-2xl leading-none h-[36px] flex items-center justify-center">
             예매 내역 출력
           </span>
         </button>
@@ -80,7 +80,7 @@ function SeniorMainPage() {
           onClick={handleSeniorMovieSelect}
         >
           <img src={ticketIcon} alt="티켓 예매" className="w-28 h-28 mt-8" />
-          <span className="text-center text-3xl leading-none h-[36px] flex items-center justify-center">
+          <span className="text-center text-2xl leading-none h-[36px] flex items-center justify-center">
             티켓 예매
           </span>
         </button>
