@@ -163,7 +163,7 @@ function JuniorMovieSelectPage() {
                     </div>
                     <p className="text-sm text-gray-400">{movie.movieType}</p>
                   </div>
-                  <div className="grid grid-cols-2 gap-2 mt-2">
+                  <div className="grid grid-cols-3 gap-2 mt-2">
                     {movie.times && movie.times.length > 0 ? (
                       movie.times.map((time) => (
                         <button

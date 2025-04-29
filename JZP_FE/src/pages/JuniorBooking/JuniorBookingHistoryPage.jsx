@@ -121,7 +121,7 @@ function JuniorBookingHistoryPage() {
                         .join(", ")}
                     </p>
                     <p className="text-gray-500 text-xs">선택좌석</p>
-                    <p>{bookingData.movie.movieSeat}</p>
+                    <p>{bookingData.movie.movieSeat.join(", ")}</p>
                   </div>
                 </div>
               </div>
@@ -130,7 +130,7 @@ function JuniorBookingHistoryPage() {
               <div className="flip-back flex justify-center items-center bg-white p-4 rounded-xl shadow-lg">
                 <div className="w-full h-full flex flex-col items-center justify-center">
                   <img
-                    src={bookingData.movie.movieImage.join(", ")}
+                    src={bookingData.movie.movieImage}
                     alt="Movie Poster"
                     className="w-[95%] h-[95%]"
                   />
