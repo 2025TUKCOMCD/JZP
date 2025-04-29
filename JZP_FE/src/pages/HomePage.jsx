@@ -71,7 +71,7 @@ function HomePage() {
   };
 
   return (
-    <div className="bg-customBg h-screen text-white flex flex-col relative mx-auto w-[600px] min-w-[600px] max-w-[600px]">
+    <div className="bg-customBg h-screen text-white flex flex-col relative mx-auto w-[560px] min-w-[560px] max-w-[560px]">
       <Header />
 
       <div className="flex justify-center">
