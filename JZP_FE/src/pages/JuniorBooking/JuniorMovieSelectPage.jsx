@@ -126,7 +126,7 @@ function JuniorMovieSelectPage() {
   }, [selectedDate]);
 
   return (
-    <div className="bg-customBg h-screen text-white flex flex-col relative mx-auto w-[560px] min-w-[560px] max-w-[560px]">
+    <div className="bg-customBg h-screen text-white flex flex-col relative mx-auto w-[570px] min-w-[570px] max-w-[570px]">
       <Header />
       <StepBar />
       <DateSelectBar onDateChange={setSelectedDate} />
@@ -139,7 +139,7 @@ function JuniorMovieSelectPage() {
                 <img
                   src={movie.movieImage}
                   alt={movie.movieName}
-                  className="w-38 h-48 mr-5"
+                  className="w-48 h-64 mr-5"
                 />
                 <div className="flex flex-col justify-between flex-1">
                   <div>
@@ -205,8 +205,7 @@ function JuniorMovieSelectPage() {
         )}
       </div>
 
-      {/* 하단 버튼 */}
-      <footer className="fixed bottom-0 w-[560px] bg-gray-800 flex">
+      <footer className="fixed bottom-0 w-[570px] bg-gray-800 flex">
         <button
           className="flex-1 bg-white text-black text-sm font-bold h-16 flex items-center justify-center leading-none gap-2"
           onClick={handleJuniorMain}

@@ -50,7 +50,7 @@ function SeniorMainPage() {
   };
 
   return (
-    <div className="bg-customBg h-screen text-white flex flex-col relative mx-auto w-[560px] min-w-[560px] max-w-[560px]">
+    <div className="bg-customBg h-screen text-white flex flex-col relative mx-auto w-[570px] min-w-[570px] max-w-[570px]">
       <Header />
 
       <div className="flex flex-col items-center justify-center mt-12 text-center">

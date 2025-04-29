@@ -27,8 +27,7 @@ const MovieSelectBar2 = ({ prefix }) => {
 
   return (
     <div className="relative flex flex-col items-center py-4 mt-2 mb-0">
-      {/* Progress Bar */}
-      <div className="absolute top-[35%] left-[25%] w-[50%] h-0.5 bg-[#444855] z-0">
+      <div className="absolute top-[30%] left-[30%] w-[40%] h-0.5 bg-[#444855] z-0">
         <div
           className="h-full bg-white transition-all duration-300"
           style={{
@@ -42,7 +41,6 @@ const MovieSelectBar2 = ({ prefix }) => {
             key={step.id}
             className="flex flex-col items-center flex-1 relative"
           >
-            {/* Step Circle */}
             <div
               className={`flex items-center justify-center rounded-full w-6 h-6 border-2 text-xs font-medium transition-all duration-300 ${
                 currentStep >= step.id
@@ -52,7 +50,6 @@ const MovieSelectBar2 = ({ prefix }) => {
             >
               <span>{step.id}</span>
             </div>
-            {/* Step Label */}
             <span
               className={`mt-2 text-[12px] ${
                 currentStep >= step.id ? "text-white" : "text-[#717070]"
