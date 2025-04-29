@@ -743,7 +743,7 @@ public class MovieController {
     public ResponseEntity<?> getBanner() {
         return ResponseEntity.ok(Map.of(
                 "success", true,
-                "movieImage", "http://3.106.89.95/images/harry2.jpg"
+                "movieImage", "http://3.106.89.95/images/working.jpg"
         ));
     }
 
