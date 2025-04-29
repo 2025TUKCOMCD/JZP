@@ -77,7 +77,7 @@ function PeopleSelector({ onUpdateTotalSeats, onSave }) {
           { label: "장애인", count: disabledCount, type: "disabled" },
         ].map((category) => (
           <div key={category.type} className="flex items-center gap-1">
-            <span className="font-bold ml-1">{category.label}</span>
+            <span className="font-bold mr-2">{category.label}</span>
             <div className="border border-gray-400 w-16 flex justify-between items-center px-2 py-[3px]">
               <button
                 onClick={() => handleDecrement(category.type)}
@@ -105,7 +105,7 @@ function PeopleSelector({ onUpdateTotalSeats, onSave }) {
         ))}
       </div>
 
-      <p className="text-center text-[12px] mt-3 px-4 whitespace-pre-line">
+      <p className="text-center text-[12px] mt-5 px-4 whitespace-pre-line h-[36px]">
         {getNoticeMessage()}
       </p>
     </div>
