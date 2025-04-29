@@ -41,7 +41,7 @@ function SeatSelector({
   };
 
   return (
-    <div className="mt-4">
+    <div className="mt-8">
       <div className="text-center">
         {/* SCREEN 텍스트 */}
         <div className="w-[80%] mx-auto bg-gray-500 mb-4 py-1">

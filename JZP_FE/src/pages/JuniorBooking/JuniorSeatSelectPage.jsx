@@ -210,7 +210,7 @@ function JuniorSeatSelectPage() {
   };
 
   return (
-    <div className="bg-customBg h-screen text-white flex flex-col relative">
+    <div className="bg-customBg h-screen text-white flex flex-col relative mx-auto w-[480px] min-w-[480px] max-w-[480px]">
       <Header />
       <StepBar prefix="junior" />
 
@@ -223,7 +223,7 @@ function JuniorSeatSelectPage() {
               <img
                 src={movieDetails.movieImage}
                 alt="Movie Poster"
-                className="w-24 h-32 mr-4"
+                className="w-24 h-36 mr-4"
               />
               <div className="flex flex-col">
                 <div className="flex items-center">
@@ -240,7 +240,7 @@ function JuniorSeatSelectPage() {
                     alt={`${movieDetails.movieRating}세`}
                     className="w-6 h-6 mr-2"
                   />
-                  <h2 className="text-xl font-sbAggro font-bold mt-1">
+                  <h2 className="text-xl font-bold mt-1">
                     {movieDetails.movieName}
                   </h2>
                 </div>
@@ -281,7 +281,7 @@ function JuniorSeatSelectPage() {
 
       {isModalOpen && <Modal onClose={closeModal} message={modalMessage} />}
 
-      <footer className="fixed bottom-0 w-[450px] bg-gray-800 flex mx-auto">
+      <footer className="fixed bottom-0 w-[480px] bg-gray-800 flex mx-auto">
         <button
           className="flex-1 bg-buttonGray text-white text-sm font-bold h-16 flex items-center justify-center leading-none"
           onClick={handleJuniorMovieSelect}

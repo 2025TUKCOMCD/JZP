@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/header.jsx";
-import StepBar from "../../components/movieStepBar.jsx";
+import StepBar from "../../components/MovieStepBar.jsx";
 import DateSelectBar from "../../components/DateSelectBar.jsx";
 import age12Image from "../../assets/images/12.png";
 import age15Image from "../../assets/images/15.png";
@@ -126,7 +126,7 @@ function JuniorMovieSelectPage() {
   }, [selectedDate]);
 
   return (
-    <div className="bg-customBg h-screen text-white flex flex-col">
+    <div className="bg-customBg h-screen text-white flex flex-col relative mx-auto w-[480px] min-w-[480px] max-w-[480px]">
       <Header />
       <StepBar />
       <DateSelectBar onDateChange={setSelectedDate} />
@@ -139,7 +139,7 @@ function JuniorMovieSelectPage() {
                 <img
                   src={movie.movieImage}
                   alt={movie.movieName}
-                  className="w-42 h-60 mr-5"
+                  className="w-38 h-48 mr-5"
                 />
                 <div className="flex flex-col justify-between flex-1">
                   <div>
@@ -157,13 +157,11 @@ function JuniorMovieSelectPage() {
                         alt={`${movie.movieRating}세`}
                         className="w-8 h-8 mr-3"
                       />
-                      <h3 className="text-xl font-sbAggro font-bold">
+                      <h3 className="text-lg font-sbAggro font-bold">
                         {movie.movieName}
                       </h3>
                     </div>
-                    <p className="text-sm text-gray-400">
-                      {movie.movieType} | {movie.movieTheater}
-                    </p>
+                    <p className="text-sm text-gray-400">{movie.movieType}</p>
                   </div>
                   <div className="grid grid-cols-2 gap-2 mt-2">
                     {movie.times && movie.times.length > 0 ? (
@@ -208,7 +206,7 @@ function JuniorMovieSelectPage() {
       </div>
 
       {/* 하단 버튼 */}
-      <footer className="fixed bottom-0 w-[450px] bg-gray-800 flex">
+      <footer className="fixed bottom-0 w-[480px] bg-gray-800 flex">
         <button
           className="flex-1 bg-white text-black text-sm font-bold h-16 flex items-center justify-center leading-none gap-2"
           onClick={handleJuniorMain}
