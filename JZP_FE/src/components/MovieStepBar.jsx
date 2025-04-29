@@ -43,9 +43,9 @@ const MovieSelectBar = ({ prefix }) => {
               currentStep === 1
                 ? "0%"
                 : currentStep === 2
-                  ? "30%"
+                  ? "32%"
                   : currentStep === 3
-                    ? "70%"
+                    ? "68%"
                     : "100%"
             }`,
           }}
