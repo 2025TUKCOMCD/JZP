@@ -1,0 +1,20 @@
+"""
+*   This is MAIN Program
+*   
+*
+*
+*
+*
+*
+
+
+
+"""
+__author__ = "Hyang-Do Choi"
+__copyright__ = "Capstone Project Team [.JZP]. Tech University of Korea, TUK"
+__version__ = "Demo 0.1"
+__date__ = "2025-04-20"
+__credits__ = ["2019152043 Hyang-Do Choi",
+               "2022134009 Yoon-Seung Kim",
+               "2022156039 Seung-Yeon Jo",
+               "2022150020 Min-Jeong Seok"]

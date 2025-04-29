@@ -12,4 +12,9 @@ import sys
 import os
 import modulepkg
 
-modulepkg.HaarCam()
+def main():
+    modulepkg.HaarCam()
+
+    
+if __name__ = "__main__":
+    main()
