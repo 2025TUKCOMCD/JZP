@@ -43,11 +43,11 @@ function JuniorBookingHistoryPage() {
   };
 
   return (
-    <div className="bg-customBg h-screen text-white flex flex-col overflow-visible">
+    <div className="bg-customBg h-screen text-white flex flex-col relative mx-auto w-[480px] min-w-[480px] max-w-[480px] overflow-visible">
       <Header />
       <StepBar prefix="junior" />
 
-      <div className="flex-1 flex justify-center items-start pt-[70px]">
+      <div className="flip-container w-[370px] h-[520px] cursor-pointer mt-[7vh] mx-auto">
         {bookingData ? (
           <div
             className="flip-container w-[370px] h-[520px] cursor-pointer"
@@ -130,7 +130,7 @@ function JuniorBookingHistoryPage() {
               <div className="flip-back flex justify-center items-center bg-white p-4 rounded-xl shadow-lg">
                 <div className="w-full h-full flex flex-col items-center justify-center">
                   <img
-                    src={bookingData.movie.movieImage}
+                    src={bookingData.movie.movieImage.join(", ")}
                     alt="Movie Poster"
                     className="w-[95%] h-[95%]"
                   />
@@ -143,7 +143,7 @@ function JuniorBookingHistoryPage() {
         )}
       </div>
 
-      <footer className="fixed bottom-0 w-[450px] bg-gray-800 flex mx-auto">
+      <footer className="fixed bottom-0 w-[480px] bg-gray-800 flex mx-auto">
         <button
           className="flex-1 bg-white text-black text-sm font-bold h-16 flex items-center justify-center leading-none gap-2"
           onClick={handleJuniorMain}
