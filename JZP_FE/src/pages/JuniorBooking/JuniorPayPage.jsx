@@ -60,7 +60,7 @@ function JuniorPayPage() {
         <>
           <div className="flex justify-center py-2">
             <div className="bg-buttonGray text-white p-4 flex flex-col items-center">
-              <h1 className="text-3xl text-sbAggro font-bold text-center mb-4">
+              <h1 className="text-xl text-sbAggro font-bold text-center mb-4">
                 {movieData.movie.movieName}
               </h1>
 
