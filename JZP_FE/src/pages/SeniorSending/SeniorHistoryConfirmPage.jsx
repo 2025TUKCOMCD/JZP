@@ -9,7 +9,7 @@ function SeniorHistoryConfirmPage() {
   const handleSeniorMain = () => navigate("/SeniorMain");
 
   return (
-    <div className="bg-customBg h-screen text-white flex flex-col">
+    <div className="bg-customBg h-screen text-white flex flex-col relative mx-auto w-[480px] min-w-[480px] max-w-[480px]">
       <Header />
       <StepBar prefix="senior" />
 
@@ -21,7 +21,7 @@ function SeniorHistoryConfirmPage() {
         <h2 className="text-[40px] font-semibold">전송이 완료되었습니다.</h2>
       </div>
 
-      <footer className="fixed bottom-0 w-[450px] bg-gray-800 flex">
+      <footer className="fixed bottom-0 w-[480px] bg-gray-800 flex">
         <button
           className="flex-1 bg-red-600 text-white text-xl font-bold h-20 flex items-center justify-center leading-none"
           onClick={handleSeniorMain}
