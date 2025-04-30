@@ -43,11 +43,11 @@ function SeniorBookingHistoryPage() {
   };
 
   return (
-    <div className="bg-customBg h-screen text-white flex flex-col">
+    <div className="bg-customBg h-screen text-white flex flex-col relative mx-auto w-[560px] min-w-[560px] max-w-[560px]">
       <Header />
       <StepBar prefix="senior" />
 
-      <div className="flex-1 flex justify-center items-start pt-[35px]">
+      <div className="flip-container w-[370px] h-[520px] cursor-pointer mt-[7vh] mx-auto">
         {bookingData ? (
           <div
             className="flip-container w-[370px] h-[520px] cursor-pointer"
@@ -95,7 +95,7 @@ function SeniorBookingHistoryPage() {
                     <p className="text-gray-500 text-sm">상영시간</p>
                     <p>{bookingData.movie.movieTime}</p>
                   </div>
-                  <div className="grid grid-cols-2 gap-x-4 gap-y-1 mt-4">
+                  <div className="grid grid-cols-2 mt-4">
                     <p className="text-gray-500 text-sm">관람인원</p>
                     <p>
                       {[
@@ -116,12 +116,11 @@ function SeniorBookingHistoryPage() {
                         .join(", ")}
                     </p>
                     <p className="text-gray-500 text-sm">선택좌석</p>
-                    <p>{bookingData.movie.movieSeat}</p>
+                    <p>{bookingData.movie.movieSeat.join(", ")}</p>
                   </div>
                 </div>
               </div>
 
-              {/* 뒷면 */}
               <div className="flip-back flex justify-center items-center bg-white p-4 rounded-xl shadow-lg">
                 <div className="w-full h-full flex flex-col items-center justify-center">
                   <img
@@ -138,7 +137,7 @@ function SeniorBookingHistoryPage() {
         )}
       </div>
 
-      <footer className="fixed bottom-0 w-[450px] bg-gray-800 flex mx-auto">
+      <footer className="fixed bottom-0 w-[560px] bg-gray-800 flex mx-auto">
         <button
           className="flex-1 bg-white text-black text-xl font-bold h-20 flex items-center justify-center leading-none gap-2"
           onClick={handleSeniorMain}

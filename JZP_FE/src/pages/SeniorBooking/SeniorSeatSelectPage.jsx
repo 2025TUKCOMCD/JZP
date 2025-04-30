@@ -205,7 +205,7 @@ function SeniorSeatSelectPage() {
   };
 
   return (
-    <div className="bg-customBg h-screen text-white flex flex-col relative">
+    <div className="bg-customBg h-screen text-white flex flex-col relative mx-auto w-[570px] min-w-[570px] max-w-[570px]">
       <Header />
       <StepBar prefix="senior" />
       {/* 영화 정보 */}
@@ -215,7 +215,7 @@ function SeniorSeatSelectPage() {
             <img
               src={movieDetails.movieImage}
               alt="Movie Poster"
-              className="w-24 h-32 mr-4"
+              className="w-36 h-48 mr-4"
             />
             <div className="flex flex-col">
               <div className="flex items-center">
@@ -236,7 +236,7 @@ function SeniorSeatSelectPage() {
                   {movieDetails.movieName}
                 </h2>
               </div>
-              <div className="text-[18px] mt-6">
+              <div className="text-[18px] mt-2">
                 <p>
                   {movieDetails.movieCalendar} {movieDetails.movieTime}
                 </p>
@@ -256,7 +256,7 @@ function SeniorSeatSelectPage() {
       {/* PeopleSelector 모달 */}
       {isPeopleModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white rounded-lg w-[30%] max-w-sm">
+          <div className="bg-white rounded-lg w-[450px] max-w-[480px]">
             <PeopleSelector
               onUpdateTotalSeats={(seats) => setTotalSeats(seats)}
               onConfirm={handleConfirmPeople}
@@ -274,7 +274,7 @@ function SeniorSeatSelectPage() {
         availableSeatsCount={availableSeatsCount}
       />
 
-      <footer className="fixed bottom-0 w-[450px] bg-gray-800 flex mx-auto">
+      <footer className="fixed bottom-0 w-[570px] bg-gray-800 flex mx-auto">
         <button
           className="flex-1 bg-buttonGray text-white text-xl font-bold h-20 flex items-center justify-center leading-none gap-2"
           onClick={handleSeniorMovie}

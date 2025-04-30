@@ -127,7 +127,7 @@ function JuniorHistorySendingPage() {
   };
 
   return (
-    <div className="bg-customBg h-screen text-white flex flex-col">
+    <div className="bg-customBg h-screen text-white flex flex-col relative mx-auto w-[570px] min-w-[570px] max-w-[570px]">
       <Header />
       <StepBar prefix="junior" />
       <div className="mt-4 text-center">
@@ -184,7 +184,7 @@ function JuniorHistorySendingPage() {
           />
         </div>
       </div>
-      <footer className="fixed bottom-0 w-[450px] bg-gray-800 flex">
+      <footer className="fixed bottom-0 w-[570px] bg-gray-800 flex">
         <button
           className="flex-1 bg-white text-black text-sm font-bold h-16 flex items-center justify-center leading-none gap-2"
           onClick={handleJuniorMain}

@@ -18,8 +18,8 @@ function JuniorSeatSelectPage() {
   const [modalMessage, setModalMessage] = useState("");
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [movieDetails, setMovieDetails] = useState(null);
-  const [reservedSeats, setReservedSeats] = useState([]); // 예약된 좌석 리스트
-  const [availableSeatsCount, setAvailableSeatsCount] = useState(0); // 남은 좌석 수
+  const [reservedSeats, setReservedSeats] = useState([]);
+  const [availableSeatsCount, setAvailableSeatsCount] = useState(0);
 
   const navigate = useNavigate();
 
@@ -61,7 +61,6 @@ function JuniorSeatSelectPage() {
         if (data.length > 0) {
           setMovieDetails(data[0]);
 
-          // ✅ movieSeat(예약된 좌석)과 movieSeatRemain(남은 좌석 수) 저장
           const latestSeats = data[0].movieSeat
             ? data[0].movieSeat.split(",")
             : [];
@@ -96,7 +95,7 @@ function JuniorSeatSelectPage() {
       movieCustomerOld: senior,
     };
 
-    console.log("📡 인원 저장 요청 데이터:", requestBody); // ✅ 요청 데이터 확인
+    console.log("📡 인원 저장 요청 데이터:", requestBody);
 
     try {
       const response = await fetch(`${API_BASE_URL}/api/movie/customer`, {
@@ -106,10 +105,9 @@ function JuniorSeatSelectPage() {
       });
 
       const result = await response.json();
-      console.log("📩 API 응답:", result); // ✅ API 응답 확인용
+      console.log("📩 API 응답:", result);
 
       if (result.success) {
-        // ✅ 변경: "status" 대신 "success" 확인
         console.log("✅ 인원 저장 성공:", result);
       } else {
         console.error("🚨 인원 저장 실패:", result.message || "서버 응답 없음");
@@ -133,7 +131,6 @@ function JuniorSeatSelectPage() {
       return;
     }
 
-    // 🚨 이미 예약된 좌석이 있는지 확인
     const reservedSeats = movieDetails.movieSeat?.split(",") || [];
     const unavailableSeats = selectedSeats.filter((seat) =>
       reservedSeats.includes(seat),
@@ -148,7 +145,6 @@ function JuniorSeatSelectPage() {
       return;
     }
 
-    // 🚨 선택된 좌석 중 빈 값이 없는지 확인
     const validSeats = selectedSeats.filter((seat) => seat.trim() !== "");
     if (validSeats.length === 0) {
       setModalMessage("좌석을 다시 선택해주세요.");
@@ -160,7 +156,7 @@ function JuniorSeatSelectPage() {
       movieId: movieDetails.movieId,
       movieName: movieDetails.movieName.trim(),
       movieTime: movieTime.trim(),
-      movieSeat: validSeats.join(","), // 빈 좌석 제거 후 문자열로 변환
+      movieSeat: validSeats.join(","),
       movieTheater: movieDetails.movieTheater.trim(),
     };
 
@@ -205,25 +201,23 @@ function JuniorSeatSelectPage() {
       setModalMessage("인원 수와 좌석 수가 일치하지 않습니다!");
       setIsModalOpen(true);
     } else {
-      handleSaveSeatSelection(); // 좌석 저장 후 결제 페이지로 이동
+      handleSaveSeatSelection();
     }
   };
 
   return (
-    <div className="bg-customBg h-screen text-white flex flex-col relative">
+    <div className="bg-customBg h-screen text-white flex flex-col relative mx-auto w-[570px] min-w-[570px] max-w-[570px]">
       <Header />
       <StepBar prefix="junior" />
 
-      {/* 영화 정보 API 연동 */}
       <div className="bg-white text-black p-4 flex flex-col">
         {movieDetails ? (
           <>
-            {/* 상단 섹션 */}
             <div className="flex items-start">
               <img
                 src={movieDetails.movieImage}
                 alt="Movie Poster"
-                className="w-24 h-32 mr-4"
+                className="w-36 h-48 mr-4"
               />
               <div className="flex flex-col">
                 <div className="flex items-center">
@@ -238,17 +232,17 @@ function JuniorSeatSelectPage() {
                             : ageAllImage
                     }
                     alt={`${movieDetails.movieRating}세`}
-                    className="w-6 h-6 mr-2"
+                    className="w-8 h-8 mr-2"
                   />
-                  <h2 className="text-xl font-sbAggro font-bold mt-1">
+                  <h2 className="text-2xl font-bold">
                     {movieDetails.movieName}
                   </h2>
                 </div>
-                <div className="text-[14px] ml-10">
+                <div className="text-[18px] ml-10">
                   <p>
                     {movieDetails.movieCalendar} {movieDetails.movieTime}
                   </p>
-                  <p className="mt-1 text-[10px]">
+                  <p className="mt-1 text-[14px]">
                     {movieDetails.movieTheater}
                   </p>
                 </div>
@@ -281,7 +275,7 @@ function JuniorSeatSelectPage() {
 
       {isModalOpen && <Modal onClose={closeModal} message={modalMessage} />}
 
-      <footer className="fixed bottom-0 w-[450px] bg-gray-800 flex mx-auto">
+      <footer className="fixed bottom-0 w-[570px] bg-gray-800 flex mx-auto">
         <button
           className="flex-1 bg-buttonGray text-white text-sm font-bold h-16 flex items-center justify-center leading-none"
           onClick={handleJuniorMovieSelect}
