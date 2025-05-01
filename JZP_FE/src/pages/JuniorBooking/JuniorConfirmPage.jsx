@@ -6,7 +6,7 @@ import HomeAdd from "../../assets/images/homeAdd.png";
 function JuniorConfirmPage() {
   const navigate = useNavigate();
 
-  const handleJuniorMain = () => navigate("/juniorMain");
+  const handleMain = () => navigate("/");
 
   return (
     <div className="bg-customBg h-screen text-white flex flex-col relative mx-auto w-[570px] min-w-[570px] max-w-[570px]">
@@ -24,7 +24,7 @@ function JuniorConfirmPage() {
       <footer className="fixed bottom-0 w-[570px] bg-gray-800 flex">
         <button
           className="flex-1 bg-red-600 text-white text-sm font-bold h-16 flex items-center justify-center leading-none"
-          onClick={handleJuniorMain}
+          onClick={handleMain}
         >
           확인
         </button>
