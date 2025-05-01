@@ -52,7 +52,7 @@ function SeniorPayPage() {
   };
 
   return (
-    <div className="bg-customBg h-screen text-white flex flex-col">
+    <div className="bg-customBg h-screen text-white flex flex-col relative mx-auto w-[570px] min-w-[570px] max-w-[570px]">
       <Header />
       <StepBar prefix="senior" />
 
@@ -130,7 +130,9 @@ function SeniorPayPage() {
                         선택좌석
                       </p>
                       <p className="text-[18px] font-medium mt-1 whitespace-nowrap">
-                        {movieData.movie.movieSeat}
+                        {Array.isArray(movieData?.movie?.movieSeat)
+                          ? movieData.movie.movieSeat.join(", ")
+                          : "좌석 정보 없음"}
                       </p>
                     </div>
                   </div>
@@ -219,7 +221,7 @@ function SeniorPayPage() {
               <span className="text-[16px] font-semibold">카카오페이</span>
             </button>
           </div>
-          <div className="flex justify-center mt-8">
+          <div className="flex justify-center mt-4">
             <button
               onClick={handlePayment}
               className="flex items-center bg-white text-black px-6 py-6 rounded-lg font-semibold hover:opacity-90 transition duration-300"
@@ -237,8 +239,7 @@ function SeniorPayPage() {
       ) : (
         <p className="text-center mt-4 text-gray-400">로딩 중...</p>
       )}
-      {/* Footer 컴포넌트 */}
-      <footer className="fixed bottom-0 w-[450px] bg-gray-800 flex mx-auto">
+      <footer className="fixed bottom-0 w-[570px] bg-gray-800 flex mx-auto">
         <button
           className="flex-1 bg-white text-black text-xl font-bold h-20 flex items-center justify-center leading-none gap-2"
           onClick={handleSeniorMain}

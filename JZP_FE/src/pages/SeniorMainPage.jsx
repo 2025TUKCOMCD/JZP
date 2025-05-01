@@ -50,7 +50,7 @@ function SeniorMainPage() {
   };
 
   return (
-    <div className="bg-customBg h-screen text-white flex flex-col">
+    <div className="bg-customBg h-screen text-white flex flex-col relative mx-auto w-[570px] min-w-[570px] max-w-[570px]">
       <Header />
 
       <div className="flex flex-col items-center justify-center mt-12 text-center">
@@ -60,10 +60,7 @@ function SeniorMainPage() {
           선택해주세요.
         </p>
       </div>
-
-      {/* 버튼 섹션 */}
-      <div className="flex justify-center mt-12 gap-5">
-        {/* 예매 내역 출력 버튼 */}
+      <div className="flex justify-center mt-16 gap-5">
         <button
           className="bg-gray-700 hover:bg-gray-600 text-white font-bold w-[200px] h-[250px] rounded-[30px] flex flex-col items-center justify-between py-4"
           onClick={handleSeniorHistorySending}
@@ -73,24 +70,23 @@ function SeniorMainPage() {
             alt="예매 내역 출력"
             className="w-32 h-32 mt-6"
           />
-          <span className="text-center text-3xl">예매 내역 출력</span>
+          <span className="text-center text-2xl leading-none h-[36px] flex items-center justify-center">
+            예매 내역 출력
+          </span>
         </button>
 
-        {/* 티켓 예매 버튼 */}
         <button
           className="bg-red-700 hover:bg-red-600 text-white font-bold w-[200px] h-[250px] rounded-[30px] flex flex-col items-center justify-between py-4"
           onClick={handleSeniorMovieSelect}
         >
-          <img
-            src={ticketIcon}
-            alt="티켓 예매"
-            className="w-28 h-28 mt-8" // 아이콘 아래로 내림
-          />
-          <span className="text-center text-3xl">티켓 예매</span>
+          <img src={ticketIcon} alt="티켓 예매" className="w-28 h-28 mt-8" />
+          <span className="text-center text-2xl leading-none h-[36px] flex items-center justify-center">
+            티켓 예매
+          </span>
         </button>
       </div>
 
-      <div className="flex justify-center mt-10">
+      <div className="flex justify-center mt-16">
         {bannerImage ? (
           <img
             src={bannerImage}

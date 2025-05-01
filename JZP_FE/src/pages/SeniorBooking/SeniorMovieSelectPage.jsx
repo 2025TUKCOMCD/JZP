@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/header.jsx";
-import StepBar from "../../components/movieStepBar.jsx";
+import StepBar from "../../components/MovieStepBar.jsx";
 import DateSelectBar from "../../components/dateSelectBar2.jsx";
 import age12Image from "../../assets/images/12.png";
 import age15Image from "../../assets/images/15.png";
@@ -97,7 +97,6 @@ function SeniorMovieSelectPage() {
       const result = await response.json();
       console.log("🎬 영화 데이터 응답:", result);
 
-      // 각 영화의 상영 시간을 정렬 (시간 빠른 순)
       const sortedMovies = (result.movies || []).map((movie) => {
         const sortedTimes = (movie.times || []).sort((a, b) => {
           return a.movieTime.localeCompare(b.movieTime); // 문자열 시간 비교
@@ -121,7 +120,7 @@ function SeniorMovieSelectPage() {
   }, [selectedDate]);
 
   return (
-    <div className="bg-customBg h-screen text-white flex flex-col">
+    <div className="bg-customBg h-screen text-white flex flex-col relative mx-auto w-[570px] min-w-[570px] max-w-[570px]">
       <Header />
       <StepBar prefix="senior" />
       <DateSelectBar onDateChange={setSelectedDate} />
@@ -134,7 +133,7 @@ function SeniorMovieSelectPage() {
                 <img
                   src={movie.movieImage}
                   alt={movie.movieName}
-                  className="w-30 h-52 mr-3"
+                  className="w-52 h-68 mr-3"
                 />
                 <div className="flex flex-col justify-between flex-1">
                   <div>
@@ -203,7 +202,7 @@ function SeniorMovieSelectPage() {
       </div>
 
       {/* 하단 네비게이션 */}
-      <footer className="fixed bottom-0 w-[450px] bg-gray-800 flex">
+      <footer className="fixed bottom-0 w-[570px] bg-gray-800 flex">
         <button
           className="flex-1 bg-white text-black text-xl font-bold h-20 flex items-center justify-center leading-none gap-2"
           onClick={handleSeniorMain}

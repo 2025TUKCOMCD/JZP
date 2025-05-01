@@ -45,9 +45,6 @@ def main():
     t3.start()
     # test_thread.start()
 
-    # cam.HaarFilter()
-    # sender.post("kid")
-
     try :
         while True:
             time.sleep(0.1)

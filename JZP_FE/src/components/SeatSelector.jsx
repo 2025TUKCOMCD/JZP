@@ -6,8 +6,8 @@ function SeatSelector({
   selectedSeats,
   setSelectedSeats,
   onSeatClickWithoutPeople,
-  reservedSeats = [], // 예매된 좌석 리스트
-  availableSeatsCount = 0, // 남은 좌석 수
+  reservedSeats = [],
+  availableSeatsCount = 0,
 }) {
   const rows = ["A", "B", "C", "D", "E", "F"];
   const cols = 12;
@@ -41,23 +41,19 @@ function SeatSelector({
   };
 
   return (
-    <div className="mt-4">
+    <div className="mt-8">
       <div className="text-center">
-        {/* SCREEN 텍스트 */}
-        <div className="w-[80%] mx-auto bg-gray-500 mb-4 py-1">
+        <div className="w-[60%] mx-auto bg-gray-500 mb-12 py-1">
           <h2 className="text-white text-sm font-bold tracking-widest">
             S C R E E N
           </h2>
         </div>
 
-        {/* 좌석 선택 영역 */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
           {rows.map((row) => (
-            <div key={row} className="flex items-center justify-center gap-4">
-              {/* 왼쪽 열 이름 */}
+            <div key={row} className="flex items-center justify-center gap-3">
               <span className="text-white font-bold">{row}</span>
 
-              {/* 좌석 버튼 */}
               <div className="grid grid-cols-12 gap-1">
                 {[...Array(cols).keys()].map((col) => {
                   const colIndex = col + 1;
@@ -81,13 +77,11 @@ function SeatSelector({
                 })}
               </div>
 
-              {/* 오른쪽 열 이름 */}
               <span className="text-white font-bold">{row}</span>
             </div>
           ))}
         </div>
 
-        {/* 좌석 스타일 미리보기 */}
         <div className="mt-6 flex justify-start items-center gap-4 pl-6">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 bg-red-500 rounded-t-md"></div>
