@@ -33,8 +33,8 @@ function SeniorPayPage() {
     fetchMoviePaymentHistory();
   }, []);
 
-  const handleSeniorMain = () => {
-    navigate("/seniorMain");
+  const handleMain = () => {
+    navigate("/");
   };
 
   const handleSeniorSeat = () => {
@@ -242,7 +242,7 @@ function SeniorPayPage() {
       <footer className="fixed bottom-0 w-[570px] bg-gray-800 flex mx-auto">
         <button
           className="flex-1 bg-white text-black text-xl font-bold h-20 flex items-center justify-center leading-none gap-2"
-          onClick={handleSeniorMain}
+          onClick={handleMain}
         >
           <img src={HomeIcon} alt="홈 아이콘" className="w-8 h-8" />홈
         </button>
