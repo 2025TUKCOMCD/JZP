@@ -2,6 +2,7 @@ import keras.saving
 import cv2
 import numpy as np
 import queue
+import time
 
 def preprocess_frame(frame):
     image_size = (128, 128)
@@ -18,6 +19,8 @@ def AgeAnalyze(frame_data, age_data):
     categories = ['2-19', '20-60', '61+']
 
     while True:
+        print("Analyzing...")
+        start = time.time()
         try:
             frame = frame_data.get(timeout=0.5)  # 1/2초 대기
             processed_frame = preprocess_frame(frame)
@@ -28,11 +31,15 @@ def AgeAnalyze(frame_data, age_data):
             # print(f"Predicted Age Group: {predicted_age_group}")
             
             age_data.put(predicted_age_group, block = False)
+            end = time.time()
+            print(f"| ( Analyzing DONE {end-start:.2f}s ) {predicted_age_group}")
 
         except queue.Full:
             age_data.get()
             age_data.put(predicted_age_group)
-
+            end = time.time()
+            print(f"( Analyzing DONE {end-start:.2f}s ) {predicted_age_group}")
+            
         except queue.Empty:
             continue  # 비어있으면 다시 대기
 
