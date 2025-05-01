@@ -15,7 +15,7 @@ const Keypad2 = ({ onKeyPress, onDelete, onReset }) => {
           <button
             key={index}
             type="button"
-            className={`w-20 aspect-square text-[30px] font-bold rounded-md flex items-center justify-center ${
+            className={`w-20 aspect-square text-[25px] font-bold rounded-md flex items-center justify-center ${
               key === "초기화"
                 ? "bg-keyPadGray text-[21px]"
                 : key === "⌫"
