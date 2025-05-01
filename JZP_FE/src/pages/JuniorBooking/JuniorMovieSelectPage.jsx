@@ -16,7 +16,6 @@ function JuniorMovieSelectPage() {
   const [selectedTime, setSelectedTime] = useState(null);
   const [movies, setMovies] = useState([]);
 
-  // 날짜 가져오기 함수
   const getTodayDate = () => {
     const today = new Date();
     const year = today.getFullYear();
@@ -25,11 +24,10 @@ function JuniorMovieSelectPage() {
     return `${year}-${month}-${day}`;
   };
 
-  // 초기 상태
   const [selectedDate, setSelectedDate] = useState(getTodayDate());
   const navigate = useNavigate();
 
-  const handleJuniorMain = () => navigate("/juniorMain");
+  const handleMain = () => navigate("/");
 
   const handleSelectTime = async (time, movie) => {
     setSelectedMovie(movie);
@@ -208,7 +206,7 @@ function JuniorMovieSelectPage() {
       <footer className="fixed bottom-0 w-[570px] bg-gray-800 flex">
         <button
           className="flex-1 bg-white text-black text-sm font-bold h-16 flex items-center justify-center leading-none gap-2"
-          onClick={handleJuniorMain}
+          onClick={handleMain}
         >
           <img src={homeIcon} alt="홈 아이콘" className="w-4 h-4" />홈
         </button>

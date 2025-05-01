@@ -15,12 +15,18 @@ def AgeAnalyze(frame_data, age_data):
     model_path = "src/model/age_classification_model_40_v4.keras"
     model = keras.saving.load_model(model_path)
     print("Model loaded successfully")
-
+    analyzecounter = 1
     categories = ['2-19', '20-60', '61+']
 
     while True:
+<<<<<<< ours
+        start = time.time()
+        analyzecounter += 1
+        print(f"Analyzing {analyzecounter}")
+=======
         print("Analyzing...")
         start = time.time()
+>>>>>>> theirs
         try:
             frame = frame_data.get(timeout=0.5)  # 1/2초 대기
             processed_frame = preprocess_frame(frame)
@@ -32,7 +38,11 @@ def AgeAnalyze(frame_data, age_data):
             
             age_data.put(predicted_age_group, block = False)
             end = time.time()
+<<<<<<< ours
+            print(f"| Analyzing {analyzecounter} : ( DONE {end-start:.2f}s ) {predicted_age_group}")
+=======
             print(f"| ( Analyzing DONE {end-start:.2f}s ) {predicted_age_group}")
+>>>>>>> theirs
 
         except queue.Full:
             age_data.get()
