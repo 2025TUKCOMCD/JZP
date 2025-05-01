@@ -27,7 +27,7 @@ function SeniorMovieSelectPage() {
   const [selectedDate, setSelectedDate] = useState(getTodayDate());
   const navigate = useNavigate();
 
-  const handleSeniorMain = () => navigate("/seniorMain");
+  const handleMain = () => navigate("/");
 
   const handleSelectTime = async (time, movie) => {
     setSelectedMovie(movie);
@@ -205,7 +205,7 @@ function SeniorMovieSelectPage() {
       <footer className="fixed bottom-0 w-[570px] bg-gray-800 flex">
         <button
           className="flex-1 bg-white text-black text-xl font-bold h-20 flex items-center justify-center leading-none gap-2"
-          onClick={handleSeniorMain}
+          onClick={handleMain}
         >
           <img src={homeIcon} alt="홈 아이콘" className="w-8 h-8" />홈
         </button>

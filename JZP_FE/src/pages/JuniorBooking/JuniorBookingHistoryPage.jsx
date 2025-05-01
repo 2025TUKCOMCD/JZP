@@ -34,8 +34,8 @@ function JuniorBookingHistoryPage() {
     fetchBookingData();
   }, []);
 
-  const handleJuniorMain = () => {
-    navigate("/juniorMain");
+  const handleMain = () => {
+    navigate("/");
   };
 
   const handleJuniorSending = () => {
@@ -146,7 +146,7 @@ function JuniorBookingHistoryPage() {
       <footer className="fixed bottom-0 w-[560px] bg-gray-800 flex mx-auto">
         <button
           className="flex-1 bg-white text-black text-sm font-bold h-16 flex items-center justify-center leading-none gap-2"
-          onClick={handleJuniorMain}
+          onClick={handleMain}
         >
           <img src={HomeIcon} alt="홈 아이콘" className="w-4 h-4" />홈
         </button>

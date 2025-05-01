@@ -43,7 +43,7 @@ function SeniorSendingPage() {
     setPhoneNumber(["010", "", ""]);
   };
 
-  const handleSeniorMain = () => navigate("/seniorMain");
+  const handleMain = () => navigate("/");
   const handleSeniorConfirm = async () => {
     const fullPhoneNumber = phoneNumber.join("");
     const ticketId = localStorage.getItem("ticketId");
@@ -128,7 +128,7 @@ function SeniorSendingPage() {
       <footer className="fixed bottom-0 w-[570px] bg-gray-800 flex">
         <button
           className="flex-1 bg-white text-black text-xl font-bold h-20 flex items-center justify-center leading-none gap-2"
-          onClick={handleSeniorMain}
+          onClick={handleMain}
         >
           <img src={HomeIcon} alt="홈 아이콘" className="w-6 h-6" />홈
         </button>
