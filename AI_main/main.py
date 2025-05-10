@@ -1,5 +1,5 @@
 """
-*   This is MAIN Program
+*   This is MAIN Program Module.
 *   
 *
 *
@@ -31,18 +31,21 @@ from tests import showqueue as showq
 from src.utils import AgeFilter as Analyzer
 
 def main():
-    frame_data = queue.Queue(maxsize = 1)
-    age_data = queue.Queue(maxsize = 1)
+    """
+    This function run every Modules by thread. (main)
+    """
+    frame_data = queue.Queue(maxsize = 1) # Queue. contains camera captured data
+    age_data = queue.Queue(maxsize = 1) # Queue. contains age analyzed data. one of ['2-19', '20-60', '61+']
 
-    t1 = threading.Thread(target=cam.HaarFilter, args=(frame_data,), daemon = True)
-    t2 = threading.Thread(target=Analyzer.AgeAnalyze, args=(frame_data,age_data), daemon=True)
-    t3 = threading.Thread(target=sender.post, args=(age_data,), daemon = True)
+    thread_camera_filter = threading.Thread(target=cam.HaarFilter, args=(frame_data,), daemon = True)
+    thread_age_analyzer = threading.Thread(target=Analyzer.AgeAnalyze, args=(frame_data,age_data), daemon=True)
+    thread_posting = threading.Thread(target=sender.post, args=(age_data,), daemon = True)
 
     # test_thread = threading.Thread(target = showq.showq, args=(frame_data,), daemon = True)
 
-    t1.start()
-    t2.start()
-    t3.start()
+    thread_camera_filter.start()
+    thread_age_analyzer.start()
+    thread_posting.start()
     # test_thread.start()
 
     try :
