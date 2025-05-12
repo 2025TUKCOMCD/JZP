@@ -49,7 +49,6 @@ def Checksum(last_status, cur_status):
         return True
     
 def post(q):
-<<<<<<< ours
     """
     This function is module that send JSON data to the server.
     
@@ -67,19 +66,16 @@ def post(q):
     headers = { "Content-Type":"application/json" }
     response = None # reset response object. without this line, could be occur runtime error.
     load_dotenv() # .env file load. file contains url of server.
-=======
-    headers = { "Content-Type":"application/json" }
-    load_dotenv()
->>>>>>> theirs
+    
     url = os.getenv("API_BASE_URL")
     url_Sendpoint = "/api/movie/agegroup"
     url_Getpoint = "/api/movie/user"
     url = url+url_Sendpoint
+    
     workcounter = 0 # just counter for prompt.
     last_status = "" # reset last_status.
     try :
         while True:
-<<<<<<< ours
              start = time.time() # processing time check
              
              try:
@@ -106,35 +102,12 @@ def post(q):
              else :
                  # if data is duplicated, just restart loop. nothing do (wait).
                  continue
-
              end = time.time()
              if response :
                  print(f"| Request ... {workcounter} : ( DONE {end-start:.3f}s ) {response.text}")
              else :
                  print(f"| Request ... {workcounter} : ( Response Error {end-start:.3f}s )")
              workcounter += 1
-            
-=======
-             start = time.time()
-             print(f"Sending Requests {q.get()}")
-             if q.get()=="2-19":
-                 s="아이"
-             elif q.get()=="20-60":
-                 s="성인"
-             elif q.get()=="61+":
-                 s="노인"
-             else :
-                 s="노인"
-             data = { "ageGroup": s }
-             json_data = json.dumps(data)
-             try:
-                 response = requests.post(url, data=json_data, headers=headers)
-             except Exception as request_e:
-                 print(request_e)
-             end = time.time()
-             print(f"| ( DONE {end-start:.3f}s ) {response.text}")
-             # print(response.text)
->>>>>>> theirs
     except Exception as e:
         print(e)
         pass
@@ -144,10 +117,6 @@ def post(q):
         print("EXIT Post Module...")
         
 if __name__ == "__main__" :
-<<<<<<< ours
-    # s = "20-60"
     s = queue.Queue(maxsize = 1)
-=======
-    s = "20-60"
->>>>>>> theirs
+    #s = "20-60"
     post(s)
