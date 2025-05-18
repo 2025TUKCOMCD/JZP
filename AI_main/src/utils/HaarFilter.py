@@ -6,6 +6,7 @@
 import cv2
 import queue
 from datetime import datetime
+import time
 
 def HaarFilter(frame_data):
     haar_classifier = cv2.CascadeClassifier("src/model/haarcascade_frontalface_default.xml")
@@ -21,14 +22,12 @@ def HaarFilter(frame_data):
         while True:
             frame_counter += 1
 
-            # Frame 읽기
             ret, frame = capture.read()
-            if not ret:  # 카메라에서 프레임을 읽지 못한 경우 종료
+            if not ret:		# program kill when failed to capture frame
                 print("Failed to capture frame.")
                 break
             
-            # 이미지 처리
-            frame_origin = frame.copy()  # 저장을 위한 원본 복사
+            frame_origin = frame.copy()  # make copy frame for saving.
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
             faces = haar_classifier.detectMultiScale(
@@ -38,7 +37,6 @@ def HaarFilter(frame_data):
                 minSize=(320, 180)
             )
             
-            # 얼굴 검출 처리
             if len(faces) > 0:
                 for (x, y, w, h) in faces:
                     now = datetime.now()
@@ -52,12 +50,12 @@ def HaarFilter(frame_data):
                     except queue.Full:
                         frame_data.get()
                         frame_data.put(frame_origin)
-                    cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)  # 얼굴 영역 표시
+                    cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)  # capture faces
                     count += 1
                     
-            # 프레임 표시
+            # get frames
             cv2.imshow('image', frame)
-            if cv2.waitKey(1) & 0xFF == ord('q'):  # 'q' 키를 누르면 종료
+            if cv2.waitKey(1) & 0xFF == ord('q'):  # exit by 'q'
                 break
 
     except KeyboardInterrupt:
