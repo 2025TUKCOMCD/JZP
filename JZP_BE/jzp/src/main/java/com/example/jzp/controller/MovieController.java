@@ -43,7 +43,8 @@ public class MovieController {
             @Value("${coolsms.api.key}") String apiKey,
             @Value("${coolsms.api.secret}") String apiSecret,
             TicketService ticketService
-    ) {
+    )
+    {
         this.messageService = NurigoApp.INSTANCE.initialize(apiKey, apiSecret, "https://api.coolsms.co.kr");
         this.ticketService = ticketService;
     }
