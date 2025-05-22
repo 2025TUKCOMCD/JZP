@@ -77,10 +77,10 @@ public class MovieService {
         JsonNode genresNode = movieNode.path("genre_ids");
 
         for (JsonNode genreNode : genresNode) {
-            int genreId = genreNode.asInt();  // 장르 ID
-            String genreName = genreMap.get(genreId);  // 장르 이름 변환
+            int genreId = genreNode.asInt();
+            String genreName = genreMap.get(genreId);
             if (genreName != null) {
-                genres.add(genreName);  // 리스트에 추가
+                genres.add(genreName);
             }
         }
 
@@ -110,12 +110,12 @@ public class MovieService {
                 List<String> genres = extractGenres(movieNode, genreMap);
                 boolean adult = movieNode.path("adult").asBoolean();
 
-                // TMDB에서 해당 영화의 런타임 값을 가져오기 위한 세부 API 호출
+
                 String movieDetailsUrl = "https://api.themoviedb.org/3/movie/" + tmdbMovieId + "?api_key=" + API_KEY + "&language=ko-KR";
                 String movieDetailsResponse = restTemplate.getForObject(movieDetailsUrl, String.class);
                 JsonNode movieDetailsNode = objectMapper.readTree(movieDetailsResponse);
 
-                // 런타임 값 가져오기 (없으면 기본값 120으로 설정)
+
                 int runtimeMinutes = movieDetailsNode.path("runtime").asInt(120);
 
                 String ageRating = MovieGrade.getAgeRating(adult, genres).getCode();
@@ -216,31 +216,31 @@ public class MovieService {
 
 
     public List<MovieController.MovieResponse> getMoviesByDate(Date movieCalendar) {
-        // movieCalendar에 해당하는 영화를 가져옴
+
         List<Movie> movies = movieRepository.findByMovieCalendar(movieCalendar);
 
-        // tmdbmovie_id로 그룹화하기 위한 맵
+
         Map<Long, MovieController.MovieResponse> movieMap = new HashMap<>();
 
-        // 영화 데이터를 순회하면서
-        for (Movie movie : movies) {
-            Long tmdbMovieId = movie.getTmdbMovieId(); // tmdbmovie_id로 그룹화
 
-            // 해당 tmdbMovieId로 이미 생성된 MovieResponse가 없으면 새로 생성
+        for (Movie movie : movies) {
+            Long tmdbMovieId = movie.getTmdbMovieId();
+
+
             MovieController.MovieResponse response = movieMap.get(tmdbMovieId);
             if (response == null) {
                 response = new MovieController.MovieResponse();
-                response.setTmdbMovieId(tmdbMovieId); // tmdbmovie_id 설정
+                response.setTmdbMovieId(tmdbMovieId);
                 response.setMovieImage(movie.getMovieImage());
                 response.setMovieName(movie.getMovieName());
                 response.setMovieType(movie.getMovieType());
                 response.setMovieRating(movie.getMovieRating());
                 response.setMovieGrade(movie.getMovieGrade());
-                response.setTimes(new ArrayList<>()); // times 리스트 초기화
-                movieMap.put(tmdbMovieId, response); // tmdbmovie_id로 그룹화
+                response.setTimes(new ArrayList<>());
+                movieMap.put(tmdbMovieId, response);
             }
 
-            // 해당 영화에 대한 상영 시간 정보를 추가
+
             MovieController.MovieScheduleResponse scheduleResponse = new MovieController.MovieScheduleResponse();
             scheduleResponse.setMovieTime(movie.getMovieTime());
             scheduleResponse.setMovieSeatRemain(movie.getMovieSeatRemain());
