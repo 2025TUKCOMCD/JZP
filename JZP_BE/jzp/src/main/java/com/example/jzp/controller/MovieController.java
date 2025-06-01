@@ -4,6 +4,7 @@ import com.example.jzp.model.Movie;
 import com.example.jzp.model.Ticket;
 import com.example.jzp.model.User;
 
+import com.example.jzp.service.KakaoPayService;
 import com.example.jzp.service.MovieService;
 import com.example.jzp.service.TicketService;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -13,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
@@ -29,6 +29,7 @@ import java.util.*;
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/api/movie")
+
 public class MovieController {
 
     @Autowired
@@ -38,21 +39,25 @@ public class MovieController {
     private TicketService ticketService;
 
     private final DefaultMessageService messageService;
-
-    public MovieController(
-            @Value("${coolsms.api.key}") String apiKey,
-            @Value("${coolsms.api.secret}") String apiSecret,
-            TicketService ticketService
-    )
-    {
-        this.messageService = NurigoApp.INSTANCE.initialize(apiKey, apiSecret, "https://api.coolsms.co.kr");
-        this.ticketService = ticketService;
-    }
+    private final KakaoPayService kakaoPayService;
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
     private final Map<String, String> ageGroupStorage = new ConcurrentHashMap<>();
+
+    public MovieController(
+            @Value("${coolsms.api.key}") String apiKey,
+            @Value("${coolsms.api.secret}") String apiSecret,
+            TicketService ticketService,
+            KakaoPayService kakaoPayService
+    )
+    {
+        this.messageService = NurigoApp.INSTANCE.initialize(apiKey, apiSecret, "https://api.coolsms.co.kr");
+        this.ticketService = ticketService;
+        this.kakaoPayService = kakaoPayService;
+    }
+
 
     @PostMapping("/agegroup")
     public ResponseEntity<String> receiveAgeGroup(@RequestBody User user) {
@@ -149,6 +154,18 @@ public class MovieController {
         public void setPhoneNumber(String phoneNumber) {
             this.phoneNumber = phoneNumber;
         }
+    }
+
+    @GetMapping("/pay")
+    public ResponseEntity<String> kakaoPay() {
+        KakaoPayService.KakaoPayReadyResponse response = kakaoPayService.readyToPay();
+        return ResponseEntity.ok(response.getNextRedirectPcUrl());
+    }
+
+
+    @GetMapping("/PaySuccess")
+    public String success(@RequestParam("pg_token") String pgToken) {
+        return "결제 성공. pg_token: " + pgToken;
     }
 
 
